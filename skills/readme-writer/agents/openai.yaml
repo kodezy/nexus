@@ -1,0 +1,4 @@
+interface:
+  display_name: "README Writer"
+  short_description: "Write clear, practical, and maintainable README files."
+  default_prompt: "Write or improve a README with clear structure, practical instructions, and executable examples."

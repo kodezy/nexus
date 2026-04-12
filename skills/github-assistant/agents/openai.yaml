@@ -1,0 +1,4 @@
+interface:
+  display_name: "GitHub Assistant"
+  short_description: "Generate commit messages from git diffs"
+  default_prompt: "Use $github-assistant to suggest clear commit messages from staged or unstaged diffs."
