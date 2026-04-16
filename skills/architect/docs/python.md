@@ -1,101 +1,71 @@
 ---
-description: Python architecture - simple layout, pragmatic naming, one purpose per module.
+description: Python architecture — simple layout, pragmatic naming, one purpose per module.
 alwaysApply: false
 ---
 
 # Architect Guide (Python)
 
-## Objective
+## Objetivo
 
-Keep Python architecture simple, clear, and direct, in the same style as the project: simple and descriptive file and module names, without long compound names.
+Manter a arquitetura Python simples, clara e direta, no mesmo estilo do projeto: nomes de arquivos e módulos simples e descritivos, sem nomes compostos longos.
 
-## Folder Structure
+## Estrutura de pastas (padrão do projeto)
 
-- **Code root:** `src/` or the project equivalent.
-- **Top-level domains:** one folder per domain, such as `trading`, `game`, `vision`, `storage`, `dashboard`, `network`, or `infra`.
-- **Subdomains when needed:** inside the domain, group by function when it helps:
-  - `trading/services/`: domain services such as `analyzer`, `arbitrage`, `metrics`, `notifier`, `selector`, `availability`, and `factory`.
-  - `trading/workflows/`: flows such as `base`, `start`, `finish`, `preparing`, `trading`, and `handler`.
-  - `trading/signals/`: signals such as `create`, `cancel`, and `utils`.
-  - `game/actions/`: actions grouped by context, such as `auth/`, `gameplay/`, and `market/`.
-  - `dashboard/tabs/`: one folder per tab, such as `trading`, `market`, `arbitrage`, `metrics`, `workers`, `accounts`, and `misc`.
-  - `vision/screens/components/`: components grouped by context, such as `auth`, `gameplay`, and `market`.
-- **Avoid unnecessary depth:** two levels under the domain are usually enough; use three only when the domain is large and already follows that pattern.
+- **Raiz do código:** `src/` (ou equivalente).
+- **Domínios no primeiro nível:** uma pasta por domínio (ex.: `trading`, `game`, `vision`, `storage`, `dashboard`, `network`, `infra`).
+- **Subdomínios por necessidade:** dentro do domínio, agrupar por função quando fizer sentido:
+  - `trading/services/` — serviços de domínio (analyzer, arbitrage, metrics, notifier, selector, availability, factory).
+  - `trading/workflows/` — fluxos (base, start, finish, preparing, trading, handler).
+  - `trading/signals/` — sinais (create, cancel, utils).
+  - `game/actions/` — ações agrupadas por contexto: `auth/`, `gameplay/`, `market/`.
+  - `dashboard/tabs/` — uma pasta por aba (trading, market, arbitrage, metrics, workers, accounts, misc).
+  - `vision/screens/components/` — componentes por contexto (auth, gameplay, market).
+- **Evitar profundidade desnecessária:** dois níveis sob o domínio costumam bastar; três quando o domínio é grande e já segue esse padrão.
 
-## File And Module Names
+## Nomes de arquivos e módulos
 
-- **Simple and direct:** use one or a few terms that describe the content.
-- **Use snake_case** for files: `analyzer.py`, `arbitrage.py`, `create_offer.py`, `scan_balances.py`.
-- **Prefer:** `notifier`, `metrics`, `selector`, `availability`, `factory`, `open_market`, `close_market`, `cancel_offer`, `create_offer`.
-- **Avoid:** long or generic compound names such as `trading_metrics_service.py`, `market_offer_creation_handler.py`, and `user_authentication_manager.py`. Prefer `metrics`, `create_offer`, and `login_account`.
-- **Use verb + noun for actions:** `create_offer`, `cancel_offer`, `scan_balances`, `open_market`, `login_account`, `select_character`.
-- **Use a noun for concepts and services:** `analyzer`, `arbitrage`, `notifier`, `strategy`, `session`, `context`.
+- **Simples e diretos:** um ou poucos termos que descrevem o conteúdo.
+- **Snake_case** para arquivos: `analyzer.py`, `arbitrage.py`, `create_offer.py`, `scan_balances.py`.
+- **Preferir:** `notifier`, `metrics`, `selector`, `availability`, `factory`, `open_market`, `close_market`, `cancel_offer`, `create_offer`.
+- **Evitar:** nomes compostos longos ou genéricos como `trading_metrics_service.py`, `market_offer_creation_handler.py`, `user_authentication_manager.py`. Em vez disso: `metrics`, `create_offer`, `login_account`.
+- **Verbo + substantivo quando for ação:** `create_offer`, `cancel_offer`, `scan_balances`, `open_market`, `login_account`, `select_character`.
+- **Substantivo quando for conceito/serviço:** `analyzer`, `arbitrage`, `notifier`, `strategy`, `session`, `context`.
 
-## One Purpose Per Module
+## Um propósito por módulo
 
-- Each file should have one clear responsibility, such as one workflow, one kind of action, or one service.
-- If a file grows too much, split it by responsibility and keep names simple, such as multiple workflows under `workflows/` or multiple services under `services/`.
-- Avoid guardian modules that only re-export dozens of things without grouping by concept. Prefer re-exporting only what is used outside the package.
+- Cada arquivo deve ter uma responsabilidade clara (ex.: um workflow, um tipo de ação, um serviço).
+- Se um arquivo crescer demais, dividir por responsabilidade e manter nomes simples (ex.: vários workflows em `workflows/`, vários serviços em `services/`).
+- Evitar módulos “guardião” que só reexportam dezenas de coisas sem agrupar por conceito; preferir reexportar só o que é usado fora do pacote.
 
-## Where To Put New Code
+## Onde colocar código novo
 
-| Code type | Location examples |
-|-----------|-------------------|
-| Domain service for trading | `trading/services/<name>.py`, such as `metrics` or `analyzer` |
-| Workflow or flow | `trading/workflows/<name>.py`, such as `start`, `finish`, or `trading` |
-| Game action | `game/actions/<context>/<name>.py`, such as `market/create_offer` or `auth/login_account` |
-| Dashboard tab | `dashboard/tabs/<name>/` with `layout.py` and `callbacks.py`, following the project |
-| Vision screen component | `vision/screens/components/<context>/<name>.py` |
-| Shared infrastructure | `infra/<name>.py`, such as `cache`, `logger`, or `database` |
-| Models or repository | `storage/models.py`, `storage/repository.py`, or new modules under `storage/` with simple names |
+| Tipo de código | Onde colocar (exemplos) |
+|----------------|--------------------------|
+| Serviço de domínio (trading) | `trading/services/<nome>.py` (ex.: `metrics`, `analyzer`) |
+| Workflow / fluxo | `trading/workflows/<nome>.py` (ex.: `start`, `finish`, `trading`) |
+| Ação de jogo | `game/actions/<contexto>/<nome>.py` (ex.: `market/create_offer`, `auth/login_account`) |
+| Aba do dashboard | `dashboard/tabs/<nome>/` com `layout.py`, `callbacks.py` conforme o projeto |
+| Componente de tela (vision) | `vision/screens/components/<contexto>/<nome>.py` |
+| Infra compartilhada | `infra/<nome>.py` (ex.: `cache`, `logger`, `database`) |
+| Modelos / repositório | `storage/models.py`, `storage/repository.py` ou módulos novos em `storage/` com nome simples |
 
-## Naming Examples
+## Exemplos de nomes (seguir este estilo)
 
-Prefer:
+**Bom:**  
+`analyzer`, `arbitrage`, `metrics`, `notifier`, `selector`, `availability`, `factory`, `create_offer`, `cancel_offer`, `open_market`, `close_market`, `scan_balances`, `scan_my_offers`, `login_account`, `select_character`, `base`, `start`, `finish`, `preparing`, `trading`, `handler`.
 
-```text
-analyzer
-arbitrage
-metrics
-notifier
-selector
-availability
-factory
-create_offer
-cancel_offer
-open_market
-close_market
-scan_balances
-scan_my_offers
-login_account
-select_character
-base
-start
-finish
-preparing
-trading
-handler
-```
+**Evitar:**  
+`trading_metrics_service`, `market_offer_creator`, `user_authentication_service`, `gameplay_market_open_action`, `dashboard_trading_tab_layout`.
 
-Avoid:
+## Imports e API pública
 
-```text
-trading_metrics_service
-market_offer_creator
-user_authentication_service
-gameplay_market_open_action
-dashboard_trading_tab_layout
-```
+- Importar do caminho mais direto que o projeto já usa (ex.: `from src.trading.services.analyzer import ...`).
+- Em pacotes com `__init__.py`, manter `__all__` quando o projeto usar, listando apenas o que é API pública do pacote.
+- Não criar novos “hubs” de reexportação sem seguir o padrão já usado no mesmo domínio.
 
-## Imports And Public API
+## Resumo
 
-- Import from the most direct path the project already uses, such as `from src.trading.services.analyzer import ...`.
-- In packages with `__init__.py`, keep `__all__` when the project uses it, listing only the package's public API.
-- Do not create new re-export hubs unless the same domain already follows that pattern.
-
-## Summary
-
-- Keep structure aligned with the project: domain, subdomain, then short-named modules.
-- Use simple, pragmatic, descriptive snake_case file and module names. Avoid long compounds.
-- Keep one clear purpose per module. Prefer a flat structure or a few levels.
-- Put new code in the same kind of folder and naming pattern the domain already uses.
+- Estrutura alinhada ao projeto: domínio → subdomínio → módulos com nomes curtos.
+- Nomes de arquivos/módulos: simples, pragmáticos, descritivos, em snake_case; evitar compostos longos.
+- Um propósito claro por módulo; estrutura plana ou com poucos níveis.
+- Colocar código novo no mesmo tipo de pasta e padrão de nome que o domínio já usa.

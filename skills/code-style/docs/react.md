@@ -19,6 +19,8 @@ Use for `tsx`, `jsx`, `ts` files and frontend areas with React components/hooks.
 
 ## Formatting
 
+- Keep imports at the top of the file and group them consistently (external, internal aliases, relative).
+- Keep file-level constants near the top of the module, right after imports.
 - Keep props and JSX layout consistent with local file style.
 - Group imports by source and preserve local ordering conventions.
 - Avoid large inline anonymous functions when extraction improves readability.

@@ -20,6 +20,8 @@ Highest priority: simple, clear, pragmatic names.
 ## Structure and Organization
 
 - Use Python 3.13+ and modern features when compatible with the project.
+- Keep imports at the top of the module, grouped in this order: standard library, third-party, local modules.
+- Keep module constants at the top of the module, right after imports.
 - Use type hints and modern patterns (`|` for unions, f-strings, `with`, comprehensions).
 - **Always use f-strings** for any string interpolation (logs, messages, building strings). Never use `%s`/`%d`, `.format()`, or concatenation. Example: `f"Processing {item}"`, `logger.debug(f"Processing {item}")`.
 - Log/print messages: at most one line; clear, direct, pragmatic; never split across multiple lines.
@@ -40,7 +42,6 @@ Core rule: one blank line separates logical blocks; never two blank lines. Use s
 ```python
 def calculate_total(items):
     return sum(item.price for item in items)
-
 
 def validate_order(order):
     return order.amount > 0

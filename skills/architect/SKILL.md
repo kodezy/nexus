@@ -7,7 +7,7 @@ description: Define and apply simple, clear, direct architecture. Use when creat
 
 ## Objective
 
-Keep architecture simple, clear, and direct. Every new module, package, or feature must follow the same style and patterns as the current project. File and module names stay simple, pragmatic, and descriptive—avoid compound or verbose names.
+Keep architecture simple, clear, and direct. Every new module, package, or feature must follow the same style and patterns as the current project. Prefer fewer files with well-defined modules, and use simple, pragmatic names for files and modules.
 
 ## Language / Area Selection
 
@@ -18,35 +18,56 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 ## Canonical Rules
 
 1. **English:** All code, identifiers, comments, docstrings, and file/module names in English (per project AGENTS.md).
-2. **Match existing structure:** Place code in the same kind of hierarchy the project already uses (e.g. `src/domain/subdomain`, `domain/services`, `domain/workflows`).
+2. **Match existing structure:** Place code in the same hierarchy the project already uses, organized by module/submodule (e.g. `manager/src/infra`, `worker/src/tasks`, `dashboard/src/components`).
 3. **Simple names:** Prefer short, descriptive names for files and modules (e.g. `analyzer`, `arbitrage`, `notifier`) over compound names (e.g. `trading_metrics_service`, `market_offer_creator`).
-4. **One clear purpose per module:** Each file or package should have a single, obvious responsibility.
-5. **Flat when possible:** Avoid deep nesting; group by domain, then keep modules at one or two levels when it stays clear.
-6. **No over-engineering:** Add layers (e.g. services, handlers, repositories) only when the project already uses them in that area.
-7. **Local conventions win:** If the codebase does something different from this skill, follow the codebase.
+4. **Fewer files first:** Prefer extending an existing module when responsibility is the same and cohesion stays clear.
+5. **Split only with clear boundary:** Create a new file/package only when at least one condition is true: different responsibility from the current module, independent lifecycle, stable reuse by 2+ modules, or the current file loses readability due to mixed concerns.
+6. **One clear purpose per module:** Each file or package should have a single, obvious responsibility.
+7. **Flat when possible:** Avoid deep nesting; group by module, then keep submodules at one or two levels when it stays clear.
+8. **No over-engineering:** Add layers (e.g. services, handlers, repositories) only when the project already uses them in that area.
+9. **Local conventions win:** If the codebase does something different from this skill, follow the codebase.
 
 ## Scope
 
 - Where to put new code (package and file location).
 - How to name new modules, packages, and files.
-- How to organize subdomains (e.g. actions, workflows, services, tabs).
+- How to organize submodules (e.g. infra, services, tasks, components).
 - When to add a new package vs. a new file in an existing package.
+- When to keep logic in the current module to avoid unnecessary file proliferation.
 
 ## Workflow
 
-1. Identify the domain or subdomain (e.g. trading, game, vision, dashboard).
-2. Check how that domain is structured (folders, naming pattern).
-3. Choose a simple, descriptive name for the new file or package.
-4. Place the new code in the same pattern (e.g. `trading/services/foo.py`, `game/actions/market/bar.py`).
-5. Expose public API via existing patterns (e.g. `__init__.py` with `__all__` where the project uses it).
+1. Identify the module or submodule (e.g. `manager/src/infra`, `worker/src/tasks`, `dashboard/src/components`).
+2. Check how that module is structured (folders and naming pattern).
+3. Try the smallest placement first: existing module, then existing package, then new file as the last option.
+4. If a new file is required, validate the split criteria first, then choose a simple, descriptive name.
+5. Place the new code in the same pattern (e.g. `manager/src/infra/database.py`, `worker/src/tasks/sync.py`).
+6. Expose public API via existing patterns (e.g. `__init__.py` with `__all__` where the project uses it).
 
 ## Checklist
 
-- New code lives under the right domain and follows existing hierarchy.
+- New code lives under the right module and follows existing hierarchy.
 - File and module names are simple and descriptive, not long compounds.
+- Existing module was preferred when responsibility matched.
+- New files were created only when split criteria were explicitly met.
 - One clear responsibility per module.
 - No extra layers or folders without a matching pattern in the project.
 - Imports and public API follow the style of nearby modules.
+
+## Current Repository Signals
+
+Use this repository structure as baseline for placement and naming:
+
+- Top-level modules are clear and direct (`manager`, `worker`, `dashboard`).
+- Module folders prefer concise names over long compounds.
+- Documentation and generated content are isolated in dedicated folders (`skills`, `loguru-docs`, `ratatui-docs`).
+- Keep this same approach: simple names, module-first grouping, and minimal file fragmentation inside each module.
+
+## Naming Clarification
+
+- Use `module` and `submodule` as default terms for placement decisions.
+- Do not create a folder named `domain` unless the existing area already uses that exact convention.
+- Good module names are short and direct: `infra`, `services`, `tasks`, `api`, `ui`.
 
 ## Internal Docs
 

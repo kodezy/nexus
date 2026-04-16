@@ -7,7 +7,7 @@ description: Apply coding style standards for readability, consistency, and form
 
 ## Objective
 
-Apply a clear, pragmatic, and consistent coding style to the codebase. This skill is not limited to refactoring requests: it defines formatting, naming, organization, and style conventions to be used as the default finalization step in code changes.
+Apply a clear, pragmatic, and consistent coding style to the codebase. This skill is not limited to refactoring requests: it defines formatting, naming, module boundaries, and organization conventions to be used as the default finalization step in code changes.
 
 ## Language/Area Selection (Auto)
 
@@ -24,7 +24,7 @@ Choose style rules based on project signals and target area, then apply only the
    - Use: `docs/rust.md`.
 4. Logging (add, change, or standardize log calls):
    - Signals: log statements, `logger.*`, `logging`, `setup_logger`, logging configuration.
-   - **Use the `log` skill** for all logging decisions and implementation. Do not handle logging inside code-style.
+   - **Use the `log-writer` skill** for all logging decisions and implementation. Do not handle logging inside code-style.
 5. Mixed repositories:
    - Apply language-specific docs per file/module.
    - Apply Canonical Rules from this `SKILL.md` as shared baseline.
@@ -38,14 +38,18 @@ If repository style conflicts with generic guidance, local project conventions w
 3. Prefer clarity over cleverness: use the simplest structure that remains easy to maintain.
 4. Keep local consistency: match dominant style from the target file and adjacent modules.
 5. Enforce readable naming: names should communicate intent with minimal ambiguity.
-6. Keep formatting uniform: spacing, blank lines, and wrapping should be predictable and stable.
-7. Apply minimal viable changes: avoid broad rewrites when a focused style update solves the task.
-8. Minimal docs and comments: add docstrings/doc comments only when necessary (e.g. public API, non-obvious logic); prefer self-explanatory code.
+6. Prefer simple file/module names: avoid long compound file names when a shorter, clear name works.
+7. Prefer fewer files with better cohesion: keep related logic together unless there is a clear boundary to split.
+8. Keep formatting uniform: spacing, blank lines, and wrapping should be predictable and stable.
+9. Apply minimal viable changes: avoid broad rewrites when a focused style update solves the task.
+10. Minimal docs and comments: add docstrings/doc comments only when necessary (e.g. public API, non-obvious logic); prefer self-explanatory code.
+11. Keep code direct and pragmatic: avoid indirection and abstraction without clear readability or maintenance gain.
 
 ## Style Scope
 
 - Standardize formatting and layout.
 - Enforce naming consistency.
+- Keep module boundaries clean while minimizing unnecessary file count.
 - Organize code blocks and method ordering.
 - Improve structural readability when the change is small and safe.
 - Finalize code with a coherent programming style baseline.
@@ -56,14 +60,20 @@ If repository style conflicts with generic guidance, local project conventions w
 - Types/classes/components: use singular noun-based names (`User`, `PaymentService`, `OrderCard`).
 - Variables: prefer explicit names over abbreviations (`customer_id` over `cid`).
 - Booleans: use intent-revealing prefixes (`is_`, `has_`, `can_`, `should_`).
+- Files/modules: use short, direct names that reflect the primary responsibility (`parser.py`, `orders.rs`, `Card.tsx`).
+- Avoid compound file names when a simpler option is enough (`market.py` over `market_data_processing_service.py`).
 - Rename only when clarity gain is clear, and always update all references.
 
 ## Organization Rules
 
-- Keep public APIs before private helpers when language conventions support this.
+- Keep imports/includes at the top of the file, grouped and consistently ordered.
+- Keep module constants at the beginning of the module, right after imports (or after language-required declarations).
+- Keep public APIs before private helpers.
+- In classes/impl blocks, keep public methods first and private methods last.
 - Group related methods/functions by responsibility.
-- Keep imports/includes ordered according to the dominant local style.
 - Avoid deep nesting when a guard clause or early return improves readability.
+- Prefer keeping related code in existing modules when cohesion remains clear.
+- Split into a new file only with a clear boundary (different responsibility, independent lifecycle, stable reuse by 2+ modules, or readability loss from mixed concerns).
 
 ## Formatting
 
@@ -102,6 +112,8 @@ Also enforce:
 - Behavior is unchanged.
 - Formatting is consistent and clean.
 - Naming is clear and coherent.
+- File/module naming stays simple and direct.
+- Related logic is not fragmented across unnecessary files.
 - Organization improves readability.
 - Diff stays focused and pragmatic.
 
@@ -113,4 +125,4 @@ Use this skill as the source of truth for code style decisions. For a compact op
 - `docs/python.md`
 - `docs/rust.md`
 
-For any logging (messages, levels, structure), use the **log** skill.
+For any logging (messages, levels, structure), use the **log-writer** skill.

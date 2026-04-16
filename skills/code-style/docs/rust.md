@@ -24,6 +24,8 @@ Highest priority: simple, clear, pragmatic names.
 ## Structure and Organization
 
 - Always use Rust edition 2021+ and modern language features.
+- Keep `use` imports at the top of the module, grouped and consistently ordered.
+- Keep module constants (`const`/`static`) at the top of the module, right after imports.
 - Use type annotations when they improve clarity, but avoid when obvious.
 - **Always use format strings** for interpolation: `format!("{}", x)`, `format!("{name}: {value}"), etc. Prefer `format!` over string concatenation or manual building.
 - Prefer `Result<T, E>` and `Option<T>` over exceptions or null values.
@@ -51,7 +53,6 @@ Core rule: one blank line separates logical blocks; never two blank lines.
 fn calculate_total(items: &[Item]) -> f64 {
     items.iter().map(|item| item.price).sum()
 }
-
 
 fn validate_order(order: &Order) -> bool {
     order.amount > 0.0
