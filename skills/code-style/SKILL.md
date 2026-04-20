@@ -9,23 +9,22 @@ description: Apply coding style standards for readability, consistency, and form
 
 Apply a clear, pragmatic, and consistent coding style to the codebase. This skill is not limited to refactoring requests: it defines formatting, naming, module boundaries, and organization conventions to be used as the default finalization step in code changes.
 
+Boundary: this skill standardizes how code is written. It does **not** replace stack-specific implementation guidance such as React/Next.js component architecture, state design, layout patterns, or data fetching shape. For those decisions, use the `frontend` skill first, then apply `code-style`.
+
 ## Language/Area Selection (Auto)
 
 Choose style rules based on project signals and target area, then apply only the relevant subset:
 
-1. React/TypeScript UI or frontend areas:
-   - Signals: `tsx`, `jsx`, `ts`, React components/hooks, frontend folders (`src/components`, `src/features`, `app`, `pages`).
-   - Use: `docs/react.md`.
+1. TypeScript and React:
+   - Signals: `ts`, `tsx`, `jsx`, React components/hooks, shared frontend utilities, API client modules.
+   - Use: `docs/typescript.md` for `.ts`, `.tsx`, and `.jsx` rules (including React component structure and ordering).
 2. Python backend/scripts/data areas:
    - Signals: `py`, `pyproject.toml`, `requirements.txt`, Python package/module layout.
    - Use: `docs/python.md`.
 3. Rust backend/systems/CLI areas:
    - Signals: `rs`, `Cargo.toml`, modules under `src/` in Rust projects.
    - Use: `docs/rust.md`.
-4. Logging (add, change, or standardize log calls):
-   - Signals: log statements, `logger.*`, `logging`, `setup_logger`, logging configuration.
-   - **Use the `log-writer` skill** for all logging decisions and implementation. Do not handle logging inside code-style.
-5. Mixed repositories:
+4. Mixed repositories:
    - Apply language-specific docs per file/module.
    - Apply Canonical Rules from this `SKILL.md` as shared baseline.
 
@@ -42,7 +41,7 @@ If repository style conflicts with generic guidance, local project conventions w
 7. Prefer fewer files with better cohesion: keep related logic together unless there is a clear boundary to split.
 8. Keep formatting uniform: spacing, blank lines, and wrapping should be predictable and stable.
 9. Apply minimal viable changes: avoid broad rewrites when a focused style update solves the task.
-10. Minimal docs and comments: add docstrings/doc comments only when necessary (e.g. public API, non-obvious logic); prefer self-explanatory code.
+10. **Docs and comments:** default is none. Add docstrings, `///`/`//!`, or line comments only when necessary (e.g. public API, non-obvious logic, safety notes); prefer self-explanatory code. Language specifics: `docs/typescript.md`, `docs/python.md`, `docs/rust.md`.
 11. Keep code direct and pragmatic: avoid indirection and abstraction without clear readability or maintenance gain.
 
 ## Style Scope
@@ -63,11 +62,28 @@ If repository style conflicts with generic guidance, local project conventions w
 - Files/modules: use short, direct names that reflect the primary responsibility (`parser.py`, `orders.rs`, `Card.tsx`).
 - Avoid compound file names when a simpler option is enough (`market.py` over `market_data_processing_service.py`).
 - Rename only when clarity gain is clear, and always update all references.
+- **TypeScript / React:** `camelCase` for functions and variables; `PascalCase` for types and components; hooks as `useSomething` (`camelCase`); module-level constants `UPPER_SNAKE_CASE`. Module layout and React component ordering: `docs/typescript.md`.
+
+## Module order (by language)
+
+Top-to-bottom intent (full steps in each language doc):
+
+| Layer | Python | Rust | TypeScript |
+| --- | --- | --- | --- |
+| **Imports** | Top (`import` / `from`). | Top (`use`; see `docs/rust.md` for `mod` / inner attrs before `use`). | Top (`import`; include `import type` here). |
+| **Constants** | Immediately after imports. | Immediately after the import block (`const` / `static` / `type` aliases). | **After** `type` / `interface` (not immediately after imports). |
+| **Types** | Optional: hints on names; no top types block unless needed (e.g. `TYPE_CHECKING`). | Central: `struct` / `enum` / `trait`, then `impl`. | **First-class:** dedicated `type` / `interface` block high in the file. |
+| **Classes / ADTs** | `class` before module-level `def`. | `struct` / `enum` (and `trait`) before matching `impl`. | `class` before module-level functions. |
+| **Implementation** | Methods **inside** the `class` body. | Methods and trait items in **`impl`**, separate from type definitions. | Methods **inside** the `class` body. |
+| **Module functions** | After classes. | Free `fn` after the type/`impl` chain. | After classes (helpers first, default export last per `docs/typescript.md`). |
+| **Entry** | `if __name__ == "__main__":` last. | `fn main` last in the binary crate root. | No runtime `main`; wire entry explicitly (bundler/CLI/test bootstrap). |
+
+`.tsx` module order follows `docs/typescript.md` (same **types → constants** idea as `.ts`).
 
 ## Organization Rules
 
 - Keep imports/includes at the top of the file, grouped and consistently ordered.
-- Keep module constants at the beginning of the module, right after imports (or after language-required declarations).
+- **Constants:** after imports in Python and Rust; **after types** in TypeScript and `.tsx` (see table above).
 - Keep public APIs before private helpers.
 - In classes/impl blocks, keep public methods first and private methods last.
 - Group related methods/functions by responsibility.
@@ -101,7 +117,7 @@ Also enforce:
 ## Workflow
 
 1. Inspect target file and nearby files to learn existing style conventions.
-2. Detect language/area and load the matching internal doc.
+2. Detect language/area and load the matching internal doc(s) (for React UI, `docs/typescript.md`).
 3. Apply code-style rules with minimal, behavior-safe changes.
 4. Normalize naming, formatting, and organization where there is clear value.
 5. Run project formatter/linter if available and aligned with the repository.
@@ -121,8 +137,6 @@ Also enforce:
 
 Use this skill as the source of truth for code style decisions. For a compact operational reference, see:
 
-- `docs/react.md`
+- `docs/typescript.md`
 - `docs/python.md`
 - `docs/rust.md`
-
-For any logging (messages, levels, structure), use the **log-writer** skill.

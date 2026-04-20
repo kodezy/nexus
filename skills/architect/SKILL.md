@@ -18,8 +18,8 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 ## Canonical Rules
 
 1. **English:** All code, identifiers, comments, docstrings, and file/module names in English (per project AGENTS.md).
-2. **Match existing structure:** Place code in the same hierarchy the project already uses, organized by module/submodule (e.g. `manager/src/infra`, `worker/src/tasks`, `dashboard/src/components`).
-3. **Simple names:** Prefer short, descriptive names for files and modules (e.g. `analyzer`, `arbitrage`, `notifier`) over compound names (e.g. `trading_metrics_service`, `market_offer_creator`).
+2. **Match existing structure:** Place code in the same hierarchy the project already uses, organized by module/submodule (e.g. `src/api`, `src/services`, `src/ui/components`).
+3. **Simple names:** Prefer short, descriptive names for files and modules (e.g. `parser`, `client`, `notifier`) over compound names (e.g. `billing_webhook_processing_service`, `market_offer_creator`).
 4. **Fewer files first:** Prefer extending an existing module when responsibility is the same and cohesion stays clear.
 5. **Split only with clear boundary:** Create a new file/package only when at least one condition is true: different responsibility from the current module, independent lifecycle, stable reuse by 2+ modules, or the current file loses readability due to mixed concerns.
 6. **One clear purpose per module:** Each file or package should have a single, obvious responsibility.
@@ -37,11 +37,11 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 
 ## Workflow
 
-1. Identify the module or submodule (e.g. `manager/src/infra`, `worker/src/tasks`, `dashboard/src/components`).
+1. Identify the module or submodule (e.g. `src/api`, `src/services`, `src/ui/components`).
 2. Check how that module is structured (folders and naming pattern).
 3. Try the smallest placement first: existing module, then existing package, then new file as the last option.
 4. If a new file is required, validate the split criteria first, then choose a simple, descriptive name.
-5. Place the new code in the same pattern (e.g. `manager/src/infra/database.py`, `worker/src/tasks/sync.py`).
+5. Place the new code in the same pattern (e.g. `src/services/notifier.py`, `src/tasks/sync.py`).
 6. Expose public API via existing patterns (e.g. `__init__.py` with `__all__` where the project uses it).
 
 ## Checklist
@@ -58,16 +58,17 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 
 Use this repository structure as baseline for placement and naming:
 
-- Top-level modules are clear and direct (`manager`, `worker`, `dashboard`).
-- Module folders prefer concise names over long compounds.
-- Documentation and generated content are isolated in dedicated folders (`skills`, `loguru-docs`, `ratatui-docs`).
-- Keep this same approach: simple names, module-first grouping, and minimal file fragmentation inside each module.
+- Top-level content is grouped by purpose (`skills/`, `AGENTS.md`, optional tool metadata), not by deep product hierarchies.
+- Skill folders use short, kebab-case names (`code-style`, `log-writer`, `readme-writer`).
+- Supporting material stays close to the owning skill (`docs/`, `scripts/`, `assets/`, `references/`, `agents/`) instead of being scattered.
+- Keep this same approach: simple names, clear ownership, and minimal file fragmentation inside each skill or module.
 
 ## Naming Clarification
 
 - Use `module` and `submodule` as default terms for placement decisions.
 - Do not create a folder named `domain` unless the existing area already uses that exact convention.
 - Good module names are short and direct: `infra`, `services`, `tasks`, `api`, `ui`.
+- In skill repositories, prefer support folder names that describe their purpose directly: `docs`, `scripts`, `assets`, `references`, `agents`.
 
 ## Internal Docs
 

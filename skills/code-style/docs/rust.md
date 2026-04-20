@@ -24,15 +24,32 @@ Highest priority: simple, clear, pragmatic names.
 ## Structure and Organization
 
 - Always use Rust edition 2021+ and modern language features.
-- Keep `use` imports at the top of the module, grouped and consistently ordered.
-- Keep module constants (`const`/`static`) at the top of the module, right after imports.
+
+### Order inside a `.rs` file
+
+Top to bottom:
+
+1. **Inner attributes** — `#! [...]` when needed.
+2. **`mod`** — child module declarations.
+3. **`use`** — `std`, then other crates, then `crate::`, then `super::`, then `self::`; blank line between groups.
+4. **`const` / `static` / `type`**
+5. **`struct` / `enum` / `union`**
+6. **`trait`**
+7. **`impl`** — after the `struct`/`enum`/`trait` each block implements (inherent `impl` right after its type; `impl Trait for` after that `trait`).
+8. **Module-level functions** — free `fn` items.
+9. **`fn main`** — in the binary root only; last.
+
+**How this compares to other languages:** **`use`** is the import layer at the top (after inner `#!` and `mod` when present). **Constants** (`const` / `static` / `type` aliases) follow the import block. **Types are central:** `struct` / `enum` / `union` and `trait` define shape; **methods and trait items live only in `impl`**, not inside the `struct`/`enum` braces. **Free functions** sit **after** that type/`impl` chain. **Entry** for binaries is **`fn main`**, last. This differs from Python/TypeScript, where behavior is written inside the class body.
+
+### Documentation and comments
+
+**Default: no new doc comments or line comments.** Add `///`, `//!`, or `//` only when necessary, for example: public API surface, safety or correctness notes the types do not express, or non-obvious algorithm/invariant. Prefer self-explanatory code and names.
+
 - Use type annotations when they improve clarity, but avoid when obvious.
-- **Always use format strings** for interpolation: `format!("{}", x)`, `format!("{name}: {value}"), etc. Prefer `format!` over string concatenation or manual building.
+- **Always use format strings** for interpolation: `format!("{}", x)`, `format!("{name}: {value}")`, etc. Prefer `format!` over string concatenation or manual building.
 - Prefer `Result<T, E>` and `Option<T>` over exceptions or null values.
 - Use `match` for explicit pattern matching, `if let` when appropriate.
 - Do not overcomplicate: avoid unnecessary abstractions; refactor only to reduce repetition when it genuinely improves readability.
-- **Do not add doc comments (`///`) or line comments** unless strictly necessary (e.g. public API, non-obvious algorithm). Prefer self-explanatory code.
-- Follow and respect the project’s current organization, names, architecture, and flow.
 - Prefer public methods first in `impl` blocks, private methods after.
 - Use `pub` only when needed for the public API.
 - Organize methods following best conventions: public methods first, then private.
@@ -178,4 +195,4 @@ mod order {
 
 ## Summary
 
-Always be pragmatic: simple and clear names, well-separated visual structure, respect for the project’s pattern, and code that another developer understands at first glance. Leverage Rust’s type system for safety without sacrificing clarity.
+Always be pragmatic: simple and clear names, well-separated visual structure, and code that another developer understands at first glance. Leverage Rust’s type system for safety without sacrificing clarity.

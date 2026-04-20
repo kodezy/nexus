@@ -1,0 +1,4 @@
+interface:
+  display_name: "Log Writer"
+  short_description: "Apply logging standards for levels, messages, and context."
+  default_prompt: "Use $log-writer to add or refine logs with correct levels, concise messages, and structured context."

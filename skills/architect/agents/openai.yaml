@@ -1,0 +1,4 @@
+interface:
+  display_name: "Architect"
+  short_description: "Define simple, clear architecture and module boundaries."
+  default_prompt: "Use $architect to place code in the right module with simple names and pragmatic file boundaries."

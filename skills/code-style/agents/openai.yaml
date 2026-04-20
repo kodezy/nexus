@@ -1,4 +1,4 @@
 interface:
   display_name: "Code Style"
   short_description: "Apply consistent coding style by language/area without behavior changes."
-  default_prompt: "Use $code-style to auto-select React/Python/Rust style guides and standardize formatting and structure while preserving behavior."
+  default_prompt: "Use $code-style to auto-select TypeScript, React, Python, or Rust style guides and standardize formatting and structure while preserving behavior."

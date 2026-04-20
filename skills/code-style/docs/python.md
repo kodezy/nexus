@@ -19,16 +19,32 @@ Highest priority: simple, clear, pragmatic names.
 
 ## Structure and Organization
 
-- Use Python 3.13+ and modern features when compatible with the project.
-- Keep imports at the top of the module, grouped in this order: standard library, third-party, local modules.
-- Keep module constants at the top of the module, right after imports.
+- Use modern Python features supported by the project runtime.
+
+### Order inside a `.py` file
+
+Top to bottom:
+
+1. **Module docstring** — when present, first line of the file; skip entirely when the module does not need one.
+2. **`import` / `from … import`** — standard library, blank line, third-party, blank line, local. One group per layer.
+3. **Global constants** — module-level `UPPER_SNAKE_CASE` and immutable config.
+4. **Classes**
+5. **Module-level functions** — free functions and helpers.
+6. **`if __name__ == "__main__":`** — last in the file.
+
+**How this compares to other languages:** imports and constants sit at the top; **types are optional and lightweight** (PEP 484 hints on parameters, attributes, and return values—no separate “types block” unless you need one, e.g. `TYPE_CHECKING` imports). **Behavior lives inside the `class`** (methods), not in a separate block like Rust’s `impl`. Module-level **functions come after** all classes. The **entry hook** is **`if __name__ == "__main__":`** at the bottom.
+
+### Documentation and comments
+
+**Default: no new docstrings or comments.** Add them only when necessary, for example: public API that must be spelled out, non-obvious behavior or invariant, or compliance with a required doc standard. Prefer clear names, types, and structure instead.
+
+- **Module docstring** (slot 1 above): include only when it adds real value; if the module is self-explanatory, skip it and start with imports.
+- **Function / class docstrings** and **`#` line comments**: same bar—not for restating what the code already says.
+
 - Use type hints and modern patterns (`|` for unions, f-strings, `with`, comprehensions).
-- **Always use f-strings** for any string interpolation (logs, messages, building strings). Never use `%s`/`%d`, `.format()`, or concatenation. Example: `f"Processing {item}"`, `logger.debug(f"Processing {item}")`.
-- Log/print messages: at most one line; clear, direct, pragmatic; never split across multiple lines.
+- Prefer f-strings for general string interpolation in Python code.
 - Use `except Exception as exception:` always (do not use `e`).
 - Avoid unnecessary abstractions; refactor only when there is a clear readability gain.
-- **Do not add docstrings or comments** unless strictly necessary (e.g. public API contract, non-obvious algorithm). Prefer self-explanatory code; avoid obvious or redundant comments.
-- Respect the project’s current organization pattern (names, architecture, and flow).
 - In classes, method ordering is strict: **public methods first**, then **magic/dunder methods** (e.g. `__init__`, `__repr__`, `__iter__`), and **private methods last** (prefixed with `_`). Private methods must always be at the end of the class.
 - Internal parameters should be private (`_param`) by default, except when the name is part of an external contract.
 - Do not create test or example files unless explicitly requested.
@@ -114,4 +130,4 @@ class OrderManager:
 
 ## Summary
 
-Be pragmatic: simple and clear names, organized visual structure, respect for the project’s pattern, and code that another developer understands at first glance.
+Be pragmatic: simple and clear names, organized visual structure, and code that another developer understands at first glance.

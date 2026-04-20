@@ -5,72 +5,70 @@ alwaysApply: false
 
 # Architect Guide (Rust)
 
-## Objetivo
+## Objective
 
-Manter a arquitetura Rust simples, clara e direta, no mesmo estilo do projeto: nomes de arquivos e módulos simples e descritivos, sem nomes compostos longos.
+Keep Rust architecture simple, clear, and direct, in the same style as the project: simple, descriptive file and module names, without long compound names.
 
-## Estrutura de pastas (padrão do projeto)
+## Folder structure (project baseline)
 
-- **Raiz do código:** `src/` (crate root com `lib.rs` e/ou `main.rs`).
-- **Binários:** `src/main.rs` para o binário principal; binários adicionais em `src/bin/<nome>.rs` (ex.: `src/bin/cli.rs`, `src/bin/worker.rs`).
-- **Domínios no primeiro nível:** um módulo por domínio (ex.: `trading`, `game`, `vision`, `storage`, `dashboard`, `network`, `infra`), cada um como pasta `src/<domínio>/` com `mod.rs` ou como `src/<domínio>.rs`.
-- **Subdomínios por necessidade:** dentro do domínio, agrupar por função quando fizer sentido:
-  - `trading/services/` — serviços de domínio (analyzer, arbitrage, metrics, notifier, selector, availability, factory).
-  - `trading/workflows/` — fluxos (base, start, finish, preparing, trading, handler).
-  - `trading/signals/` — sinais (create, cancel, utils).
-  - `game/actions/` — ações agrupadas por contexto: `auth/`, `gameplay/`, `market/`.
-  - `dashboard/tabs/` — um módulo por aba (trading, market, arbitrage, metrics, workers, accounts, misc).
-  - `vision/screens/components/` — componentes por contexto (auth, gameplay, market).
-- **Evitar profundidade desnecessária:** dois níveis sob o domínio costumam bastar; três quando o domínio é grande e já segue esse padrão.
+- **Code root:** `src/` (crate root with `lib.rs` and/or `main.rs`).
+- **Binaries:** `src/main.rs` for the primary binary; additional binaries in `src/bin/<name>.rs` (for example: `src/bin/cli.rs`, `src/bin/worker.rs`).
+- **First-level modules:** one module per clear responsibility (for example: `api`, `services`, `workers`, `storage`, `infra`, `ui`), each as `src/<module>/` with `mod.rs` or as `src/<module>.rs`.
+- **Submodules as needed:** inside each module, group by function when it makes sense:
+  - `services/` — domain services and orchestrators (`notifier`, `sync`, `billing`).
+  - `api/` — route handlers, DTOs, and transport-specific adapters.
+  - `workers/` or `tasks/` — background jobs and scheduled flows.
+  - `storage/` — repositories, models, and persistence helpers.
+  - `ui/` or `dashboard/` — view-specific modules only when the project already uses them.
+- **Avoid unnecessary depth:** two levels under a domain are usually enough; three only when the domain is large and already follows that pattern.
 
-## Nomes de arquivos e módulos
+## File and module names
 
-- **Simples e diretos:** um ou poucos termos que descrevem o conteúdo.
-- **Snake_case** para arquivos e módulos: `analyzer.rs`, `arbitrage.rs`, `create_offer.rs`, `scan_balances.rs`.
-- **Preferir:** `notifier`, `metrics`, `selector`, `availability`, `factory`, `open_market`, `close_market`, `cancel_offer`, `create_offer`.
-- **Evitar:** nomes compostos longos ou genéricos como `trading_metrics_service.rs`, `market_offer_creation_handler.rs`, `user_authentication_manager.rs`. Em vez disso: `metrics`, `create_offer`, `login_account`.
-- **Verbo + substantivo quando for ação:** `create_offer`, `cancel_offer`, `scan_balances`, `open_market`, `login_account`, `select_character`.
-- **Substantivo quando for conceito/serviço:** `analyzer`, `arbitrage`, `notifier`, `strategy`, `session`, `context`.
-- **Módulo como pasta:** `trading/services/` → `trading/services/mod.rs` reexportando ou `trading/services.rs`; submódulos como `trading/services/analyzer.rs` (declarados em `mod.rs` ou no pai).
+- **Simple and direct:** one or a few terms that describe the content.
+- Use **snake_case** for files and modules: `client.rs`, `notifier.rs`, `create_order.rs`, `sync_users.rs`.
+- **Prefer:** `client`, `notifier`, `metrics`, `cache`, `create_order`, `cancel_order`, `sync_users`.
+- **Avoid:** long or generic compound names such as `billing_webhook_processing_service.rs`, `market_offer_creation_handler.rs`, `user_authentication_manager.rs`. Prefer: `billing`, `create_order`, `login_user`.
+- **Verb + noun for actions:** `create_order`, `cancel_order`, `sync_users`, `login_user`, `refresh_cache`.
+- **Noun for concepts/services:** `client`, `notifier`, `strategy`, `session`, `context`, `repository`.
+- **Module as folder:** `services/` -> `services/mod.rs` re-exporting items, or `services.rs`; submodules as `services/notifier.rs` (declared in `mod.rs` or parent module).
 
-## Um propósito por módulo
+## One purpose per module
 
-- Cada arquivo deve ter uma responsabilidade clara (ex.: um workflow, um tipo de ação, um serviço).
-- Se um arquivo crescer demais, dividir por responsabilidade e manter nomes simples (ex.: vários workflows em `workflows/`, vários serviços em `services/`).
-- Evitar módulos “guardião” que só reexportam dezenas de coisas sem agrupar por conceito; preferir reexportar só o que é API pública do crate ou do módulo.
+- Each file should have one clear responsibility (for example: one workflow, one action type, one service).
+- If a file grows too large, split by responsibility and keep simple names (for example, multiple workflows in `workflows/`, multiple services in `services/`).
+- Avoid "hub" modules that only re-export many items without conceptual grouping; prefer re-exporting only what is part of the crate or module public API.
 
-## Onde colocar código novo
+## Where to place new code
 
-| Tipo de código | Onde colocar (exemplos) |
+| Code type | Where to place (examples) |
 |----------------|--------------------------|
-| Serviço de domínio (trading) | `src/trading/services/<nome>.rs` (ex.: `metrics`, `analyzer`) |
-| Workflow / fluxo | `src/trading/workflows/<nome>.rs` (ex.: `start`, `finish`, `trading`) |
-| Ação de jogo | `src/game/actions/<contexto>/<nome>.rs` (ex.: `market/create_offer`, `auth/login_account`) |
-| Aba do dashboard | `src/dashboard/tabs/<nome>/` com `mod.rs` e submódulos conforme o projeto |
-| Componente de tela (vision) | `src/vision/screens/components/<contexto>/<nome>.rs` |
-| Infra compartilhada | `src/infra/<nome>.rs` (ex.: `cache`, `logger`, `database`) |
-| Modelos / repositório | `src/storage/models.rs`, `src/storage/repository.rs` ou módulos novos em `src/storage/` com nome simples |
-| Binário extra | `src/bin/<nome>.rs` (ex.: `cli`, `worker`, `migrate`) |
+| Service / orchestrator | `src/services/<name>.rs` (for example: `billing`, `notifier`) |
+| Background job / flow | `src/workers/<name>.rs` or `src/tasks/<name>.rs` (for example: `sync_users`, `cleanup`) |
+| API handler / DTO | `src/api/<name>.rs` or `src/api/<group>/<name>.rs` following the project |
+| UI module | `src/ui/<name>.rs` or `src/dashboard/<name>/` when the project already uses that pattern |
+| Shared infra | `src/infra/<name>.rs` (for example: `cache`, `logger`, `database`) |
+| Models / repository | `src/storage/models.rs`, `src/storage/repository.rs`, or new modules in `src/storage/` with simple names |
+| Extra binary | `src/bin/<name>.rs` (for example: `cli`, `worker`, `migrate`) |
 
-## Exemplos de nomes (seguir este estilo)
+## Naming examples (follow this style)
 
-**Bom:**  
-`analyzer`, `arbitrage`, `metrics`, `notifier`, `selector`, `availability`, `factory`, `create_offer`, `cancel_offer`, `open_market`, `close_market`, `scan_balances`, `scan_my_offers`, `login_account`, `select_character`, `base`, `start`, `finish`, `preparing`, `trading`, `handler`.
+**Good:**  
+`client`, `metrics`, `notifier`, `cache`, `billing`, `create_order`, `cancel_order`, `sync_users`, `refresh_cache`, `login_user`, `session`, `context`, `repository`.
 
-**Evitar:**  
-`trading_metrics_service`, `market_offer_creator`, `user_authentication_service`, `gameplay_market_open_action`, `dashboard_trading_tab_layout`.
+**Avoid:**  
+`billing_webhook_processing_service`, `market_offer_creator`, `user_authentication_service`, `dashboard_trading_tab_layout`.
 
-## Imports e API pública
+## Imports and public API
 
-- Usar `mod` e `use` do caminho mais direto que o projeto já usa (ex.: `use crate::trading::services::analyzer::...`).
-- Expor apenas o necessário no `lib.rs` ou no `mod.rs` do domínio; usar `pub use` para reexportar tipos e funções que são API pública do crate.
-- Não criar novos “hubs” de reexportação sem seguir o padrão já usado no mesmo domínio.
-- Preferir `pub(crate)` para itens usados só dentro do crate e `pub` apenas para o que for API externa.
+- Use `mod` and `use` with the most direct path already used in the project (for example: `use crate::services::notifier::...`).
+- Expose only what is needed in `lib.rs` or the domain `mod.rs`; use `pub use` to re-export types and functions that are part of the crate public API.
+- Do not create new re-export "hubs" unless the same domain already uses that pattern.
+- Prefer `pub(crate)` for items used only inside the crate and `pub` only for external API.
 
-## Resumo
+## Summary
 
-- Estrutura alinhada ao projeto: domínio → subdomínio → módulos com nomes curtos.
-- Nomes de arquivos/módulos: simples, pragmáticos, descritivos, em snake_case; evitar compostos longos.
-- Um propósito claro por módulo; estrutura plana ou com poucos níveis.
-- Colocar código novo no mesmo tipo de pasta e padrão de nome que o domínio já usa.
-- Binários extras em `src/bin/<nome>.rs`; API pública via `pub`/`pub use` consciente.
+- Structure aligned with the project: module -> submodule -> files with short names.
+- File/module names: simple, pragmatic, descriptive, snake_case; avoid long compounds.
+- One clear purpose per module; flat structure or only a few levels.
+- Place new code in the same folder type and naming pattern the domain already uses.
+- Extra binaries in `src/bin/<name>.rs`; public API exposed with deliberate `pub`/`pub use`.

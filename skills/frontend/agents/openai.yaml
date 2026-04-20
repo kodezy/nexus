@@ -1,0 +1,4 @@
+interface:
+  display_name: "Frontend"
+  short_description: "Build clear, pragmatic React and Next.js frontends."
+  default_prompt: "Use $frontend to implement React or Next.js UI with clean component structure, state flow, and styling."

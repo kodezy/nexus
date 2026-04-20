@@ -1,0 +1,4 @@
+interface:
+  display_name: "Feature Overview"
+  short_description: "Write short, clear internal feature overviews."
+  default_prompt: "Use $feature-overview to summarize a feature's behavior, impact, constraints, and next steps."

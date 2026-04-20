@@ -1,56 +1,67 @@
 ---
 name: frontend
-description: Build frontends with React/Next.js or Dash. Use when creating or modifying apps, dashboards, components, pages, layouts, or callbacks.
+description: Build frontends with React/Next.js. Use when creating or modifying apps, components, pages, layouts, state, and data flows.
 ---
 
 # Frontend
 
-Clear, pragmatic frontends. Smallest viable solution. Align with `architect` and `code-style` (project style doc by stack).
+Clear, pragmatic React frontends. Use the smallest viable solution. Align with `architect` for structure and `code-style` for final style.
 
 **Naming rule (always):** Prefer **simple, clear, pragmatic names** whenever possible. Avoid clever abbreviations, overly generic names, and long compound names. If two names are valid, pick the simpler one.
 
 **UI rule (always):** Keep UI **clean and readable**. Prefer fewer components, fewer visual styles, and fewer layout primitives. Avoid decorative complexity unless the user explicitly asks for it.
 
-**When:** React/Next.js app or Dash dashboard — pages, tabs, layouts, components, callbacks, styling.
+**When:** React/Next.js app work — pages, layouts, components, hooks, data fetching, state, and styling.
 
 **Language:** All code, identifiers, comments, and docstrings in English (per project AGENTS.md). UI copy in another language only when explicitly requested.
 
 ---
 
+## Responsibility split
+
+Use this skill and `code-style` together on frontend work, but for different jobs:
+
+- **`frontend` owns:** UI structure, component boundaries, state placement, data fetching shape, layout patterns, and styling direction.
+- **`code-style` owns:** naming, imports, module/file order, comments/doc policy, spacing, and final formatting polish.
+- Practical rule: `frontend` decides **how the UI should be built**; `code-style` decides **how the code should read**.
+
+---
+
 ## Stack selection
 
-Pick one from context. Read that stack’s doc, apply its patterns, then run `code-style` with the project style doc for that stack.
+This skill is React-first. If the repository is not React/Next.js, do not use this skill.
 
-| Stack | Signals | Doc | Style (code-style) |
-|-------|---------|-----|--------------------|
-| **React** | `tsx`/`jsx`/`ts`, `app/`, `pages/`, `components/`, Next/React/Tailwind in deps | [docs/react.md](docs/react.md) | project React style doc |
-| **Dash** | `from dash import`, `dash/`, `tabs/`, `dash` in deps | [docs/dash.md](docs/dash.md) | project Python style doc |
-
-**Unclear:** Prefer stack that matches files/paths. New project: React for web app, Dash for internal dashboard. One stack per task.
+Signals:
+- `tsx` / `jsx`
+- React components or hooks
+- Next.js `app/` or `pages/`
+- React/Next/Tailwind dependencies
 
 ---
 
 ## Execution order
 
-1. **Choose stack** from signals above.
-2. **Read** `docs/react.md` or `docs/dash.md` (this skill folder).
-3. **Structure:** `architect` for layout and naming.
-4. **Implement** using that doc.
-5. **Style:** `code-style` with project doc (React or Python).
+1. **Confirm React/Next.js context** from repository signals.
+2. **Read** [docs/react.md](docs/react.md).
+3. **Structure:** use `architect` for file/module placement and naming boundaries.
+4. **Implement** with React-specific patterns from this skill.
+5. **Style finalization:** run `code-style` using [typescript.md](../code-style/docs/typescript.md).
 
 ---
 
-## Checklist (use only for chosen stack)
+## Checklist
 
-**React:** Structure/naming per docs/react.md **and follow the Naming/UI rules above**. Components focused, props typed, state local/lifted. Tailwind + CSS variables. `code-style` applied.
-
-**Dash:** App factory, layout, callbacks per docs/dash.md **and follow the Naming/UI rules above**. Constants for theme; shared tables/charts. Callbacks per tab; consistent ids. `code-style` applied.
+- Structure and naming follow `docs/react.md` and the Naming/UI rules above.
+- Components stay focused, with explicit props typing.
+- State stays local first, then is lifted only when sharing is required.
+- Data fetching and effects are clear and predictable.
+- Styling stays clean and consistent (Tailwind + CSS variables when applicable).
+- Finish with `code-style` (`typescript.md`).
 
 ---
 
 ## Docs (this skill)
 
 - **docs/react.md** — React/Next.js: structure, components, data, state, styling, hooks.
-- **docs/dash.md** — Dash: app, layout, tabs, theme, components, callbacks.
 
-Style: run `code-style` with project’s React or Python style doc after implementing.
+**code-style (final pass):** React — [typescript.md](../code-style/docs/typescript.md).
