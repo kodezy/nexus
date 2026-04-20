@@ -14,12 +14,12 @@ Keep Python architecture simple, clear, and direct, in the same style as the pro
 - **Code root:** `src/` (or equivalent).
 - **First-level modules:** one folder per clear responsibility (for example: `api`, `services`, `workers`, `storage`, `infra`, `ui`).
 - **Submodules as needed:** inside each module, group by function when it makes sense:
-  - `services/` — domain services and orchestrators (`notifier`, `sync`, `billing`).
+  - `services/` — service modules and orchestrators (`notifier`, `sync`, `billing`).
   - `api/` — route handlers, schemas, and request-specific helpers.
   - `workers/` or `tasks/` — background jobs and scheduled flows.
   - `storage/` — repositories, models, and persistence helpers.
   - `ui/` or `dashboard/` — app-facing callbacks, layouts, or view helpers when the project already uses them.
-- **Avoid unnecessary depth:** two levels under a domain are usually enough; three only when the domain is large and already follows that pattern.
+- **Avoid unnecessary depth:** two levels under a module are usually enough; three only when the module is large and already follows that pattern.
 
 ## File and module names
 
@@ -59,11 +59,11 @@ Keep Python architecture simple, clear, and direct, in the same style as the pro
 
 - Import from the most direct path already used in the project (for example: `from src.services.notifier import ...`).
 - In packages with `__init__.py`, keep `__all__` when the project uses it, listing only what is part of the package public API.
-- Do not create new re-export "hubs" unless the same domain already uses that pattern.
+- Do not create new re-export "hubs" unless the same package already uses that pattern.
 
 ## Summary
 
 - Structure aligned with the project: module → submodule → files with short names.
 - File/module names: simple, pragmatic, descriptive, snake_case; avoid long compounds.
 - One clear purpose per module; flat structure or only a few levels.
-- Place new code in the same folder type and naming pattern the domain already uses.
+- Place new code in the same folder type and naming pattern the module already uses.

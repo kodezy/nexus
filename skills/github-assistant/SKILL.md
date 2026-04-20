@@ -1,15 +1,16 @@
 ---
 name: github-assistant
-description: Handle Git-related tasks with practical guidance. Current focus: suggest ready-to-use commit messages from git diffs.
+description: Handle Git-related tasks with practical guidance. Current focus: suggest commit messages and run scoped commits with explicit confirmation.
 ---
 
 # GitHub Assistant
 
 Use this skill for any Git-related task.
 
-Current documented workflow:
+Current documented workflows:
 
 - `docs/commit-messages.md`: commit subject suggestions from diffs
+- `docs/commit-changes.md`: commit execution with scoped files and explicit user confirmation
 
 ## Shared constraints
 

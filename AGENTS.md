@@ -6,11 +6,11 @@ Whenever the task involves code, the agent MUST apply relevant skills before imp
 
 A long-running environment is available for manual checks and API endpoint testing (dashboard, HTTP APIs, and related services):
 
-- **Remote host:** set `REMOTE_HOST` in the environment (do not hardcode IPs in docs or code; use the variable as the single source of truth).
+- **Dev host:** set `DEV_HOST` in the environment (do not hardcode IPs in docs or code; use the variable as the single source of truth).
 
-Use `REMOTE_HOST` as the source of truth for the integration target. Build endpoint URLs from this host only when needed (for example `http://<REMOTE_HOST>/...`). Treat it as a shared test instance: avoid destructive actions unless the user explicitly requests them.
+Use `DEV_HOST` as the source of truth for the integration target. Build endpoint URLs from this host only when needed (for example `http://<DEV_HOST>/...`). Treat it as a shared test instance: avoid destructive actions unless the user explicitly requests them.
 
-When work depends on that host, confirm `REMOTE_HOST` is set, verify connectivity and relevant ports or services, and review `docker compose` (or equivalent) for the stack before state-changing or destructive steps.
+When work depends on that host, confirm `DEV_HOST` is set, verify connectivity and relevant ports or services, and review `docker compose` (or equivalent) for the stack before state-changing or destructive steps.
 
 ### Mandatory rules
 1. **Language:** All code, identifiers, comments, and docstrings must be in **English**. User-facing UI copy may follow product language when explicitly specified; otherwise keep it in English.

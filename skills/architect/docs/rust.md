@@ -15,12 +15,12 @@ Keep Rust architecture simple, clear, and direct, in the same style as the proje
 - **Binaries:** `src/main.rs` for the primary binary; additional binaries in `src/bin/<name>.rs` (for example: `src/bin/cli.rs`, `src/bin/worker.rs`).
 - **First-level modules:** one module per clear responsibility (for example: `api`, `services`, `workers`, `storage`, `infra`, `ui`), each as `src/<module>/` with `mod.rs` or as `src/<module>.rs`.
 - **Submodules as needed:** inside each module, group by function when it makes sense:
-  - `services/` — domain services and orchestrators (`notifier`, `sync`, `billing`).
+  - `services/` — service modules and orchestrators (`notifier`, `sync`, `billing`).
   - `api/` — route handlers, DTOs, and transport-specific adapters.
   - `workers/` or `tasks/` — background jobs and scheduled flows.
   - `storage/` — repositories, models, and persistence helpers.
   - `ui/` or `dashboard/` — view-specific modules only when the project already uses them.
-- **Avoid unnecessary depth:** two levels under a domain are usually enough; three only when the domain is large and already follows that pattern.
+- **Avoid unnecessary depth:** two levels under a module are usually enough; three only when the module is large and already follows that pattern.
 
 ## File and module names
 
@@ -61,8 +61,8 @@ Keep Rust architecture simple, clear, and direct, in the same style as the proje
 ## Imports and public API
 
 - Use `mod` and `use` with the most direct path already used in the project (for example: `use crate::services::notifier::...`).
-- Expose only what is needed in `lib.rs` or the domain `mod.rs`; use `pub use` to re-export types and functions that are part of the crate public API.
-- Do not create new re-export "hubs" unless the same domain already uses that pattern.
+- Expose only what is needed in `lib.rs` or the module `mod.rs`; use `pub use` to re-export types and functions that are part of the crate public API.
+- Do not create new re-export "hubs" unless the same module already uses that pattern.
 - Prefer `pub(crate)` for items used only inside the crate and `pub` only for external API.
 
 ## Summary
@@ -70,5 +70,5 @@ Keep Rust architecture simple, clear, and direct, in the same style as the proje
 - Structure aligned with the project: module -> submodule -> files with short names.
 - File/module names: simple, pragmatic, descriptive, snake_case; avoid long compounds.
 - One clear purpose per module; flat structure or only a few levels.
-- Place new code in the same folder type and naming pattern the domain already uses.
+- Place new code in the same folder type and naming pattern the module already uses.
 - Extra binaries in `src/bin/<name>.rs`; public API exposed with deliberate `pub`/`pub use`.
