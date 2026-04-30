@@ -8,15 +8,9 @@ This repository changes often. Keep structure simple and practical.
 
 - Agent rules in `AGENTS.md`
 - Skills in `skills/`
+- Subagents/Agents in `agents/`
 - Supporting docs, scripts, templates, and assets
 - Agents, scripts, configs, templates, and other artifacts as needed by active work
-
-## Quick Navigation
-
-1. Read `AGENTS.md` first.
-2. Open the relevant entry point for your task (file, folder, script, or agent config).
-3. For skills, start at `skills/<skill-name>/SKILL.md`.
-4. Use local support folders only when needed.
 
 ## Editing Guidelines
 

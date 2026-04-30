@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec Driven"
+  short_description: "Plan and execute work through adaptive spec-driven phases."
+  default_prompt: "Use $spec-driven to run adaptive Specify, Design, Tasks, and Execute workflows with traceable requirements, pragmatic task breakdown, and verification."

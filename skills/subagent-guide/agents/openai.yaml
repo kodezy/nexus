@@ -1,0 +1,4 @@
+interface:
+  display_name: "Subagent Guide"
+  short_description: "Design practical multi-agent workflows from trusted guidance."
+  default_prompt: "Use $subagent-guide to recommend minimal, evidence-based subagent architectures, role boundaries, and guardrails using trusted official sources."

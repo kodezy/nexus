@@ -73,9 +73,9 @@ Top-to-bottom intent (full steps in each language doc):
 | **Imports** | Top (`import` / `from`). | Top (`use`; see `docs/rust.md` for `mod` / inner attrs before `use`). | Top (`import`; include `import type` here). |
 | **Constants** | Immediately after imports. | Immediately after the import block (`const` / `static` / `type` aliases). | **After** `type` / `interface` (not immediately after imports). |
 | **Types** | Optional: hints on names; no top types block unless needed (e.g. `TYPE_CHECKING`). | Central: `struct` / `enum` / `trait`, then `impl`. | **First-class:** dedicated `type` / `interface` block high in the file. |
-| **Classes / ADTs** | `class` before module-level `def`. | `struct` / `enum` (and `trait`) before matching `impl`. | `class` before module-level functions. |
+| **Classes / ADTs** | `class` after module-level `def`. | `struct` / `enum` (and `trait`) before matching `impl`. | `class` before module-level functions. |
 | **Implementation** | Methods **inside** the `class` body. | Methods and trait items in **`impl`**, separate from type definitions. | Methods **inside** the `class` body. |
-| **Module functions** | After classes. | Free `fn` after the type/`impl` chain. | After classes (helpers first, default export last per `docs/typescript.md`). |
+| **Module functions** | Before classes. | Free `fn` after the type/`impl` chain. | After classes (helpers first, default export last per `docs/typescript.md`). |
 | **Entry** | `if __name__ == "__main__":` last. | `fn main` last in the binary crate root. | No runtime `main`; wire entry explicitly (bundler/CLI/test bootstrap). |
 
 `.tsx` module order follows `docs/typescript.md` (same **types → constants** idea as `.ts`).
