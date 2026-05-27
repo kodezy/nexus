@@ -19,13 +19,14 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 
 1. **English:** All code, identifiers, comments, docstrings, and file/module names in English (per project AGENTS.md).
 2. **Match existing structure:** Place code in the same hierarchy the project already uses, organized by module/submodule (e.g. `src/api`, `src/services`, `src/ui/components`).
-3. **Simple names:** Prefer short, descriptive names for files and modules (e.g. `parser`, `client`, `notifier`) over compound names (e.g. `billing_webhook_processing_service`, `market_offer_creator`).
-4. **Fewer files first:** Prefer extending an existing module when responsibility is the same and cohesion stays clear.
-5. **Split only with clear boundary:** Create a new file/package only when at least one condition is true: different responsibility from the current module, independent lifecycle, stable reuse by 2+ modules, or the current file loses readability due to mixed concerns.
-6. **One clear purpose per module:** Each file or package should have a single, obvious responsibility.
-7. **Flat when possible:** Avoid deep nesting; group by module, then keep submodules at one or two levels when it stays clear.
-8. **No over-engineering:** Add layers (e.g. services, handlers, repositories) only when the project already uses them in that area.
-9. **Local conventions win:** If the codebase does something different from this skill, follow the codebase.
+3. **Simple file names:** Prefer **single-word** names in `snake_case` when possible (`parser`, `client`, `cache`). If one word is not enough, use **at most two words** with one underscore (`create_order`, `sync_users`). Avoid longer compounds (e.g. `billing_webhook_processing_service`, `market_offer_creator`).
+4. **Tests exempt:** Test files do not need this pattern; follow project test naming (`test_parser.py`, `orders_test.rs`, descriptive pytest names).
+5. **Fewer files first:** Prefer extending an existing module when responsibility is the same and cohesion stays clear.
+6. **Split only with clear boundary:** Create a new file/package only when at least one condition is true: different responsibility from the current module, independent lifecycle, stable reuse by 2+ modules, or the current file loses readability due to mixed concerns.
+7. **One clear purpose per module:** Each file or package should have a single, obvious responsibility.
+8. **Flat when possible:** Avoid deep nesting; group by module, then keep submodules at one or two levels when it stays clear.
+9. **No over-engineering:** Add layers (e.g. services, handlers, repositories) only when the project already uses them in that area.
+10. **Local conventions win:** If the codebase does something different from this skill, follow the codebase.
 
 ## Scope
 
@@ -47,7 +48,7 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 ## Checklist
 
 - New code lives under the right module and follows existing hierarchy.
-- File and module names are simple and descriptive, not long compounds.
+- File names prefer single-word `snake_case`; two words with one `_` only when needed; tests exempt.
 - Existing module was preferred when responsibility matched.
 - New files were created only when split criteria were explicitly met.
 - One clear responsibility per module.
@@ -62,6 +63,17 @@ Use this repository structure as baseline for placement and naming:
 - Skill folders use short, kebab-case names (`code-style`, `log-writer`, `readme-writer`).
 - Supporting material stays close to the owning skill (`docs/`, `scripts/`, `assets/`, `references/`, `agents/`) instead of being scattered.
 - Keep this same approach: simple names, clear ownership, and minimal file fragmentation inside each skill or module.
+
+## File naming (default)
+
+| Priority | Pattern | Examples |
+| --- | --- | --- |
+| 1 | Single word, `snake_case` | `parser.py`, `cache.rs`, `notifier.py` |
+| 2 | Two words, one `_` | `create_order.py`, `sync_users.rs` |
+| Avoid | Three+ terms or long compounds | `billing_webhook_processing_service.py` |
+
+- **Tests:** exempt — use project test conventions (longer or descriptive names are fine).
+- **Stack-specific casing:** React/UI components may use `PascalCase` files (`Card.tsx`) when the project already does; non-component modules still prefer single-word or two-word `snake_case` names.
 
 ## Naming Clarification
 

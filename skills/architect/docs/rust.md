@@ -24,12 +24,12 @@ Keep Rust architecture simple, clear, and direct, in the same style as the proje
 
 ## File and module names
 
-- **Simple and direct:** one or a few terms that describe the content.
-- Use **snake_case** for files and modules: `client.rs`, `notifier.rs`, `create_order.rs`, `sync_users.rs`.
-- **Prefer:** `client`, `notifier`, `metrics`, `cache`, `create_order`, `cancel_order`, `sync_users`.
-- **Avoid:** long or generic compound names such as `billing_webhook_processing_service.rs`, `market_offer_creation_handler.rs`, `user_authentication_manager.rs`. Prefer: `billing`, `create_order`, `login_user`.
-- **Verb + noun for actions:** `create_order`, `cancel_order`, `sync_users`, `login_user`, `refresh_cache`.
-- **Noun for concepts/services:** `client`, `notifier`, `strategy`, `session`, `context`, `repository`.
+- **Single word first:** prefer one term in **snake_case** (`client.rs`, `cache.rs`, `notifier.rs`).
+- **Two words max:** when one word is not enough, use at most two terms with one underscore (`create_order.rs`, `sync_users.rs`).
+- **Avoid:** three or more terms or long compounds (`billing_webhook_processing_service.rs`, `market_offer_creation_handler.rs`). Prefer `billing.rs`, `create_order.rs`, `login.rs`.
+- **Tests exempt:** test modules may use longer or descriptive names per project conventions (`orders_test.rs`, `create_order_integration_test.rs`).
+- **Verb + noun for actions (two-word cap):** `create_order`, `cancel_order`, `sync_users`, `login_user`.
+- **Noun for concepts/services (prefer one word):** `client`, `notifier`, `cache`, `session`, `repository`.
 - **Module as folder:** `services/` -> `services/mod.rs` re-exporting items, or `services.rs`; submodules as `services/notifier.rs` (declared in `mod.rs` or parent module).
 
 ## One purpose per module

@@ -37,7 +37,7 @@ If repository style conflicts with generic guidance, local project conventions w
 3. Prefer clarity over cleverness: use the simplest structure that remains easy to maintain.
 4. Keep local consistency: match dominant style from the target file and adjacent modules.
 5. Enforce readable naming: names should communicate intent with minimal ambiguity.
-6. Prefer simple file/module names: avoid long compound file names when a shorter, clear name works.
+6. Prefer simple file names: single-word `snake_case` when possible; at most two words with one `_` when needed (see `architect` for placement). Tests are exempt from this pattern.
 7. Prefer fewer files with better cohesion: keep related logic together unless there is a clear boundary to split.
 8. Keep formatting uniform: spacing, blank lines, and wrapping should be predictable and stable.
 9. Apply minimal viable changes: avoid broad rewrites when a focused style update solves the task.
@@ -59,8 +59,9 @@ If repository style conflicts with generic guidance, local project conventions w
 - Types/classes/components: use singular noun-based names (`User`, `PaymentService`, `OrderCard`).
 - Variables: prefer explicit names over abbreviations (`customer_id` over `cid`).
 - Booleans: use intent-revealing prefixes (`is_`, `has_`, `can_`, `should_`).
-- Files/modules: use short, direct names that reflect the primary responsibility (`parser.py`, `orders.rs`, `Card.tsx`).
-- Avoid compound file names when a simpler option is enough (`market.py` over `market_data_processing_service.py`).
+- Files/modules: prefer single-word `snake_case` (`parser.py`, `cache.rs`); if needed, at most two words with one `_` (`create_order.py`). Avoid longer compounds (`market.py` over `market_data_processing_service.py`).
+- Tests: naming pattern above does not apply; follow project test conventions.
+- React components: `PascalCase` filenames (`Card.tsx`) when the project already uses that pattern.
 - Rename only when clarity gain is clear, and always update all references.
 - **TypeScript / React:** `camelCase` for functions and variables; `PascalCase` for types and components; hooks as `useSomething` (`camelCase`); module-level constants `UPPER_SNAKE_CASE`. Module layout and React component ordering: `docs/typescript.md`.
 
@@ -128,7 +129,7 @@ Also enforce:
 - Behavior is unchanged.
 - Formatting is consistent and clean.
 - Naming is clear and coherent.
-- File/module naming stays simple and direct.
+- Production file names prefer single-word `snake_case` (two words with one `_` max); tests exempt.
 - Related logic is not fragmented across unnecessary files.
 - Organization improves readability.
 - Diff stays focused and pragmatic.

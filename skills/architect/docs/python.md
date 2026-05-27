@@ -23,12 +23,12 @@ Keep Python architecture simple, clear, and direct, in the same style as the pro
 
 ## File and module names
 
-- **Simple and direct:** one or a few terms that describe the content.
-- Use **snake_case** for files: `client.py`, `notifier.py`, `create_order.py`, `sync_users.py`.
-- **Prefer:** `client`, `notifier`, `metrics`, `cache`, `create_order`, `cancel_order`, `sync_users`.
-- **Avoid:** long or generic compound names such as `billing_webhook_processing_service.py`, `market_offer_creation_handler.py`, `user_authentication_manager.py`. Prefer: `billing`, `create_order`, `login_user`.
-- **Verb + noun for actions:** `create_order`, `cancel_order`, `sync_users`, `login_user`, `refresh_cache`.
-- **Noun for concepts/services:** `client`, `notifier`, `strategy`, `session`, `context`, `repository`.
+- **Single word first:** prefer one term in **snake_case** (`client.py`, `cache.py`, `notifier.py`).
+- **Two words max:** when one word is not enough, use at most two terms with one underscore (`create_order.py`, `sync_users.py`).
+- **Avoid:** three or more terms or long compounds (`billing_webhook_processing_service.py`, `market_offer_creation_handler.py`). Prefer `billing.py`, `create_order.py`, `login.py`.
+- **Tests exempt:** test modules may use longer or descriptive names per project conventions (`test_create_order.py`, `test_parser_rejects_invalid_input.py`).
+- **Verb + noun for actions (two-word cap):** `create_order`, `cancel_order`, `sync_users`, `login_user`.
+- **Noun for concepts/services (prefer one word):** `client`, `notifier`, `cache`, `session`, `repository`.
 
 ## One purpose per module
 
