@@ -42,6 +42,8 @@
 - Use subagents only for broad exploration, long multi-step work, or independent parallel streams.
 - Avoid overengineering: choose the lowest complexity that satisfies quality and scope.
 - Before execution, state in one line which skills will be used, in order.
+- Before creating a new file, folder, or module: apply `architect`.
+- Before concluding a change: apply `code-style` to all touched files.
 
 ## 7) Execution Loop
 1. Plan: understand request, constraints, and success criteria.
@@ -65,6 +67,15 @@
 - Git policy:
   - follow repository commit style
   - do not use Conventional Commit prefixes unless the repository explicitly adopts them
+  - never commit Superpowers implementation docs or plans (`docs/superpowers/`, including `plans/` and `specs/`) unless the user explicitly asks to include them
+  - when staging commits, exclude those paths by default even if they appear in `git status` or plan checklists
+- Naming & structure:
+  - prefer single-word names for new files, modules, folders, and packages (use the project's existing casing; usually `snake_case`, skill folders may stay kebab-case when that is the local pattern)
+  - if one word is not enough, use at most two words with one separator; avoid longer compounds
+  - prefer extending an existing module over creating a new file when responsibility matches
+  - match existing project patterns for placement, casing, and layout before inventing a new structure
+  - tests are exempt from the single-word file rule; follow project test naming
+  - keep detailed guidance in `architect` and `code-style`; this contract states the hard defaults only
 
 ## 9) Failure Handling
 - On failure, follow this order:
@@ -88,12 +99,12 @@
 ## 11) Integration (Skills, Tools, and APIs)
 - Mandatory skill policy for code changes:
   - apply relevant skills before implementation
-  - always run `code-style` during implementation and again as the final pass
+  - always run `code-style` during implementation and as a mandatory final pass on every touched file before concluding
   - if a required skill is unavailable, explicitly state fallback behavior and apply equivalent standards manually
 - Required skill routing:
   - Git/GitHub tasks: `github-assistant` (including commit message guidance)
   - Logging changes: `log-writer` then `code-style`
-  - Architecture or module structure: `architect`
+  - Architecture (elaborate, plan, or create modules, folders, packages, boundaries, or new-file placement): always `architect`
   - React/Next.js work: `frontend` (+ `architect` when structural decisions are involved)
   - Documentation (`README.md`): `readme-writer`
   - Spec workflow tasks (`.specs/`, specify/design/tasks/quick mode/session handoff): `spec-driven` first
@@ -111,7 +122,9 @@
 - Confirm requirements are fully addressed in scope.
 - Review diffs for unintended edits and temporary debug residue.
 - Fix diagnostics introduced by the change.
+- Confirm naming and placement match this contract and local project patterns.
+- Confirm `architect` was used if any structure or architecture decision was made.
 - Re-apply `code-style` to all touched files before concluding.
 
 ## Version
-- Agent Contract Version: `v1.0.0`
+- Agent Contract Version: `v1.1.0`
