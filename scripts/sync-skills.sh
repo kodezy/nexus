@@ -16,29 +16,6 @@ detect_codex() {
   [[ -d "${codex_home}" ]] || command -v codex >/dev/null 2>&1
 }
 
-prompt_yes() {
-  local question="$1"
-  local default="${2:-y}"
-  local hint reply
-
-  if [[ "${default}" == "y" ]]; then
-    hint="Y/n"
-  else
-    hint="y/N"
-  fi
-
-  while true; do
-    read -r -p "${question} [${hint}]: " reply
-    reply="${reply:-${default}}"
-
-    case "${reply}" in
-      [Yy]|[Yy][Ee][Ss]) return 0 ;;
-      [Nn]|[Nn][Oo]) return 1 ;;
-      *) echo "Please answer yes or no." ;;
-    esac
-  done
-}
-
 sync_to() {
   local dest="$1"
   mkdir -p "${dest}"
@@ -79,23 +56,11 @@ if ! "${has_cursor}" && ! "${has_codex}"; then
 fi
 
 echo
-synced=false
 
 if "${has_cursor}"; then
-  if prompt_yes "Sync skills to Cursor (${HOME}/.cursor/skills)?"; then
-    sync_to "${HOME}/.cursor/skills"
-    synced=true
-  fi
+  sync_to "${HOME}/.cursor/skills"
 fi
 
 if "${has_codex}"; then
-  if prompt_yes "Sync skills to Codex (${codex_home}/skills)?"; then
-    sync_to "${codex_home}/skills"
-    synced=true
-  fi
-fi
-
-if ! "${synced}"; then
-  echo "No destinations selected. Nothing synced."
-  exit 0
+  sync_to "${codex_home}/skills"
 fi
