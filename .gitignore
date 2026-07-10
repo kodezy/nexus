@@ -1,3 +1,11 @@
 .env
 .env.local
 .cursor/
+
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+Desktop.ini
+*~
