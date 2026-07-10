@@ -1,4 +1,4 @@
 interface:
   display_name: "Git Assistant"
-  short_description: "Handle Git tasks with practical guidance"
-  default_prompt: "Use $git-assistant for Git-related tasks; for commit suggestions, analyze staged or unstaged diffs; for commit execution, use only staged or latest relevant unstaged changes and ask explicit user confirmation before commit."
+  short_description: "Single skill for all Git and commit workflows"
+  default_prompt: "Use $git-assistant for every Git-related task. Suggest messages via docs/commit-messages.md. Create commits via docs/commit-changes.md (staged first; otherwise session-scoped unstaged only). Always confirm file list and message before commit. Never push, amend, or skip hooks unless the user explicitly asks."

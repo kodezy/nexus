@@ -41,6 +41,7 @@ echo
 if detect_cursor; then
   has_cursor=true
   echo "Found Cursor -> ${HOME}/.cursor/skills"
+  echo "Found Cursor -> ${repo_root}/.cursor/skills"
 fi
 
 if detect_codex; then
@@ -59,6 +60,7 @@ echo
 
 if "${has_cursor}"; then
   sync_to "${HOME}/.cursor/skills"
+  sync_to "${repo_root}/.cursor/skills"
 fi
 
 if "${has_codex}"; then

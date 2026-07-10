@@ -1,6 +1,6 @@
 # Behavior: commit-messages
 
-Use this behavior when the user asks for commit message suggestions from current changes.
+Use when the user asks for commit message suggestions only (no commit execution).
 
 ## Workflow
 
@@ -12,6 +12,7 @@ Run:
 git status
 git diff --staged --name-only
 git diff --staged
+git log -n 5 --oneline
 ```
 
 If staged diff is empty, switch to unstaged:
@@ -33,17 +34,16 @@ Produce 1-3 subject-line options that:
 - stay concise and readable
 - remain aligned with recent repository history when possible
 
-If using unstaged changes because nothing is staged, optionally mention that context briefly.
+If using unstaged changes because nothing is staged, mention that context briefly.
 
-## Commit style constraints
+## Constraints
 
 - Write suggestions in English.
 - Do not use Conventional Commits prefixes (`feat:`, `fix:`, `chore:`, etc.) unless explicitly requested.
 - Prefer imperative or descriptive subjects consistent with repository history.
+- Subject only unless the user asks for a body.
 
 ## Output format
-
-Return suggestions in a copy-pasteable numbered list:
 
 ```text
 Suggested commit messages:
@@ -53,4 +53,4 @@ Suggested commit messages:
 3. Remove duplicated validation path
 ```
 
-Keep output to one-line subjects unless the user explicitly asks for a body.
+If the user then asks to commit, switch to `docs/commit-changes.md`.
