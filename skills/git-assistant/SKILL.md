@@ -1,9 +1,9 @@
 ---
-name: github-assistant
+name: git-assistant
 description: Handle Git-related tasks with practical guidance. Current focus: suggest commit messages and run scoped commits with explicit confirmation.
 ---
 
-# GitHub Assistant
+# Git Assistant
 
 Use this skill for any Git-related task.
 

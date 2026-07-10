@@ -99,4 +99,4 @@ EOF
 
 ## Out of scope
 
-Push, PR creation, amend, rebase, and any change to `github-assistant`.
+Push, PR creation, amend, rebase, and any change to `git-assistant`.

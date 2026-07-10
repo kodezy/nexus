@@ -102,7 +102,7 @@
   - always run `code-style` during implementation and as a mandatory final pass on every touched file before concluding
   - if a required skill is unavailable, explicitly state fallback behavior and apply equivalent standards manually
 - Required skill routing:
-  - Git/GitHub tasks: `github-assistant` (including commit message guidance)
+  - Git/GitHub tasks: `git-assistant` (including commit message guidance)
   - Logging changes: `log-writer` then `code-style`
   - Architecture (elaborate, plan, or create modules, folders, packages, boundaries, or new-file placement): always `architect`
   - React/Next.js work: `frontend` (+ `architect` when structural decisions are involved)

@@ -1,4 +1,0 @@
-interface:
-  display_name: "GitHub Assistant"
-  short_description: "Handle Git tasks with practical guidance"
-  default_prompt: "Use $github-assistant for Git-related tasks; for commit suggestions, analyze staged or unstaged diffs; for commit execution, use only staged or latest relevant unstaged changes and ask explicit user confirmation before commit."
