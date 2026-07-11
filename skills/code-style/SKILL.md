@@ -9,7 +9,7 @@ description: Apply coding style standards for readability, consistency, and form
 
 Apply a clear, pragmatic, and consistent coding style to the codebase. This skill is not limited to refactoring requests: it defines formatting, naming, module boundaries, and organization conventions to be used as the default finalization step in code changes.
 
-Boundary: this skill standardizes how code is written. It does **not** replace stack-specific implementation guidance such as React/Next.js component architecture, state design, layout patterns, or data fetching shape. For those decisions, use the `frontend` skill first, then apply `code-style`.
+Boundary: this skill standardizes how code is written. It does **not** replace stack-specific implementation guidance such as React/Next.js component architecture, state design, layout patterns, or data fetching shape (`frontend`), and it does **not** replace file/module placement or file names (`architect`). For React/Next.js work: `frontend` (+ `architect` when placing or naming files) first, then apply `code-style`.
 
 ## Language/Area Selection (Auto)
 

@@ -1,19 +1,23 @@
 # React/Next.js
 
-Use this doc when the `frontend` skill is active for React/Next.js work. Build with Next.js App Router and TypeScript, with clear separation of concerns. Keep solutions small, pragmatic, and easy to evolve. Use `architect` for structure and `code-style` for final style polish.
+Use this doc when the `frontend` skill is active for React/Next.js work. Build with Next.js App Router and TypeScript, with clear separation of concerns. Keep solutions small, pragmatic, and easy to evolve.
 
-This doc owns React-specific implementation decisions: file layout, component boundaries, state strategy, data flow, and styling direction. Leave naming, import order, and final formatting to `code-style`.
+This doc owns React-specific implementation decisions: feature layout, component boundaries, state strategy, data flow, and styling direction.
+
+**Not owned here (do not duplicate):**
+
+- File/folder names and module placement → `architect`
+- Identifier naming, imports, module/component body order, formatting → `code-style` ([typescript.md](../../code-style/docs/typescript.md))
 
 ## Project Setup
 
 - Use Next.js App Router and TypeScript.
-- Do not introduce `any` unless there is no practical alternative.
 - Match the repository package manager (`npm`, `pnpm`, or `yarn`).
 - Keep one stack per task. Do not mix React architecture with unrelated UI stacks.
 
 ## Project structure (`src/`)
 
-Use a feature-oriented structure as the project grows. For small scopes, keep it flatter and match the existing repository shape.
+Use a feature-oriented structure as the project grows. For small scopes, keep it flatter and match the existing repository shape. Prefer local conventions when the repository already differs.
 
 ```
 src/
@@ -44,30 +48,16 @@ src/
 - Keep feature-specific code inside `features/<feature>/`.
 - Move code to shared folders only after real reuse appears.
 - Prefer colocated types/helpers while scope is local.
-- Split files only when it improves readability or reuse.
-
-## Naming
-
-| Kind | Convention | Examples |
-|------|------------|----------|
-| Components | `PascalCase` | `OrderCard`, `UserAvatar` |
-| Hooks | `camelCase` with `use` prefix | `useOrders`, `useSession` |
-| Functions, variables | `camelCase` | `formatDate`, `rowCount` |
-| Types / interfaces | `PascalCase` | `Order`, `OrderCardProps` |
-| Module-level constants | `UPPER_SNAKE_CASE` | `MAX_PAGE_SIZE`, `DEFAULT_LOCALE` |
-| Files and folders | `kebab-case` | `order-card.tsx`, `user-avatar/` |
-
-- One primary component or one hook per file when practical.
 - Prefer flat paths until a feature has several pieces, then nest under `features/<name>/`.
+- One primary component or one hook per file when practical.
+- Split files only when it improves readability or reuse; file names follow `architect`.
 
 ## Components
 
 - Keep components focused on one UI responsibility.
-- Use explicit props typing; keep simple props types local.
-- Use early returns to reduce nested JSX.
 - Prefer composition over deeply configurable components.
 - Keep presentational and data logic separate when the file becomes hard to scan.
-- Follow component/module order from [typescript.md](../../code-style/docs/typescript.md).
+- Props typing, early returns, hooks rules, and body order: follow [typescript.md](../../code-style/docs/typescript.md).
 
 ```tsx
 type OrderCardProps = { order: Order; onCancel?: (id: string) => void };
@@ -116,10 +106,9 @@ export function OrderCard({ order, onCancel }: OrderCardProps) {
 
 ## Hooks
 
-- Keep hooks at top level only.
 - Create custom hooks for reusable stateful behavior.
-- Give hooks one responsibility and clear names (`useOrders`, `useSession`).
-- Use `useMemo` and `useCallback` only when there is clear render or compute benefit.
+- Give each hook one responsibility.
+- Hook call rules, naming, and `useMemo` / `useCallback` policy: follow [typescript.md](../../code-style/docs/typescript.md).
 
 ## Evolvability
 
