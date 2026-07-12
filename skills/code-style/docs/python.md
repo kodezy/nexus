@@ -29,10 +29,10 @@ Top to bottom:
 2. **`import` / `from … import`** — standard library, blank line, third-party, blank line, local. One group per layer.
 3. **Global constants** — module-level `UPPER_SNAKE_CASE` and immutable config.
 4. **Classes**
-5. **Module-level functions** — free functions and helpers.
+5. **Module-level functions** — public free functions first, then private helpers (`_`).
 6. **`if __name__ == "__main__":`** — last in the file.
 
-**How this compares to other languages:** imports and constants sit at the top; **types are optional and lightweight** (PEP 484 hints on parameters, attributes, and return values—no separate “types block” unless you need one, e.g. `TYPE_CHECKING` imports). **Behavior lives inside the `class`** (methods), not in a separate block like Rust’s `impl`. Module-level **functions come after** all classes. The **entry hook** is **`if __name__ == "__main__":`** at the bottom.
+**How this compares to other languages:** imports and constants sit at the top; **types are optional and lightweight** (PEP 484 hints on parameters, attributes, and return values—no separate “types block” unless you need one, e.g. `TYPE_CHECKING` imports). **Behavior lives inside the `class`** (methods), not in a separate block like Rust’s `impl`. Module-level **functions come after** all classes: public free functions first, then private helpers. The **entry hook** is **`if __name__ == "__main__":`** at the bottom.
 
 ### Documentation and comments
 
@@ -45,7 +45,7 @@ Top to bottom:
 - Prefer f-strings for general string interpolation in Python code.
 - Use `except Exception as exception:` always (do not use `e`).
 - Avoid unnecessary abstractions; refactor only when there is a clear readability gain.
-- In classes, method ordering is strict: **public methods first**, then **magic/dunder methods** (e.g. `__init__`, `__repr__`, `__iter__`), and **private methods last** (prefixed with `_`). Private methods must always be at the end of the class.
+- In classes, method ordering is strict: **essential dunders first** (e.g. `__init__`, and other essential magic methods when present), then **other public methods**, then **private methods last** (prefixed with `_`). Never place private methods above remaining public methods for grouping.
 - Internal parameters should be private (`_param`) by default, except when the name is part of an external contract.
 - Do not create test or example files unless explicitly requested.
 
@@ -112,6 +112,9 @@ def analyze_market(symbol):
 
 ```python
 class OrderManager:
+    def __init__(self, client):
+        self._client = client
+
     def create_order(self, order_data):
         pass
 

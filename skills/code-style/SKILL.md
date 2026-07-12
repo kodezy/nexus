@@ -62,7 +62,7 @@ If repository style conflicts with generic guidance, local project conventions w
 - Files/modules: prefer single-word `snake_case` (`parser.py`, `cache.rs`); if needed, at most two words with one `_` (`create_order.py`). Avoid longer compounds (`market.py` over `market_data_processing_service.py`).
 - Tests: naming pattern above does not apply; follow project test conventions.
 - React components: `PascalCase` filenames (`Card.tsx`) when the project already uses that pattern.
-- Rename only when clarity gain is clear, and always update all references.
+- Rename only when clarity gain is obvious (obscure abbreviation, mixed convention in the same file). Skip cosmetic renames. Update references in the touched file.
 - **TypeScript / React:** `camelCase` for functions and variables; `PascalCase` for types and components; hooks as `useSomething` (`camelCase`); module-level constants `UPPER_SNAKE_CASE`. Module layout and React component ordering: `docs/typescript.md`.
 
 ## Module order (by language)
@@ -74,9 +74,9 @@ Top-to-bottom intent (full steps in each language doc):
 | **Imports** | Top (`import` / `from`). | Top (`use`; see `docs/rust.md` for `mod` / inner attrs before `use`). | Top (`import`; include `import type` here). |
 | **Constants** | Immediately after imports. | Immediately after the import block (`const` / `static` / `type` aliases). | **After** `type` / `interface` (not immediately after imports). |
 | **Types** | Optional: hints on names; no top types block unless needed (e.g. `TYPE_CHECKING`). | Central: `struct` / `enum` / `trait`, then `impl`. | **First-class:** dedicated `type` / `interface` block high in the file. |
-| **Classes / ADTs** | `class` after module-level `def`. | `struct` / `enum` (and `trait`) before matching `impl`. | `class` before module-level functions. |
+| **Classes / ADTs** | `class` after constants (before module-level `def`). | `struct` / `enum` (and `trait`) before matching `impl`. | `class` before module-level functions. |
 | **Implementation** | Methods **inside** the `class` body. | Methods and trait items in **`impl`**, separate from type definitions. | Methods **inside** the `class` body. |
-| **Module functions** | Before classes. | Free `fn` after the type/`impl` chain. | After classes (helpers first, default export last per `docs/typescript.md`). |
+| **Module functions** | After classes: public free functions first, private (`_`) helpers last. | Free `fn` after the type/`impl` chain: public first, private last. | After classes: exported functions/components first (default export last among publics), non-exported helpers last. |
 | **Entry** | `if __name__ == "__main__":` last. | `fn main` last in the binary crate root. | No runtime `main`; wire entry explicitly (bundler/CLI/test bootstrap). |
 
 `.tsx` module order follows `docs/typescript.md` (same **types → constants** idea as `.ts`).
@@ -85,9 +85,10 @@ Top-to-bottom intent (full steps in each language doc):
 
 - Keep imports/includes at the top of the file, grouped and consistently ordered.
 - **Constants:** after imports in Python and Rust; **after types** in TypeScript and `.tsx` (see table above).
-- Keep public APIs before private helpers.
-- In classes/impl blocks, keep public methods first and private methods last.
-- Group related methods/functions by responsibility.
+- Keep public APIs before private helpers at module level and inside classes/`impl`.
+- In classes/`impl` blocks, order is strict: constructor or essential dunders first, then other public methods, then private methods last.
+- Group related methods only within the same visibility band (among publics, or among privates); never interleave private above remaining public for “logical” grouping.
+- When touching a file, normalize that file's order and fix obviously unclear names; do not style-sweep untouched files.
 - Avoid deep nesting when a guard clause or early return improves readability.
 - Prefer keeping related code in existing modules when cohesion remains clear.
 - Split into a new file only with a clear boundary (different responsibility, independent lifecycle, stable reuse by 2+ modules, or readability loss from mixed concerns).

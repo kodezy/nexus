@@ -75,6 +75,10 @@
   - prefer extending an existing module over creating a new file when responsibility matches
   - match existing project patterns for placement, casing, and layout before inventing a new structure
   - tests are exempt from the single-word file rule; follow project test naming
+  - identifiers (methods, parameters, constants, variables): use clear, pragmatic, intent-revealing names; avoid obscure abbreviations; follow language casing in `code-style`
+  - class / `impl` member order: constructor or essential dunders first, then other public methods, then private methods last; never place private members above remaining public members for grouping
+  - module-level order: public or exported API first, private helpers last; in TypeScript, default export is last among publics and still before private helpers
+  - when editing a file, normalize that file's member/module order and fix obviously unclear names only; do not sweep untouched files for style
   - keep detailed guidance in `architect` and `code-style`; this contract states the hard defaults only
 
 ## 9) Failure Handling
@@ -120,8 +124,9 @@
 - Review diffs for unintended edits and temporary debug residue.
 - Fix diagnostics introduced by the change.
 - Confirm naming and placement match this contract and local project patterns.
+- Confirm touched files follow public-before-private member/module order and clear identifier naming per this contract and `code-style`.
 - Confirm `architect` was used if any structure or architecture decision was made.
 - Re-apply `code-style` to all touched files before concluding.
 
 ## Version
-- Agent Contract Version: `v1.1.1`
+- Agent Contract Version: `v1.2.0`

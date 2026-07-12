@@ -36,9 +36,9 @@ Top to bottom:
 2. **`type` / `interface`** — shared shapes for this module.
 3. **Module-level constants** — `UPPER_SNAKE_CASE` and other file-level immutable values.
 4. **`class` declarations** — before any module-level functions.
-5. **Module-level functions/components** — non-exported helpers first, then exported functions/components. **Default export last.**
+5. **Module-level functions/components** — exported functions/components first, then non-exported helpers last. **If there is a default export, it is last among the publics** (still before private helpers).
 
-**Exports:** use `export` on each named declaration as you go. **If the file has a default export, it is the last top-level declaration.**
+**Exports:** use `export` on each named declaration as you go. **If the file has a default export, place it last among exported declarations**, then keep non-exported helpers after all exports.
 
 **How this compares to other languages:** **`type` / `interface` before constants**—types are **first-class** in TypeScript (unlike Python, where hints are optional and usually inline). **Constants** are **after** types, not immediately after imports (unlike Python and Rust). **`class` methods** live **inside** the class body, like Python. **Module-level functions** come **after** classes. There is **no** `main`: execution is **explicit** (bundler entry, CLI, `node` script, or tests).
 
@@ -141,6 +141,8 @@ function analyzeMarket(symbol: string): MarketAnalysis {
 
 ```typescript
 class OrderManager {
+  constructor(private readonly client: Client) {}
+
   createOrder(orderData: OrderData): OrderId {
     // ...
   }
@@ -163,7 +165,22 @@ class OrderManager {
 }
 ```
 
-Prefer **public methods first**, then **private** helpers at the end of the class, consistent with `docs/python.md` / `docs/rust.md`.
+Inside classes, order is strict: **constructor first** (when present), then **other public methods**, then **private** helpers last — consistent with `docs/python.md` / `docs/rust.md`. Never interleave private above remaining public for grouping.
+
+```typescript
+export function createOrder(orderData: OrderData): OrderId {
+  return buildOrder(orderData);
+}
+
+export default function OrderPage(): JSX.Element {
+  return <main />;
+}
+
+function buildOrder(orderData: OrderData): OrderId {
+  // private helper
+  return orderData.id;
+}
+```
 
 ## Safety
 

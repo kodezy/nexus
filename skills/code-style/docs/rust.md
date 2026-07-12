@@ -50,9 +50,10 @@ Top to bottom:
 - Prefer `Result<T, E>` and `Option<T>` over exceptions or null values.
 - Use `match` for explicit pattern matching, `if let` when appropriate.
 - Do not overcomplicate: avoid unnecessary abstractions; refactor only to reduce repetition when it genuinely improves readability.
-- Prefer public methods first in `impl` blocks, private methods after.
+- In `impl` blocks, order is strict: constructors / essential associated constructors first (`new`, `try_new`, etc. when present), then other `pub` methods, then private methods last.
+- At module level, public free `fn` items come before private free `fn` items.
 - Use `pub` only when needed for the public API.
-- Organize methods following best conventions: public methods first, then private.
+- Never place private items above remaining public items for grouping; group only within the same visibility band.
 - Do not create test or example files unless explicitly requested.
 - Use `&str` when possible instead of `String` for read-only parameters.
 - Prefer borrowing (`&`) when possible; use ownership (`move`) only when necessary.
@@ -134,6 +135,10 @@ fn analyze_market(symbol: &str) -> Result<MarketAnalysis, AnalysisError> {
 
 ```rust
 impl OrderManager {
+    pub fn new(client: Client) -> Self {
+        Self { client }
+    }
+
     pub fn create_order(&mut self, order_data: OrderData) -> Result<OrderId, OrderError> {
         // ...
     }
