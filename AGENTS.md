@@ -69,6 +69,7 @@
   - do not use Conventional Commit prefixes unless the repository explicitly adopts them
   - never commit Superpowers implementation docs or plans (`docs/superpowers/`, including `plans/` and `specs/`) unless the user explicitly asks to include them
   - when staging commits, exclude those paths by default even if they appear in `git status` or plan checklists
+  - never create a git worktree without asking the user first; if a worktree seems useful, ask whether to create one and wait for an explicit yes before running any worktree create command
 - Naming & structure:
   - prefer single-word names for new files, modules, folders, and packages (use the project's existing casing; usually `snake_case`, skill folders may stay kebab-case when that is the local pattern)
   - if one word is not enough, use at most two words with one separator; avoid longer compounds
@@ -122,6 +123,12 @@
 ## Final Implementation Review (Required for Code Changes)
 - Confirm requirements are fully addressed in scope.
 - Review diffs for unintended edits and temporary debug residue.
+- Delimit the affected feature area (modules, callers, and paths in the flow — not the whole repository).
+- Remove obvious dead code in that area (unreferenced symbols, unreachable branches, orphaned helpers/exports left by the change).
+- Remove obvious legacy fallback / shim / compat paths when the new path is the only live path.
+- Remove obvious residues (temporary debug, dead flags, completed-migration TODOs, precautionary adapters).
+- If doubt or risk remains (external compat, still-active feature flag, uncertain callers): do not delete; report in `blockers` / `next_step` and do not conclude as clean.
+- Keep the diff focused: cleanup only within the affected area; no mass refactor.
 - Fix diagnostics introduced by the change.
 - Confirm naming and placement match this contract and local project patterns.
 - Confirm touched files follow public-before-private member/module order and clear identifier naming per this contract and `code-style`.
@@ -129,4 +136,4 @@
 - Re-apply `code-style` to all touched files before concluding.
 
 ## Version
-- Agent Contract Version: `v1.2.0`
+- Agent Contract Version: `v1.3.0`

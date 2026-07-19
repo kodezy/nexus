@@ -125,6 +125,40 @@ Also enforce:
 5. Run project formatter/linter if available and aligned with the repository.
 6. Review diff to confirm style gains without logic changes.
 
+### Final pass order (code changes)
+
+1. Implement the task.
+2. Area cleanup (obvious removals; escalate doubt) — see Area Cleanup below.
+3. Apply naming / order / format rules from this skill to every touched file.
+4. Complete the contract Final Implementation Review (including Area Cleanup Gate).
+
+## Area Cleanup (final pass)
+
+Apply this pass to the **affected feature area**, not the whole repository and not only the diff hunks.
+
+### Delimit the area
+
+- Start from touched files.
+- Include modules in the same flow: direct callers/callees, re-exports, and tests/fixtures for that flow.
+- Stop at the feature boundary; do not sweep unrelated neighbor packages.
+
+### Remove when obvious
+
+- Function / type / constant with no remaining references in the area after the change
+- Dead branch / `if` / `match` left by a migration
+- Old fallback path when the new path is the only one used
+- Debug prints, dead flags, migration TODOs/comments already completed
+- Session scratch / temp left behind
+
+### Escalate (do not remove without evidence)
+
+- Public API / external contract
+- Compat still required for a supported client or version
+- Feature flag without confirmation it is off / removed
+- Code that looks unused but may have dynamic callers or callers outside the area
+
+When escalating: leave the code in place, report it in `blockers` / `next_step`, and do not conclude the task as clean.
+
 ## Checklist Before Finishing
 
 - Behavior is unchanged.
@@ -134,6 +168,8 @@ Also enforce:
 - Related logic is not fragmented across unnecessary files.
 - Organization improves readability.
 - Diff stays focused and pragmatic.
+- Affected area has no obvious dead code, legacy fallback, or residue left by this change.
+- Ambiguous leftovers are reported in `blockers` / `next_step` (not silently kept as “done”).
 
 ## Internal Skill Docs
 
