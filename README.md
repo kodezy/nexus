@@ -1,4 +1,4 @@
-# Agent Lab
+# Nexus
 
 Workspace for agent guidance, skills, and related resources.
 
