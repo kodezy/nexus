@@ -70,6 +70,11 @@
   - never commit Superpowers implementation docs or plans (`docs/superpowers/`, including `plans/` and `specs/`) unless the user explicitly asks to include them
   - when staging commits, exclude those paths by default even if they appear in `git status` or plan checklists
   - never create a git worktree without asking the user first; if a worktree seems useful, ask whether to create one and wait for an explicit yes before running any worktree create command
+- Python tooling:
+  - use **uv** for Python dependencies and execution (`uv add`, `uv remove`, `uv sync`, `uv run`)
+  - treat `pyproject.toml` (and the lockfile uv manages) as the source of truth
+  - do not use bare `pip install` or hand-edit `requirements.txt` unless the user explicitly asks, or the repository has no uv/`pyproject.toml` workflow and local convention is pip-only
+  - detailed placement and commands: `architect` → `docs/python.md`
 - Naming & structure:
   - prefer single-word names for new files, modules, folders, and packages (use the project's existing casing; Python/Rust usually `snake_case`; new TypeScript/React two-word files prefer kebab-case unless the folder already uses `_`; skill folders may stay kebab-case when that is the local pattern)
   - if one word is not enough, use at most two words with one separator; avoid longer compounds

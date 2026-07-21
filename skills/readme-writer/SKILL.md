@@ -36,7 +36,7 @@ Use this default section order unless the project has an explicit existing stand
 
 - Use clear section headers such as `## Installation`, `## Configuration`, `## Usage`.
 - Use fenced code blocks for commands, snippets, and file paths.
-- Use inline code for single terms such as `main.py` and `requirements.txt`.
+- Use inline code for single terms such as `main.py`, `pyproject.toml`, and `uv sync`.
 - Use bold only for high-signal emphasis such as **required** and **optional**.
 - Use emojis sparingly and consistently, or avoid them entirely.
 - Mark required vs optional items explicitly.
@@ -80,6 +80,7 @@ Use this default section order unless the project has an explicit existing stand
 - Use numbered steps.
 - Keep one action per step.
 - Include verification steps when useful.
+- For Python projects that use this harness default: document **uv** (`uv sync`, `uv run`), not bare `pip install`, unless the repo is pip-only.
 
 ### Configuration
 

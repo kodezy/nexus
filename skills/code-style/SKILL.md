@@ -19,8 +19,8 @@ Choose style rules based on project signals and target area, then apply only the
    - Signals: `ts`, `tsx`, `jsx`, React components/hooks, shared frontend utilities, API client modules.
    - Use: `docs/typescript.md` for `.ts`, `.tsx`, and `.jsx` rules (including React component structure and ordering).
 2. Python backend/scripts/data areas:
-   - Signals: `py`, `pyproject.toml`, `requirements.txt`, Python package/module layout.
-   - Use: `docs/python.md`.
+   - Signals: `py`, `pyproject.toml`, `uv.lock`, `requirements.txt`, Python package/module layout.
+   - Use: `docs/python.md` for style. Dependency installs and runs belong to `architect` (`docs/python.md` → uv), not this skill.
 3. Rust backend/systems/CLI areas:
    - Signals: `rs`, `Cargo.toml`, modules under `src/` in Rust projects.
    - Use: `docs/rust.md`.
