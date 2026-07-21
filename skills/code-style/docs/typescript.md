@@ -60,7 +60,8 @@ React-specific style rules:
 - Keep components focused; extract only for clear reuse or clarity gains.
 - Prefer explicit props typing in `.tsx`.
 - Keep JSX readable and use early returns to reduce nesting.
-- Use `useMemo` and `useCallback` only when there is measurable benefit.
+- Use `useMemo` and `useCallback` only when there is measurable benefit (identity stability or measured cost). Prefer derived values over effect + setState mirrors.
+- UI copy density and runtime/data patterns belong to `frontend`; do not invent redundant descriptions while styling.
 
 ### Documentation and comments
 

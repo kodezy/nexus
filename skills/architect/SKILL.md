@@ -13,13 +13,14 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 
 - **Python:** Use `docs/python.md` for backend, services, scripts, and package layout.
 - **Rust:** Use `docs/rust.md` for crates, binaries, modules, and package layout.
+- **TypeScript / React:** Use the File naming rules below (including the React/TS casing note). UI architecture and runtime (Vite vs Next) belong to `frontend`.
 - Other languages: add docs when needed.
 
 ## Canonical Rules
 
 1. **English:** All code, identifiers, comments, docstrings, and file/module names in English (per project AGENTS.md).
 2. **Match existing structure:** Place code in the same hierarchy the project already uses, organized by module/submodule (e.g. `src/api`, `src/services`, `src/ui/components`).
-3. **Simple file names:** Prefer **single-word** names in `snake_case` when possible (`parser`, `client`, `cache`). If one word is not enough, use **at most two words** with one underscore (`create_order`, `sync_users`). Avoid longer compounds (e.g. `billing_webhook_processing_service`, `market_offer_creator`).
+3. **Simple file names:** Prefer **single-word** names when possible (`parser`, `client`, `cache`, `route`). If one word is not enough, use **at most two words**. Default separator for Python/Rust is `_` (`create_order`, `sync_users`). For TypeScript/React, see File naming below (prefer kebab-case for new two-word `.ts`/`.tsx` files). Avoid longer compounds (e.g. `billing_webhook_processing_service`, `market_offer_creator`).
 4. **Tests exempt:** Test files do not need this pattern; follow project test naming (`test_parser.py`, `orders_test.rs`, descriptive pytest names).
 5. **Fewer files first:** Prefer extending an existing module when responsibility is the same and cohesion stays clear.
 6. **Split only with clear boundary:** Create a new file/package only when at least one condition is true: different responsibility from the current module, independent lifecycle, stable reuse by 2+ modules, or the current file loses readability due to mixed concerns.
@@ -48,7 +49,7 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 ## Checklist
 
 - New code lives under the right module and follows existing hierarchy.
-- File names prefer single-word `snake_case`; two words with one `_` only when needed; tests exempt.
+- File names prefer single-word; two words max with the language-appropriate separator (Python/Rust `_`, new TS/React kebab-case unless the folder already uses `_`); tests exempt.
 - Existing module was preferred when responsibility matched.
 - New files were created only when split criteria were explicitly met.
 - One clear responsibility per module.
@@ -68,12 +69,18 @@ Use this repository structure as baseline for placement and naming:
 
 | Priority | Pattern | Examples |
 | --- | --- | --- |
-| 1 | Single word, `snake_case` | `parser.py`, `cache.rs`, `notifier.py` |
-| 2 | Two words, one `_` | `create_order.py`, `sync_users.rs` |
+| 1 | Single word | `parser.py`, `cache.rs`, `route.tsx`, `notifier.py` |
+| 2 | Two words, language separator | Python/Rust: `create_order.py`; new TS/React: `price-scatter.ts` |
 | Avoid | Three+ terms or long compounds | `billing_webhook_processing_service.py` |
 
 - **Tests:** exempt — use project test conventions (longer or descriptive names are fine).
-- **Stack-specific casing:** React/UI components may use `PascalCase` files (`Card.tsx`) when the project already does; non-component modules still prefer single-word or two-word `snake_case` names.
+- **Python / Rust:** `snake_case`; two words with one `_`.
+- **TypeScript / React:**
+  - Prefer **single-word lowercase** filenames (`route.tsx`, `model.ts`, `client.ts`, `layout.tsx`).
+  - If two words are needed for **new** `.ts` / `.tsx` files, prefer **kebab-case** (`price-scatter.ts`, `date-range.ts`) over `snake_case`, unless the surrounding folder already standardizes on underscores.
+  - Hook modules may keep a `use_` / `use-` prefix (`use_table_sort.ts` or `use-table-sort.ts`); match the folder's existing separator.
+  - React/UI components may use `PascalCase` files (`Card.tsx`) only when the project already does.
+  - Avoid three+ term compounds (`item-detail-model.ts` → prefer `detail.ts` colocated, or a two-word max name).
 
 ## Naming Clarification
 

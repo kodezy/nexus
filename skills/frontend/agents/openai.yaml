@@ -1,4 +1,4 @@
 interface:
   display_name: "Frontend"
-  short_description: "Build clear, pragmatic React and Next.js frontends."
-  default_prompt: "Use $frontend for React/Next.js UI structure, state, data flow, and styling; use architect for file placement/names and code-style for how the code reads."
+  short_description: "Build clear, pragmatic React frontends (Vite SPA or Next.js)."
+  default_prompt: "Use $frontend for React UI structure, state, data flow, and styling (preserve Vite or Next.js runtime); use architect for file placement/names and code-style for how the code reads."

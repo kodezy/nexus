@@ -71,7 +71,7 @@
   - when staging commits, exclude those paths by default even if they appear in `git status` or plan checklists
   - never create a git worktree without asking the user first; if a worktree seems useful, ask whether to create one and wait for an explicit yes before running any worktree create command
 - Naming & structure:
-  - prefer single-word names for new files, modules, folders, and packages (use the project's existing casing; usually `snake_case`, skill folders may stay kebab-case when that is the local pattern)
+  - prefer single-word names for new files, modules, folders, and packages (use the project's existing casing; Python/Rust usually `snake_case`; new TypeScript/React two-word files prefer kebab-case unless the folder already uses `_`; skill folders may stay kebab-case when that is the local pattern)
   - if one word is not enough, use at most two words with one separator; avoid longer compounds
   - prefer extending an existing module over creating a new file when responsibility matches
   - match existing project patterns for placement, casing, and layout before inventing a new structure
@@ -110,7 +110,7 @@
   - Git/GitHub tasks (status, diff, log, commit messages, commits, branch/remote advice, and related in-repo git hygiene): always `git-assistant`
   - Logging changes: `log-writer` then `code-style`
   - Architecture (elaborate, plan, or create modules, folders, packages, boundaries, or new-file placement): always `architect`
-  - React/Next.js work: `frontend` (+ `architect` when structural decisions are involved)
+  - React frontend work (Vite SPA, React Router, or Next.js): `frontend` (+ `architect` when structural decisions are involved)
   - Documentation (`README.md`): `readme-writer`
 - Optional skills:
   - `playwright` for browser automation
