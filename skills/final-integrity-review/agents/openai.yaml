@@ -1,0 +1,4 @@
+interface:
+  display_name: "Final Integrity Review"
+  short_description: "Review completed work without speculative cleanup."
+  default_prompt: "Use $final-integrity-review to check a completed implementation for real logic, consistency, and cleanup issues."
