@@ -131,6 +131,7 @@ Also enforce:
 2. Area cleanup (obvious removals; escalate doubt) — see Area Cleanup below.
 3. Apply naming / order / format rules from this skill to every touched file.
 4. Complete the contract Final Implementation Review (including Area Cleanup Gate).
+5. Run `integrity-review`; on Clean or Corrected, hand off to `git-assistant` commit confirmation.
 
 ## Area Cleanup (final pass)
 

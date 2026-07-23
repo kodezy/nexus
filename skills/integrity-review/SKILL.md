@@ -1,11 +1,17 @@
 ---
 name: integrity-review
-description: Use when finalizing an implementation, reviewing completed work, or explicitly checking for logic issues, inconsistencies, obsolete code, legacy paths, fallbacks, residues, or unnecessary boilerplate.
+description: >-
+  Use when finalizing an implementation, reviewing completed work, or explicitly
+  checking for logic issues, inconsistencies, obsolete code, legacy paths,
+  fallbacks, residues, or unnecessary boilerplate. After a Clean or Corrected
+  verdict on a code change, hand off to git-assistant commit confirmation.
 ---
 
 # Integrity Review
 
 Review completed work for real issues in the affected feature area. A clean review is a valid result: preserve correct code when the available evidence does not establish a problem.
+
+After every code implementation closeout, this skill is mandatory. On Clean or Corrected, continue to commit confirmation. On Uncertain, stop without offering a commit.
 
 ## Review sequence
 
@@ -32,3 +38,19 @@ Return one concise, evidence-based result:
 - **Uncertain:** State what was retained, why it is uncertain, and the next evidence needed. Do not describe the implementation as clean.
 
 Do not turn hypothetical concerns into changes. Prefer a precise clean verdict over speculative refactoring.
+
+## Commit handoff
+
+After the verdict, follow exactly one path:
+
+1. **Uncertain:** Report the blocker and stop. Do not offer a commit.
+2. **Corrected:** Ensure corrections are validated, then continue with step 3 on the final diff.
+3. **Clean or Corrected:** Hand off to `git-assistant` → `docs/commit-changes.md` for one confirmation:
+   - source (`staged` or `session-unstaged`)
+   - file list
+   - proposed commit message
+   - ask once for approval of add + commit together
+4. If there is nothing eligible to commit (clean tree or empty session set): say so and stop.
+5. Never commit without explicit user approval. Never push.
+
+Review-only requests with no eligible session changes still return the verdict; offer commit only when candidates exist and the verdict is Clean or Corrected.

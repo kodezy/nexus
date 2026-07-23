@@ -43,7 +43,7 @@
 - Avoid overengineering: choose the lowest complexity that satisfies quality and scope.
 - Before execution, state in one line which skills will be used, in order.
 - Before creating a new file, folder, or module: apply `architect`.
-- Before concluding a change: apply `code-style` to all touched files.
+- Before concluding a code change: apply `code-style` to all touched files, then `integrity-review`; on Clean or Corrected, hand off to `git-assistant` for one commit confirmation (file list + message).
 
 ## 7) Execution Loop
 1. Plan: understand request, constraints, and success criteria.
@@ -110,9 +110,13 @@
 - Mandatory skill policy for code changes:
   - apply relevant skills before implementation
   - always run `code-style` during implementation and as a mandatory final pass on every touched file before concluding
+  - after `code-style`, always run `integrity-review` on the affected feature area
+  - when the integrity verdict is Clean or Corrected, follow `git-assistant` commit confirmation (file list + message); do not commit until the user approves
+  - when the integrity verdict is Uncertain, report the blocker and stop; do not offer a commit
   - if a required skill is unavailable, explicitly state fallback behavior and apply equivalent standards manually
 - Required skill routing:
   - Git/GitHub tasks (status, diff, log, commit messages, commits, branch/remote advice, and related in-repo git hygiene): always `git-assistant`
+  - Final integrity review and closeout handoff to commit confirmation: always `integrity-review` then `git-assistant` when Clean or Corrected
   - Logging changes: `log-writer` then `code-style`
   - Architecture (elaborate, plan, or create modules, folders, packages, boundaries, or new-file placement): always `architect`
   - React frontend work (Vite SPA, React Router, or Next.js): `frontend` (+ `architect` when structural decisions are involved)
@@ -139,6 +143,9 @@
 - Confirm touched files follow public-before-private member/module order and clear identifier naming per this contract and `code-style`.
 - Confirm `architect` was used if any structure or architecture decision was made.
 - Re-apply `code-style` to all touched files before concluding.
+- Run `integrity-review` on the affected feature area.
+- On Clean or Corrected: offer one commit confirmation via `git-assistant` (source, file list, proposed message); commit only after explicit user approval.
+- On Uncertain: report in `blockers` / `next_step` and stop; do not offer a commit.
 
 ## Version
-- Agent Contract Version: `v1.3.0`
+- Agent Contract Version: `v1.4.0`

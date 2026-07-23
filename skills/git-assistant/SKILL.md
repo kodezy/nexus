@@ -18,6 +18,7 @@ Apply this skill for any of:
 - inspect repo state (`status`, `diff`, `log`)
 - suggest commit messages
 - create a commit (staged or session-scoped)
+- finalize handoff after `integrity-review` Clean or Corrected
 - branch / remote / staging advice grounded in git data
 - GitHub steps that depend on local git state (before push/PR)
 
@@ -27,6 +28,7 @@ Apply this skill for any of:
 | --- | --- |
 | Suggest commit message(s) only | `docs/commit-messages.md` |
 | Create or run a commit | `docs/commit-changes.md` |
+| Finalize handoff after integrity review | `docs/commit-changes.md` (same confirmation: files + message) |
 | Other Git questions | Answer from live git data using shared constraints below |
 
 ## Shared constraints

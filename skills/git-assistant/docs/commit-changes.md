@@ -1,6 +1,6 @@
 # Behavior: commit-changes
 
-Use when the user asks to create a commit, run a commit, or invokes `/commit`.
+Use when the user asks to create a commit, run a commit, invokes `/commit`, or when `integrity-review` hands off after a Clean or Corrected verdict.
 
 ## Hard rules
 
@@ -12,6 +12,7 @@ Use when the user asks to create a commit, run a commit, or invokes `/commit`.
 6. If a commit hook fails, report the error and stop. Do not amend.
 7. Exclude secret-like paths (`.env`, credentials, private keys, and similar). Warn when any were candidates.
 8. By default exclude `docs/superpowers/` unless the user explicitly asks to include it.
+9. After an integrity-review Uncertain verdict, do not run this behavior until the uncertainty is resolved.
 
 ## Inspect first
 
@@ -28,15 +29,17 @@ git log -n 5 --oneline
 
 Then follow exactly one branch below.
 
+When invoked from an integrity-review handoff, use the same branches and the same one-shot confirmation (source + file list + message). Do not re-ask for a separate review summary.
+
 ## Branch A — staged files exist
 
 1. Use only staged files. Ignore unstaged/untracked for this round.
 2. Draft one subject line from the staged diff and recent commit style (`docs/commit-messages.md`).
-3. Show the user:
+3. Show the user in one confirmation:
    - source: `staged`
    - file list
    - proposed commit message
-4. Ask for confirmation. Do not commit until the user approves.
+4. Ask once: approve commit. Do not commit until the user approves.
 5. On approval, commit with a HEREDOC:
 
 ```bash
