@@ -40,7 +40,7 @@ For an implementation request, state the intended outcome and constraints. Nexus
 For a final review, use:
 
 ```text
-Use $final-integrity-review to check the completed implementation.
+Use $integrity-review to check the completed implementation.
 ```
 
 The review returns one of three outcomes: a clean result with no changes, focused corrections supported by evidence, or clearly reported uncertainty that needs more information.

@@ -1,9 +1,9 @@
 ---
-name: final-integrity-review
+name: integrity-review
 description: Use when finalizing an implementation, reviewing completed work, or explicitly checking for logic issues, inconsistencies, obsolete code, legacy paths, fallbacks, residues, or unnecessary boilerplate.
 ---
 
-# Final Integrity Review
+# Integrity Review
 
 Review completed work for real issues in the affected feature area. A clean review is a valid result: preserve correct code when the available evidence does not establish a problem.
 
