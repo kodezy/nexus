@@ -20,10 +20,10 @@ Choose style rules based on project signals and target area, then apply only the
    - Use: `docs/typescript.md` for `.ts`, `.tsx`, and `.jsx` rules (including React component structure and ordering).
 2. Python backend/scripts/data areas:
    - Signals: `py`, `pyproject.toml`, `uv.lock`, `requirements.txt`, Python package/module layout.
-   - Use: `docs/python.md` for style. Dependency installs and runs belong to `architect` (`docs/python.md`), not this skill.
+   - Use: `docs/python.md` for style (prefer current stable Python 3.13+ for greenfield; honor repo pins). Dependency installs and runs belong to `architect` (`docs/python.md`), not this skill.
 3. Rust backend/systems/CLI areas:
    - Signals: `rs`, `Cargo.toml`, modules under `src/` in Rust projects.
-   - Use: `docs/rust.md`.
+   - Use: `docs/rust.md` (stable toolchain; edition 2024 greenfield when available, else 2021+).
 4. Mixed repositories:
    - Apply language-specific docs per file/module.
    - Apply Canonical Rules from this `SKILL.md` as shared baseline.

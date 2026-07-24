@@ -19,7 +19,8 @@ Highest priority: simple, clear, pragmatic names.
 
 ## Structure and Organization
 
-- Use modern Python features supported by the project runtime.
+- Prefer **current stable Python** (3.13+ when available) for greenfield work and new modules when the repo does not pin an older runtime.
+- When the project already declares a runtime (`requires-python`, `.python-version`, CI matrix), use that version and only the features it supports.
 - Dependency installs and run workflow: `architect` → `docs/python.md` (not this style guide).
 
 ### Order inside a `.py` file

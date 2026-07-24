@@ -9,6 +9,12 @@ alwaysApply: false
 
 Keep Python architecture simple, clear, and direct, in the same style as the project: simple, descriptive file and module names, without long compound names.
 
+## Runtime
+
+- Prefer **current stable Python** (**3.13+** when available) for greenfield projects.
+- Pin via `requires-python` in `pyproject.toml` (and `.python-version` when the repo uses it).
+- Do not raise or lower the declared runtime unless the user asks; follow existing pins and CI.
+
 ## Dependencies
 
 Choose the workflow from repository signals. Do not migrate tooling unless the user explicitly asks.
@@ -84,6 +90,7 @@ Keep dependency changes focused; do not mix broad upgrades with unrelated featur
 
 ## Summary
 
+- Runtime: current stable Python (**3.13+** for greenfield); honor existing `requires-python` / pins.
 - Dependencies and runs: **uv** for greenfield and uv-managed repos; Poetry/pip-only (or other established tools) follow local convention until migration is requested.
 - Structure aligned with the project: module → submodule → files with short names.
 - File/module names: simple, pragmatic, descriptive, snake_case; avoid long compounds.

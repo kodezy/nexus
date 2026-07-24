@@ -38,6 +38,7 @@ Plugin `2.2.0` (Cursor, Claude Code, Codex, Hermes). Follow `$using-nexus` (sess
 - No new automated test files unless asked; extend existing tests when needed.
 - English for code/commits/harness docs; UI copy follows product language only when requested.
 - Prefer uv for Python when the repo uses it; else local convention.
+- Prefer current stable Python (3.13+) and stable Rust (edition 2024 when available, else 2021+) for greenfield; honor existing runtime pins.
 - Naming: single-word files/modules preferred (two max); public before private; normalize only files you touch.
 - If Superpowers is also loaded: Nexus wins for workspace, closeout, and test policy.
 

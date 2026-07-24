@@ -9,6 +9,17 @@ alwaysApply: false
 
 Keep Rust architecture simple, clear, and direct, in the same style as the project: simple, descriptive file and module names, without long compound names.
 
+## Toolchain and Cargo
+
+- Prefer the **stable** Rust toolchain for greenfield and day-to-day work (`rustup` stable, or `rust-toolchain.toml` with `channel = "stable"`).
+- Prefer **edition 2024** for new crates when stable supports it; otherwise **2021+**. Do not change `edition` / `rust-version` in existing crates unless the user asks.
+- Treat `Cargo.toml` (and the lockfile when present) as the source of truth for dependencies.
+- **Add:** `cargo add <crate>` (dev: `cargo add --dev <crate>`)
+- **Remove:** `cargo remove <crate>`
+- **Build / run / test:** `cargo build`, `cargo run`, `cargo test` (or the project’s documented wrappers).
+- Keep dependency changes focused; do not mix broad upgrades with unrelated feature work.
+- Do not migrate to nightly or alternate tooling unless the user explicitly asks.
+
 ## Folder structure (project baseline)
 
 - **Code root:** `src/` (crate root with `lib.rs` and/or `main.rs`).
@@ -67,6 +78,7 @@ Keep Rust architecture simple, clear, and direct, in the same style as the proje
 
 ## Summary
 
+- Toolchain: **stable**; new crates prefer edition **2024** (else **2021+**); honor existing `Cargo.toml` pins.
 - Structure aligned with the project: module -> submodule -> files with short names.
 - File/module names: simple, pragmatic, descriptive, snake_case; avoid long compounds.
 - One clear purpose per module; flat structure or only a few levels.

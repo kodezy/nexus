@@ -23,7 +23,9 @@ Highest priority: simple, clear, pragmatic names.
 
 ## Structure and Organization
 
-- Always use Rust edition 2021+ and modern language features.
+- Prefer the **stable** Rust toolchain (`rustup default stable` / `rust-toolchain.toml` channel `stable`) unless the project pins another channel.
+- Prefer **edition 2024** for greenfield crates when the stable toolchain supports it; otherwise edition **2021+**. Match `edition` / `rust-version` already set in `Cargo.toml`.
+- Use modern language features supported by that edition and toolchain.
 
 ### Order inside a `.rs` file
 

@@ -11,10 +11,10 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 
 ## Language / Area Selection
 
-- **Python:** Use `docs/python.md` for backend, services, scripts, package layout, and dependency/run workflow (uv preferred; Poetry/pip when local).
-- **Rust:** Use `docs/rust.md` for crates, binaries, modules, and package layout.
+- **Python:** Use `docs/python.md` for backend, services, scripts, package layout, runtime (current stable / 3.13+ greenfield), and dependency/run workflow (uv preferred; Poetry/pip when local).
+- **Rust:** Use `docs/rust.md` for crates, binaries, modules, package layout, and toolchain/Cargo (stable; edition 2024 greenfield when available).
 - **TypeScript / React:** Use the File naming rules below (including the React/TS casing note). UI architecture and runtime (Vite vs Next) belong to `frontend`.
-- Other languages: add docs when needed.
+- Other languages: add docs when needed; prefer current stable toolchains when starting greenfield work.
 
 ## Canonical Rules
 
@@ -50,7 +50,8 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 
 - New code lives under the right module and follows existing hierarchy.
 - File names prefer single-word; two words max with the language-appropriate separator (Python/Rust `_`, new TS/React kebab-case unless the folder already uses `_`); tests exempt.
-- Python dependencies/runs follow `docs/python.md` (uv for greenfield/uv-managed; Poetry/pip-only when that is local).
+- Python dependencies/runs follow `docs/python.md` (uv for greenfield/uv-managed; Poetry/pip-only when that is local; current stable Python 3.13+ for greenfield).
+- Rust toolchain/Cargo follow `docs/rust.md` (stable; edition 2024 for greenfield when available).
 - Existing module was preferred when responsibility matched.
 - New files were created only when split criteria were explicitly met.
 - One clear responsibility per module.
