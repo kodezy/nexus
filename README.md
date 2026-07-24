@@ -53,6 +53,5 @@ The review returns one of three outcomes:
 
 - `AGENTS.md` — the project operating contract.
 - `skills/` — reusable workflows for implementation, style, architecture, Git, reviews, and more.
-- `agents/` — role-specific agent guidance.
 - `scripts/` — supporting automation.
 - `assets/` — repository visual assets.
