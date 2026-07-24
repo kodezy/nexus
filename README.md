@@ -1,7 +1,5 @@
 # Nexus
 
-A private multi-harness production plugin for coding agents (Cursor, Claude Code, Codex).
-
 ![Nexus harness illustration](assets/nexus.png)
 
 ## What It Does
