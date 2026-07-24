@@ -66,6 +66,8 @@ Do not commit `.nexus/` contents.
 3. Treat memories as local context — do not override official repo docs or current code without checking.
 4. If a memory conflicts with current code or docs, report the conflict instead of assuming the memory is correct.
 
+Git workflow preferences in `.nexus/user/preferences.md` are read automatically by `git-assistant` (`workspace-choice.md`, `closeout.md`). Save keys such as `default workspace`, `closeout unify`, and `closeout push` there when the user asks to remember workflow defaults.
+
 ## Delete Workflow
 
 1. Confirm the target file or section with the user when the request is ambiguous.
@@ -74,7 +76,7 @@ Do not commit `.nexus/` contents.
 
 ## Guardrails
 
-1. **English:** All memory content in English (per project `AGENTS.md`).
+1. **English:** All memory content in English (per Nexus contract).
 2. **No secrets:** Never store passwords, tokens, private keys, or personal data.
 3. **No invention:** Do not save facts the user did not provide or confirm.
 4. **Local only:** `.nexus/` is gitignored; tell the user if they want team-shared notes (use repo docs instead).

@@ -1,4 +1,4 @@
 interface:
   display_name: "Integrity Review"
-  short_description: "Review completed work, then confirm commit when clean."
-  default_prompt: "Use $integrity-review to check the completed implementation, then offer commit confirmation when Clean or Corrected."
+  short_description: "Review completed work, then closeout when clean."
+  default_prompt: "Use $integrity-review on the completed implementation, then hand off to git-assistant closeout when Clean or Corrected."

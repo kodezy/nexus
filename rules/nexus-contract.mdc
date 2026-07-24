@@ -1,0 +1,46 @@
+---
+description: Nexus production harness — always-on policy summary
+alwaysApply: true
+---
+
+# Nexus contract (v2.2.0)
+
+Plugin `2.2.0` (Cursor, Claude Code, Codex). Follow `$using-nexus` (session bootstrap where hooks exist). Procedures live in skills — do not invent workflows.
+
+## Loop
+
+1. Preferences — read `.nexus/user/preferences.md` when present.
+2. Workspace — `$git-assistant` → `workspace-choice` before first edit (`main` | `worktree`).
+3. Act — smallest change; `$architect` before new files/modules.
+4. Style — `$code-style` on touched files.
+5. Review — `$integrity-review` on the affected area.
+6. Closeout — on Clean/Corrected: `$git-assistant` → `closeout`; on Uncertain: stop.
+
+## Routing
+
+| Task | Skill |
+| --- | --- |
+| Bootstrap / skill discipline | `$using-nexus` |
+| Git, workspace, closeout | `$git-assistant` |
+| Final review | `$integrity-review` |
+| Structure / placement | `$architect` |
+| Style | `$code-style` |
+| React | `$frontend` |
+| README | `$readme-writer` |
+| Logs | `$log-writer` |
+| Memory | `$memory` |
+| Browser | `$playwright` |
+
+## Hard gates
+
+- No worktree, commit, merge to `main`, or push without approval for that step.
+- Superpowers docs (`docs/superpowers/`, `.superpowers/`): preference `commit superpowers docs` = `include` | `exclude` | `ask` (default ask).
+- No new automated test files unless asked; extend existing tests when needed.
+- English for code/commits/harness docs; UI copy follows product language only when requested.
+- Prefer uv for Python when the repo uses it; else local convention.
+- Naming: single-word files/modules preferred (two max); public before private; normalize only files you touch.
+- If Superpowers is also loaded: Nexus wins for workspace, closeout, and test policy.
+
+## Memory
+
+`.nexus/user/` preferences and `.nexus/project/` learnings are local to the app repo. Write only via `$memory` on explicit request. No secrets.

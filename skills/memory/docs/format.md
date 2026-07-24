@@ -40,6 +40,14 @@ tags: [tooling]
 
 - Use uv for Python dependency and run commands in this repo.
 - Prefer concise commit messages without Conventional Commit prefixes.
+
+## Git workflow
+
+- **default workspace:** `main` — implement on the current checkout unless the request says otherwise
+- **worktree branch prefix:** `feat/`
+- **closeout unify:** `ask` — `ask` | `always` | `never` after a worktree commit
+- **closeout push:** `ask` — `ask` | `always` | `never` after commit (and unify when applicable)
+- **commit superpowers docs:** `ask` — `include` | `exclude` | `ask` for `docs/superpowers/` and `.superpowers/` at commit time
 ```
 
 ### Project learning

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Using Nexus"
+  short_description: "Session bootstrap — invoke Nexus skills before acting."
+  default_prompt: "Follow $using-nexus: read .nexus preferences, invoke relevant Nexus skills before editing, then close out with integrity-review and git-assistant."

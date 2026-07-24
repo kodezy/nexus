@@ -1,83 +1,76 @@
 # Nexus
 
-A pragmatic harness for coding agents that keeps implementation work focused, verifiable, and easy to review.
+A private multi-harness production plugin for coding agents (Cursor, Claude Code, Codex).
 
 ![Nexus harness illustration](assets/nexus.png)
 
 ## What It Does
 
-Nexus gives an agent a clear operating contract for working in a repository:
+- Bootstrap with `$using-nexus` (session hook on Cursor and Claude Code).
+- Choose `main` or `worktree` before edits — or apply `.nexus/user/preferences.md`.
+- Prefer the smallest production-ready change; validate with evidence.
+- Close out: integrity review → commit → unify (worktree) → push (each step with approval).
 
-- Understand the requested outcome before changing files.
-- Use the relevant skill and follow local project conventions.
-- Prefer the smallest production-ready solution.
-- Validate the result with evidence, not assumptions.
-- Review the affected area, then confirm the commit when the review is clear.
+App repos do **not** need a copied `AGENTS.md`. Install the plugin; keep product code and optional `.nexus/` memory in the app.
 
-The goal is not to make agents cautious for its own sake. The goal is to make changes predictable: no speculative refactors, no broad cleanup unrelated to the request, and no claims of success without verification.
-
-## Setup
-
-1. Sync skills to detected IDE destinations (the script lists what it finds and asks before applying):
+## Install
 
 ```bash
-./scripts/sync-skills.sh
+git clone git@github.com:kodezy/nexus.git
+cd nexus
+./scripts/install.sh
 ```
 
-2. In an app repository, use this `AGENTS.md` (copy or keep in sync) so the agent follows the same contract.
-3. Keep product code in the app repo; keep harness policy and skills in Nexus.
+Targets:
+
+| Harness | What install does |
+| --- | --- |
+| **Cursor** | Symlink → `~/.cursor/plugins/local/nexus` (reload window) |
+| **Codex** | Sync `skills/` → `~/.codex/skills` (restart Codex) |
+| **Claude Code** | Prints plugin install steps (`.claude-plugin/`) |
+
+Single target:
+
+```bash
+./scripts/install.sh cursor
+./scripts/install.sh codex
+./scripts/install.sh claude
+```
+
+### Plugin layout
+
+| Path | Role |
+| --- | --- |
+| `skills/using-nexus/` | Bootstrap skill (injected at session start where hooks exist) |
+| `rules/nexus-contract.mdc` | Always-on policy (Cursor); same contract text for all harnesses |
+| `skills/` | Workflows (+ `agents/openai.yaml` for Codex UI) |
+| `commands/` | `/workspace`, `/closeout` (Cursor) |
+| `.cursor-plugin/` | Cursor manifest + `hooks-cursor.json` |
+| `.claude-plugin/` | Claude Code manifest + `hooks/hooks.json` |
+| `.codex-plugin/` | Codex manifest |
+| `AGENTS.md` / `CLAUDE.md` | Pointers for agents working **in this repo** only |
+
+If [Superpowers](https://github.com/obra/superpowers) is also installed: use it for design/plan/SDD; Nexus owns workspace, closeout, and test policy.
 
 ## How Work Flows
 
-1. **Understand** — identify the request, constraints, and success criteria.
-2. **Act** — implement the smallest change that solves the problem.
-3. **Observe** — inspect the relevant diff, behavior, diagnostics, and callers.
-4. **Validate** — run proportionate checks and fix regressions introduced by the change.
-5. **Review** — run `$integrity-review` on the affected feature area for real logic issues, inconsistencies, dead code, legacy paths, residues, and unnecessary boilerplate.
-6. **Confirm commit** — when the review is Clean or Corrected, show the file list and proposed commit message; commit only after you approve. If the review is Uncertain, stop without offering a commit.
+1. Preferences — read `.nexus/user/` when present.
+2. Workspace — `$git-assistant` workspace-choice (or `/workspace` on Cursor).
+3. Act — smallest change; `$architect` when creating structure.
+4. Style — `$code-style` on touched files.
+5. Review — `$integrity-review`.
+6. Closeout — `$git-assistant` closeout (or `/closeout` on Cursor).
 
-## Operating Principles
+## Local Memory (app repos)
 
-- **Evidence first.** A change, cleanup, or conclusion needs observable support.
-- **Scope stays local.** Review touched files and their direct flow neighbors, not the entire repository.
-- **Clean is a valid result.** If no issue is supported by evidence, make no change.
-- **Remove only what is clearly obsolete.** Keep uncertain public APIs, dynamic callers, compatibility code, and active feature flags until their status is known.
-- **Keep it direct.** Avoid unnecessary abstractions, boilerplate, and process overhead.
-- **Commit needs approval.** The agent prepares the file list and message; you confirm once.
-
-## Using the Harness
-
-For an implementation request, state the intended outcome and constraints. Nexus routes the work through the relevant project rules and skills, validates the result, runs integrity review, and then asks you to confirm the commit when the review is clear.
-
-For an explicit final review, use:
+- `.nexus/user/` — `default workspace`, `closeout unify`, `closeout push`, `commit superpowers docs`
+- `.nexus/project/` — codebase learnings
 
 ```text
-Use $integrity-review to check the completed implementation.
+Use $memory to save default workspace: worktree
+Use $memory to save commit superpowers docs: exclude
 ```
 
-The review returns one of three outcomes:
+## Version
 
-- **Clean** or **Corrected** — then one commit confirmation (files + message)
-- **Uncertain** — blocker reported; no commit offered
-
-## Local Memory
-
-App repositories can store local agent memory in `.nexus/`:
-
-- `.nexus/user/` — personal preferences and workflow defaults for this repo
-- `.nexus/project/` — codebase learnings, decisions, and gotchas
-
-Contents stay on your machine and are gitignored by default. Ask the agent to save or recall notes in natural language, or use:
-
-```text
-Use $memory to save that we always use uv in this project.
-```
-
-For team-shared notes, use project documentation instead of `.nexus/`.
-
-## Repository Reference
-
-- `AGENTS.md` — the operating contract (source of truth for policy; closeout detail lives in `$integrity-review`).
-- `skills/` — reusable workflows for implementation, style, architecture, Git, reviews, memory, and more.
-- `scripts/` — supporting automation (`sync-skills.sh`).
-- `assets/` — repository visual assets.
+Plugin version **2.2.0** (all manifests).

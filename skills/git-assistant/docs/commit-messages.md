@@ -53,4 +53,4 @@ Suggested commit messages:
 3. Remove duplicated validation path
 ```
 
-If the user then asks to commit, switch to `docs/commit-changes.md`.
+If the user then asks to commit, switch to `closeout.md`.

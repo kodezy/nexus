@@ -13,7 +13,7 @@ Clear, pragmatic React frontends. Use the smallest viable solution. Align with `
 
 **When:** React app work — Vite SPA, React Router, or Next.js — pages, layouts, components, hooks, data fetching, state, and styling.
 
-**Language:** All code, identifiers, comments, and docstrings in English (per project AGENTS.md). UI copy in another language only when explicitly requested.
+**Language:** All code, identifiers, comments, and docstrings in English (per Nexus contract). UI copy in another language only when explicitly requested.
 
 ---
 

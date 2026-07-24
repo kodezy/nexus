@@ -1,0 +1,16 @@
+{
+  "name": "nexus",
+  "description": "Production harness for Claude Code: workspace choice, integrity review, git closeout, and skill discipline",
+  "version": "2.2.0",
+  "author": {
+    "name": "kodezy"
+  },
+  "keywords": [
+    "harness",
+    "skills",
+    "integrity-review",
+    "git-assistant",
+    "workspace",
+    "closeout"
+  ]
+}

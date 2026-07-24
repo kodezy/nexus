@@ -1,0 +1,22 @@
+{
+  "name": "nexus",
+  "displayName": "Nexus",
+  "description": "Production harness for coding agents: bootstrap, workspace choice, integrity review, git closeout",
+  "version": "2.2.0",
+  "author": {
+    "name": "kodezy"
+  },
+  "keywords": [
+    "harness",
+    "using-nexus",
+    "integrity-review",
+    "git-assistant",
+    "workspace",
+    "closeout"
+  ],
+  "logo": "assets/nexus.png",
+  "skills": "./skills/",
+  "rules": "./rules/",
+  "commands": "./commands/",
+  "hooks": "./hooks/hooks-cursor.json"
+}

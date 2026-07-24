@@ -32,7 +32,7 @@ If repository style conflicts with generic guidance, local project conventions w
 
 ## Canonical Rules (Embedded In Skill)
 
-1. **English:** All code, identifiers, comments, and docstrings in English (per project AGENTS.md).
+1. **English:** All code, identifiers, comments, and docstrings in English (per Nexus contract).
 2. Preserve behavior: style changes must not alter business logic, return values, side effects, or data flow.
 3. Prefer clarity over cleverness: use the simplest structure that remains easy to maintain.
 4. Keep local consistency: match dominant style from the target file and adjacent modules.

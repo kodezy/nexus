@@ -1,6 +1,8 @@
 .env
 .env.local
 .cursor/
+.nexus/
+**/.DS_Store
 
 .DS_Store
 .AppleDouble

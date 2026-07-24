@@ -4,7 +4,8 @@ description: >-
   Use when finalizing an implementation, reviewing completed work, or explicitly
   checking for logic issues, inconsistencies, obsolete code, legacy paths,
   fallbacks, residues, or unnecessary boilerplate. After a Clean or Corrected
-  verdict on a code change, hand off to git-assistant commit confirmation.
+  verdict on a code change, hand off to git-assistant closeout (commit, unify,
+  push).
 ---
 
 # Integrity Review
@@ -13,9 +14,9 @@ Review completed work for real issues in the affected feature area. A clean revi
 
 ## Canonical closeout
 
-This skill is the single source of truth for end-of-implementation review and commit handoff. `AGENTS.md` and `code-style` route here; they do not repeat the full checklist.
+This skill is the single source of truth for end-of-implementation review and commit handoff. The Nexus contract and `code-style` route here; they do not repeat the full checklist.
 
-After every code implementation closeout, this skill is mandatory. On Clean or Corrected, continue to commit confirmation. On Uncertain, stop without offering a commit.
+After every code implementation closeout, this skill is mandatory. On Clean or Corrected, continue to closeout (commit, worktree unify when applicable, push offer). On Uncertain, stop without closeout.
 
 Before the verdict, confirm:
 
@@ -55,14 +56,13 @@ Do not turn hypothetical concerns into changes. Prefer a precise clean verdict o
 
 After the verdict, follow exactly one path:
 
-1. **Uncertain:** Report the blocker and stop. Do not offer a commit.
+1. **Uncertain:** Report the blocker and stop. Do not offer closeout.
 2. **Corrected:** Ensure corrections are validated, then continue with step 3 on the final diff.
-3. **Clean or Corrected:** Hand off to `git-assistant` → `docs/commit-changes.md` for one confirmation:
-   - source (`staged` or `session-unstaged`)
-   - file list
-   - proposed commit message
-   - ask once for approval of add + commit together
+3. **Clean or Corrected:** Hand off to `git-assistant` → `docs/closeout.md` (full closeout behavior lives there):
+   - Phase 1 — commit (apply `commit superpowers docs` preference when those paths appear)
+   - Phase 2 — unify when worktree (respect `closeout unify`: ask | always | never)
+   - Phase 3 — push (respect `closeout push`: ask | always | never)
 4. If there is nothing eligible to commit (clean tree or empty session set): say so and stop.
-5. Never commit without explicit user approval. Never push.
+5. Never commit, merge, remove a worktree, or push without explicit user approval for that phase.
 
-Review-only requests with no eligible session changes still return the verdict; offer commit only when candidates exist and the verdict is Clean or Corrected.
+Review-only requests with no eligible session changes still return the verdict; offer closeout only when candidates exist and the verdict is Clean or Corrected.

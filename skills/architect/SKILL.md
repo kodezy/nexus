@@ -18,7 +18,7 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 
 ## Canonical Rules
 
-1. **English:** All code, identifiers, comments, docstrings, and file/module names in English (per project AGENTS.md).
+1. **English:** All code, identifiers, comments, docstrings, and file/module names in English (per Nexus contract).
 2. **Match existing structure:** Place code in the same hierarchy the project already uses, organized by module/submodule (e.g. `src/api`, `src/services`, `src/ui/components`).
 3. **Simple file names:** Prefer **single-word** names when possible (`parser`, `client`, `cache`, `route`). If one word is not enough, use **at most two words**. Default separator for Python/Rust is `_` (`create_order`, `sync_users`). For TypeScript/React, see File naming below (prefer kebab-case for new two-word `.ts`/`.tsx` files). Avoid longer compounds (e.g. `billing_webhook_processing_service`, `market_offer_creator`).
 4. **Tests exempt:** Test files do not need this pattern; follow project test naming (`test_parser.py`, `orders_test.rs`, descriptive pytest names).
@@ -61,9 +61,9 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 
 Use this repository structure as baseline for placement and naming:
 
-- Top-level content is grouped by purpose (`skills/`, `AGENTS.md`, optional tool metadata), not by deep product hierarchies.
+- Top-level content is grouped by purpose (`skills/`, `rules/`, plugin manifest), not by deep product hierarchies.
 - Skill folders use short, kebab-case names (`code-style`, `log-writer`, `readme-writer`).
-- Supporting material stays close to the owning skill (`docs/`, `scripts/`, `assets/`, `references/`, `agents/`) instead of being scattered.
+- Supporting material stays close to the owning skill (`docs/`, `scripts/`, `assets/`, `references/`, `agents/` for Codex metadata) instead of being scattered.
 - Keep this same approach: simple names, clear ownership, and minimal file fragmentation inside each skill or module.
 
 ## File naming (default)

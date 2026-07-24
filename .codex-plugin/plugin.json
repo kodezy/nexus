@@ -1,0 +1,41 @@
+{
+  "name": "nexus",
+  "version": "2.2.0",
+  "description": "Production harness for coding agents: workspace choice, integrity review, and git closeout with explicit approvals.",
+  "author": {
+    "name": "kodezy",
+    "url": "https://github.com/kodezy"
+  },
+  "homepage": "https://github.com/kodezy/nexus",
+  "repository": "https://github.com/kodezy/nexus",
+  "keywords": [
+    "harness",
+    "skills",
+    "integrity-review",
+    "git-assistant",
+    "workspace",
+    "closeout"
+  ],
+  "skills": "./skills/",
+  "hooks": {},
+  "interface": {
+    "displayName": "Nexus",
+    "shortDescription": "Production harness: workspace, integrity review, closeout",
+    "longDescription": "Use Nexus to choose main vs worktree, apply style and architecture skills, run integrity review, then close out with commit, unify, and push — each step with explicit approval and optional .nexus preferences.",
+    "developerName": "kodezy",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Implement this change with Nexus closeout.",
+      "Use integrity-review on the completed work."
+    ],
+    "websiteURL": "https://github.com/kodezy/nexus",
+    "brandColor": "#1F6FEB",
+    "logo": "./assets/nexus.png",
+    "screenshots": []
+  }
+}
