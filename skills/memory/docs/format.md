@@ -67,18 +67,3 @@ tags: [auth, middleware]
 - Session tokens are validated in `src/middleware/auth.py`.
 - Expired sessions return 401, not 403.
 ```
-
-## `.nexus/README.md` template
-
-Use this content when initializing:
-
-```markdown
-# Local memory
-
-This directory stores local agent memory for this repository.
-
-- `user/` — personal preferences and workflow defaults for this repo
-- `project/` — codebase learnings, decisions, and gotchas
-
-Contents are gitignored and stay on this machine. To share notes with the team, use project documentation instead.
-```

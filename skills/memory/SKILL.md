@@ -30,7 +30,6 @@ When unsure, prefer `project/` for facts about the code and `user/` for how the 
 
 ```text
 .nexus/
-  README.md
   user/
     preferences.md
   project/
@@ -46,8 +45,7 @@ When unsure, prefer `project/` for facts about the code and `user/` for how the 
 Run before the first write when `.nexus/` does not exist:
 
 1. Create `.nexus/user/` and `.nexus/project/`.
-2. Create `.nexus/README.md` with a short explanation of the layout and that contents are local and gitignored.
-3. If `.nexus/` is not listed in `.gitignore`, ask the user once before adding `.nexus/` to `.gitignore`.
+2. If `.nexus/` is not listed in `.gitignore`, ask the user once before adding `.nexus/` to `.gitignore`.
 
 Do not commit `.nexus/` contents.
 
