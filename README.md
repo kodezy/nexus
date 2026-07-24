@@ -60,9 +60,24 @@ The review returns one of three outcomes:
 - **Clean** or **Corrected** — then one commit confirmation (files + message)
 - **Uncertain** — blocker reported; no commit offered
 
+## Local Memory
+
+App repositories can store local agent memory in `.nexus/`:
+
+- `.nexus/user/` — personal preferences and workflow defaults for this repo
+- `.nexus/project/` — codebase learnings, decisions, and gotchas
+
+Contents stay on your machine and are gitignored by default. Ask the agent to save or recall notes in natural language, or use:
+
+```text
+Use $memory to save that we always use uv in this project.
+```
+
+For team-shared notes, use project documentation instead of `.nexus/`.
+
 ## Repository Reference
 
 - `AGENTS.md` — the operating contract (source of truth for policy; closeout detail lives in `$integrity-review`).
-- `skills/` — reusable workflows for implementation, style, architecture, Git, reviews, and more.
+- `skills/` — reusable workflows for implementation, style, architecture, Git, reviews, memory, and more.
 - `scripts/` — supporting automation (`sync-skills.sh`).
 - `assets/` — repository visual assets.

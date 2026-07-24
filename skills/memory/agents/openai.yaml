@@ -1,0 +1,4 @@
+interface:
+  display_name: "Memory"
+  short_description: "Store and retrieve local user/project memories in .nexus/."
+  default_prompt: "Use $memory to save or recall local learnings and preferences."

@@ -22,6 +22,7 @@
 - Existing project rules and available skills.
 - Current workspace state (files, diagnostics, terminal context).
 - Optional environment settings (for example `DEV_HOST`).
+- Optional local memory in `.nexus/` when present and relevant to the task.
 
 ## 5) Outputs (Strict Contract)
 - Primary output: concrete repository changes that match the request.
@@ -123,6 +124,7 @@
   - Architecture (elaborate, plan, or create modules, folders, packages, boundaries, or new-file placement): always `architect`
   - React frontend work (Vite SPA, React Router, or Next.js): `frontend` (+ `architect` when structural decisions are involved)
   - Documentation (`README.md`): `readme-writer`
+  - Memory (remember, save, note, recall local learnings or preferences): always `memory`
 - Optional skills:
   - `playwright` for browser automation
 - Integration test server contract:
@@ -136,6 +138,20 @@
 - `integrity-review` is the source of truth for area review, cleanup judgment, verdict, and commit handoff.
 - Do not repeat that checklist here. On Clean or Corrected, continue to `git-assistant` confirmation; on Uncertain, stop without offering a commit.
 
+## Local Memory (`.nexus/`)
+
+App repositories may keep local agent memory under `.nexus/`:
+
+- `.nexus/user/` — personal preferences and workflow defaults for this repo
+- `.nexus/project/` — codebase learnings, decisions, and gotchas
+
+Rules:
+
+- `.nexus/` is gitignored by default; contents stay local to the machine
+- Read relevant memories when they help the current task
+- Write, update, or delete memories only through `memory` and only on explicit user request
+- Do not store secrets in `.nexus/`
+
 ## Distribution
 - This repository is the source of harness skills and the default contract.
 - App repositories use a copy of this `AGENTS.md` (or an equivalent contract) and install skills with `scripts/sync-skills.sh`.
@@ -143,4 +159,4 @@
 - Keep product code in app repositories; keep harness policy and skills here.
 
 ## Version
-- Agent Contract Version: `v1.5.1`
+- Agent Contract Version: `v1.6.0`
