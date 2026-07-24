@@ -21,15 +21,13 @@ cd nexus
 ./scripts/install.sh
 ```
 
-Targets:
+All targets use **symlinks** into this checkout, so edits here apply without re-installing. Open a new agent session (or Reload Window on Cursor) after changing hooks or the plugin manifest.
 
-| Harness | What install does |
-| --- | --- |
-| **Cursor** | Symlink → `~/.cursor/plugins/local/nexus` (reload window) |
-| **Codex** | Sync `skills/` → `~/.codex/skills` (restart Codex) |
-| **Claude Code** | Prints plugin install steps (`.claude-plugin/`) |
-
-Single target:
+| Harness | Link | Live updates |
+| --- | --- | --- |
+| **Cursor** | `~/.cursor/plugins/local/nexus` → repo | Yes |
+| **Codex** | `~/.codex/skills/<skill>` → `skills/<skill>` | Yes |
+| **Claude Code** | `~/.claude/skills/<skill>` → `skills/<skill>` | Yes |
 
 ```bash
 ./scripts/install.sh cursor
@@ -42,7 +40,7 @@ Single target:
 | Path | Role |
 | --- | --- |
 | `skills/using-nexus/` | Bootstrap skill (injected at session start where hooks exist) |
-| `rules/nexus-contract.mdc` | Always-on policy (Cursor); same contract text for all harnesses |
+| `rules/nexus-contract.mdc` | Always-on policy (Cursor); same contract for all harnesses |
 | `skills/` | Workflows (+ `agents/openai.yaml` for Codex UI) |
 | `commands/` | `/workspace`, `/closeout` (Cursor) |
 | `.cursor-plugin/` | Cursor manifest + `hooks-cursor.json` |
@@ -51,6 +49,8 @@ Single target:
 | `AGENTS.md` / `CLAUDE.md` | Pointers for agents working **in this repo** only |
 
 If [Superpowers](https://github.com/obra/superpowers) is also installed: use it for design/plan/SDD; Nexus owns workspace, closeout, and test policy.
+
+**Updates vs Superpowers:** marketplace Superpowers often auto-updates when the IDE refreshes the plugin cache. A **local** Nexus checkout with symlinks updates when you edit/pull this repo — no marketplace. That is usually better for a private harness.
 
 ## How Work Flows
 
