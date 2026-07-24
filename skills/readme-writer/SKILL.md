@@ -80,7 +80,7 @@ Use this default section order unless the project has an explicit existing stand
 - Use numbered steps.
 - Keep one action per step.
 - Include verification steps when useful.
-- For Python projects that use this harness default: document **uv** (`uv sync`, `uv run`), not bare `pip install`, unless the repo is pip-only.
+- For Python projects: document the repo's real tool (**uv**, Poetry, or pip-only). Prefer documenting **uv** for greenfield harness defaults; do not invent a second package manager.
 
 ### Configuration
 

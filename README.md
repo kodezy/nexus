@@ -16,6 +16,17 @@ Nexus gives an agent a clear operating contract for working in a repository:
 
 The goal is not to make agents cautious for its own sake. The goal is to make changes predictable: no speculative refactors, no broad cleanup unrelated to the request, and no claims of success without verification.
 
+## Setup
+
+1. Sync skills to detected IDE destinations (the script lists what it finds and asks before applying):
+
+```bash
+./scripts/sync-skills.sh
+```
+
+2. In an app repository, use this `AGENTS.md` (copy or keep in sync) so the agent follows the same contract.
+3. Keep product code in the app repo; keep harness policy and skills in Nexus.
+
 ## How Work Flows
 
 1. **Understand** — identify the request, constraints, and success criteria.
@@ -51,7 +62,7 @@ The review returns one of three outcomes:
 
 ## Repository Reference
 
-- `AGENTS.md` — the project operating contract.
+- `AGENTS.md` — the operating contract (source of truth for policy; closeout detail lives in `$integrity-review`).
 - `skills/` — reusable workflows for implementation, style, architecture, Git, reviews, and more.
-- `scripts/` — supporting automation.
+- `scripts/` — supporting automation (`sync-skills.sh`).
 - `assets/` — repository visual assets.

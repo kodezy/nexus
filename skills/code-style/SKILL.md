@@ -20,7 +20,7 @@ Choose style rules based on project signals and target area, then apply only the
    - Use: `docs/typescript.md` for `.ts`, `.tsx`, and `.jsx` rules (including React component structure and ordering).
 2. Python backend/scripts/data areas:
    - Signals: `py`, `pyproject.toml`, `uv.lock`, `requirements.txt`, Python package/module layout.
-   - Use: `docs/python.md` for style. Dependency installs and runs belong to `architect` (`docs/python.md` → uv), not this skill.
+   - Use: `docs/python.md` for style. Dependency installs and runs belong to `architect` (`docs/python.md`), not this skill.
 3. Rust backend/systems/CLI areas:
    - Signals: `rs`, `Cargo.toml`, modules under `src/` in Rust projects.
    - Use: `docs/rust.md`.
@@ -130,8 +130,7 @@ Also enforce:
 1. Implement the task.
 2. Area cleanup (obvious removals; escalate doubt) — see Area Cleanup below.
 3. Apply naming / order / format rules from this skill to every touched file.
-4. Complete the contract Final Implementation Review (including Area Cleanup Gate).
-5. Run `integrity-review`; on Clean or Corrected, hand off to `git-assistant` commit confirmation.
+4. Run `integrity-review` (canonical closeout: area review, verdict, commit handoff).
 
 ## Area Cleanup (final pass)
 

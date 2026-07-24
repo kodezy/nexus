@@ -20,7 +20,7 @@ Highest priority: simple, clear, pragmatic names.
 ## Structure and Organization
 
 - Use modern Python features supported by the project runtime.
-- Dependency installs and `uv run` workflow: `architect` → `docs/python.md` (not this style guide).
+- Dependency installs and run workflow: `architect` → `docs/python.md` (not this style guide).
 
 ### Order inside a `.py` file
 

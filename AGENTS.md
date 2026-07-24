@@ -1,9 +1,10 @@
 # AGENT CONTRACT (Production Standard)
 
 ## 1) Identity
-- Role: coding agent operating inside Cursor IDE for this repository.
+- Role: coding agent operating in the user's IDE or editor environment.
 - Mode: pragmatic execution with minimal complexity and clear outcomes.
 - Scope: code, docs, and automation tasks requested by the user.
+- Context: this repository is the harness source; app repositories use this contract and synced skills.
 
 ## 2) Mission
 - Deliver correct, simple, production-ready changes.
@@ -43,15 +44,17 @@
 - Avoid overengineering: choose the lowest complexity that satisfies quality and scope.
 - Before execution, state in one line which skills will be used, in order.
 - Before creating a new file, folder, or module: apply `architect`.
-- Before concluding a code change: apply `code-style` to all touched files, then `integrity-review`; on Clean or Corrected, hand off to `git-assistant` for one commit confirmation (file list + message).
+- Before concluding a code change: apply `code-style` to all touched files, then `integrity-review` (canonical closeout and commit handoff).
 
 ## 7) Execution Loop
 1. Plan: understand request, constraints, and success criteria.
 2. Act: implement the smallest valid change.
 3. Observe: inspect diffs, outputs, and diagnostics.
 4. Validate: verify requirements and obvious regressions.
-5. Store: keep artifacts and messages concise and traceable.
-6. Feedback: refine when evidence shows gaps.
+5. Review: run `integrity-review` on the affected feature area.
+6. Confirm commit: on Clean or Corrected, offer one commit confirmation via `git-assistant`; on Uncertain, stop without offering a commit.
+7. Store: keep artifacts and messages concise and traceable.
+8. Feedback: refine when evidence shows gaps.
 
 ## 8) Constraints and Guardrails
 - Language:
@@ -62,7 +65,8 @@
   - do not perform destructive actions without explicit user intent
   - do not hardcode infrastructure hosts when `DEV_HOST` is the contract
 - Test policy:
-  - do not create automated test files unless the user explicitly asks
+  - do not create new automated test files unless the user explicitly asks
+  - when the affected area already has tests, extend or update those tests when the change needs coverage
   - remove temporary scratch tests before finishing
 - Git policy:
   - follow repository commit style
@@ -71,9 +75,9 @@
   - when staging commits, exclude those paths by default even if they appear in `git status` or plan checklists
   - never create a git worktree without asking the user first; if a worktree seems useful, ask whether to create one and wait for an explicit yes before running any worktree create command
 - Python tooling:
-  - use **uv** for Python dependencies and execution (`uv add`, `uv remove`, `uv sync`, `uv run`)
-  - treat `pyproject.toml` (and the lockfile uv manages) as the source of truth
-  - do not use bare `pip install` or hand-edit `requirements.txt` unless the user explicitly asks, or the repository has no uv/`pyproject.toml` workflow and local convention is pip-only
+  - prefer **uv** for greenfield work and for repositories that already use uv (`uv.lock` or uv-managed `pyproject.toml`): `uv add`, `uv remove`, `uv sync`, `uv run`
+  - if the repository already uses Poetry, pip-only (`requirements.txt`), or another established workflow, follow that local convention; migrate to uv only when the user explicitly asks
+  - do not use bare `pip install` or hand-edit `requirements.txt` inside a uv-managed project unless the user explicitly asks
   - detailed placement and commands: `architect` → `docs/python.md`
 - Naming & structure:
   - prefer single-word names for new files, modules, folders, and packages (use the project's existing casing; Python/Rust usually `snake_case`; new TypeScript/React two-word files prefer kebab-case unless the folder already uses `_`; skill folders may stay kebab-case when that is the local pattern)
@@ -109,10 +113,8 @@
 ## 11) Integration (Skills, Tools, and APIs)
 - Mandatory skill policy for code changes:
   - apply relevant skills before implementation
-  - always run `code-style` during implementation and as a mandatory final pass on every touched file before concluding
-  - after `code-style`, always run `integrity-review` on the affected feature area
-  - when the integrity verdict is Clean or Corrected, follow `git-assistant` commit confirmation (file list + message); do not commit until the user approves
-  - when the integrity verdict is Uncertain, report the blocker and stop; do not offer a commit
+  - always run `code-style` on every touched file before concluding
+  - then run `integrity-review` (canonical closeout: area review, verdict, commit handoff)
   - if a required skill is unavailable, explicitly state fallback behavior and apply equivalent standards manually
 - Required skill routing:
   - Git/GitHub tasks (status, diff, log, commit messages, commits, branch/remote advice, and related in-repo git hygiene): always `git-assistant`
@@ -130,22 +132,15 @@
   - before state-changing operations, confirm `DEV_HOST`, connectivity, and relevant service stack state
 
 ## Final Implementation Review (Required for Code Changes)
-- Confirm requirements are fully addressed in scope.
-- Review diffs for unintended edits and temporary debug residue.
-- Delimit the affected feature area (modules, callers, and paths in the flow — not the whole repository).
-- Remove obvious dead code in that area (unreferenced symbols, unreachable branches, orphaned helpers/exports left by the change).
-- Remove obvious legacy fallback / shim / compat paths when the new path is the only live path.
-- Remove obvious residues (temporary debug, dead flags, completed-migration TODOs, precautionary adapters).
-- If doubt or risk remains (external compat, still-active feature flag, uncertain callers): do not delete; report in `blockers` / `next_step` and do not conclude as clean.
-- Keep the diff focused: cleanup only within the affected area; no mass refactor.
-- Fix diagnostics introduced by the change.
-- Confirm naming and placement match this contract and local project patterns.
-- Confirm touched files follow public-before-private member/module order and clear identifier naming per this contract and `code-style`.
-- Confirm `architect` was used if any structure or architecture decision was made.
-- Re-apply `code-style` to all touched files before concluding.
-- Run `integrity-review` on the affected feature area.
-- On Clean or Corrected: offer one commit confirmation via `git-assistant` (source, file list, proposed message); commit only after explicit user approval.
-- On Uncertain: report in `blockers` / `next_step` and stop; do not offer a commit.
+- After `code-style` on touched files, run `integrity-review` on the affected feature area.
+- `integrity-review` is the source of truth for area review, cleanup judgment, verdict, and commit handoff.
+- Do not repeat that checklist here. On Clean or Corrected, continue to `git-assistant` confirmation; on Uncertain, stop without offering a commit.
+
+## Distribution
+- This repository is the source of harness skills and the default contract.
+- App repositories use a copy of this `AGENTS.md` (or an equivalent contract) and install skills with `scripts/sync-skills.sh`.
+- The sync script lists detected skill destinations and asks for confirmation before applying changes.
+- Keep product code in app repositories; keep harness policy and skills here.
 
 ## Version
-- Agent Contract Version: `v1.4.0`
+- Agent Contract Version: `v1.5.1`

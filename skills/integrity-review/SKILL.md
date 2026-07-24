@@ -11,7 +11,19 @@ description: >-
 
 Review completed work for real issues in the affected feature area. A clean review is a valid result: preserve correct code when the available evidence does not establish a problem.
 
+## Canonical closeout
+
+This skill is the single source of truth for end-of-implementation review and commit handoff. `AGENTS.md` and `code-style` route here; they do not repeat the full checklist.
+
 After every code implementation closeout, this skill is mandatory. On Clean or Corrected, continue to commit confirmation. On Uncertain, stop without offering a commit.
+
+Before the verdict, confirm:
+
+- requirements are addressed in scope;
+- naming and placement match the contract and local project patterns;
+- touched files follow public-before-private member/module order and clear identifiers (`code-style`);
+- `architect` was used when structure or architecture changed;
+- the final diff has no unintended edits or temporary debug residue.
 
 ## Review sequence
 

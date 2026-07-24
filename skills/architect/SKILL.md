@@ -11,7 +11,7 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 
 ## Language / Area Selection
 
-- **Python:** Use `docs/python.md` for backend, services, scripts, package layout, and **uv** dependency/run workflow.
+- **Python:** Use `docs/python.md` for backend, services, scripts, package layout, and dependency/run workflow (uv preferred; Poetry/pip when local).
 - **Rust:** Use `docs/rust.md` for crates, binaries, modules, and package layout.
 - **TypeScript / React:** Use the File naming rules below (including the React/TS casing note). UI architecture and runtime (Vite vs Next) belong to `frontend`.
 - Other languages: add docs when needed.
@@ -50,7 +50,7 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 
 - New code lives under the right module and follows existing hierarchy.
 - File names prefer single-word; two words max with the language-appropriate separator (Python/Rust `_`, new TS/React kebab-case unless the folder already uses `_`); tests exempt.
-- Python dependencies/runs use **uv** unless the repo is pip-only (see `docs/python.md`).
+- Python dependencies/runs follow `docs/python.md` (uv for greenfield/uv-managed; Poetry/pip-only when that is local).
 - Existing module was preferred when responsibility matched.
 - New files were created only when split criteria were explicitly met.
 - One clear responsibility per module.
@@ -92,5 +92,5 @@ Use this repository structure as baseline for placement and naming:
 
 ## Internal Docs
 
-- `docs/python.md` — Python package layout, naming, structure, and uv dependencies (aligned with a `src/`-style project).
+- `docs/python.md` — Python package layout, naming, structure, and dependency workflow (aligned with a `src/`-style project).
 - `docs/rust.md` — Rust crate layout, naming, and structure (aligned with a `src/`-style crate).

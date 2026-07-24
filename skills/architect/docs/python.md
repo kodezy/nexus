@@ -9,17 +9,26 @@ alwaysApply: false
 
 Keep Python architecture simple, clear, and direct, in the same style as the project: simple, descriptive file and module names, without long compound names.
 
-## Dependencies (uv)
+## Dependencies
 
-Use **uv** for Python dependencies and command execution. Treat `pyproject.toml` and the lockfile uv manages (`uv.lock` when present) as the source of truth.
+Choose the workflow from repository signals. Do not migrate tooling unless the user explicitly asks.
+
+**uv (preferred for greenfield and uv-managed repos)** — signals: `uv.lock`, or `pyproject.toml` managed with uv.
 
 - **Add:** `uv add <package>` (dev: `uv add --dev <package>`)
 - **Remove:** `uv remove <package>`
 - **Install / sync:** `uv sync`
 - **Run:** `uv run <command>` (tests, scripts, CLIs)
-- **Do not** use bare `pip install` or maintain a hand-edited `requirements.txt` when the project uses uv.
-- **Local conventions win:** if the repository has no uv/`pyproject.toml` workflow and already uses pip-only (`requirements.txt`), follow that repo until the user asks to migrate.
-- Keep dependency changes focused; do not mix broad upgrades with unrelated feature work.
+- Treat `pyproject.toml` and the uv lockfile as the source of truth.
+- **Do not** use bare `pip install` or maintain a hand-edited `requirements.txt` in a uv-managed project.
+
+**Existing non-uv workflows** — follow local convention until migration is requested:
+
+- **Poetry:** `poetry.lock` / Poetry `[tool.poetry]` metadata → use Poetry commands the repo already uses.
+- **pip-only:** `requirements.txt` without uv → use that workflow.
+- Mixed lockfiles (for example Poetry + `uv.lock`): follow the primary tool the project documents or already uses for day-to-day work; do not invent a second path.
+
+Keep dependency changes focused; do not mix broad upgrades with unrelated feature work.
 
 ## Folder structure (project baseline)
 
@@ -75,7 +84,7 @@ Use **uv** for Python dependencies and command execution. Treat `pyproject.toml`
 
 ## Summary
 
-- Dependencies and runs go through **uv** by default (`pyproject.toml` / `uv.lock`); pip-only repos follow local convention until migration is requested.
+- Dependencies and runs: **uv** for greenfield and uv-managed repos; Poetry/pip-only (or other established tools) follow local convention until migration is requested.
 - Structure aligned with the project: module → submodule → files with short names.
 - File/module names: simple, pragmatic, descriptive, snake_case; avoid long compounds.
 - One clear purpose per module; flat structure or only a few levels.

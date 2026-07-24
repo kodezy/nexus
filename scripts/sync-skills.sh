@@ -3,10 +3,15 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 src="${repo_root}/skills"
-
-has_cursor=false
-has_codex=false
 codex_home="${CODEX_HOME:-${HOME}/.codex}"
+
+destinations=()
+
+add_destination() {
+  local label="$1"
+  local path="$2"
+  destinations+=("${label}|${path}")
+}
 
 detect_cursor() {
   [[ -d "${HOME}/.cursor" ]] || command -v cursor >/dev/null 2>&1
@@ -30,6 +35,15 @@ sync_to() {
   echo "Synced ${src} -> ${dest}"
 }
 
+confirm_sync() {
+  local reply
+  read -r -p "Apply sync to the destinations above? [y/N] " reply
+  case "${reply}" in
+    y|Y|yes|Yes|YES) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 if [[ ! -d "${src}" ]]; then
   echo "error: skills source not found: ${src}" >&2
   exit 1
@@ -39,30 +53,37 @@ echo "Skills source: ${src}"
 echo
 
 if detect_cursor; then
-  has_cursor=true
-  echo "Found Cursor -> ${HOME}/.cursor/skills"
-  echo "Found Cursor -> ${repo_root}/.cursor/skills"
+  add_destination "Cursor (user)" "${HOME}/.cursor/skills"
+  add_destination "Cursor (repo)" "${repo_root}/.cursor/skills"
 fi
 
 if detect_codex; then
-  has_codex=true
-  echo "Found Codex  -> ${codex_home}/skills"
+  add_destination "Codex" "${codex_home}/skills"
 fi
 
-if ! "${has_cursor}" && ! "${has_codex}"; then
-  echo
-  echo "No Cursor or Codex installation detected." >&2
-  echo "Expected ~/.cursor or ~/.codex, or cursor/codex on PATH." >&2
+if [[ "${#destinations[@]}" -eq 0 ]]; then
+  echo "No skill destinations detected." >&2
+  echo "Expected at least one of:" >&2
+  echo "  - ~/.cursor or cursor on PATH" >&2
+  echo "  - ~/.codex or codex on PATH (or set CODEX_HOME)" >&2
   exit 1
 fi
 
+echo "Detected destinations:"
+for entry in "${destinations[@]}"; do
+  label="${entry%%|*}"
+  path="${entry#*|}"
+  echo "  - ${label}: ${path}"
+done
 echo
 
-if "${has_cursor}"; then
-  sync_to "${HOME}/.cursor/skills"
-  sync_to "${repo_root}/.cursor/skills"
+if ! confirm_sync; then
+  echo "Sync cancelled. No changes made."
+  exit 0
 fi
 
-if "${has_codex}"; then
-  sync_to "${codex_home}/skills"
-fi
+echo
+for entry in "${destinations[@]}"; do
+  path="${entry#*|}"
+  sync_to "${path}"
+done
