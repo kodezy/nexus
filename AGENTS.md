@@ -1,6 +1,6 @@
 # Nexus
 
-Harness source for Cursor, Claude Code, and Codex. **Consumers install the plugin** — do not copy this file into app repositories.
+Harness source for Cursor, Claude Code, Codex, and Hermes. **Consumers install the plugin** — do not copy this file into app repositories.
 
 ## If you are an agent in this repo
 
@@ -10,4 +10,4 @@ Harness source for Cursor, Claude Code, and Codex. **Consumers install the plugi
 
 ## Install (humans)
 
-See `README.md` for Cursor, Claude Code, and Codex setup. Prefer `./scripts/install.sh`.
+See `README.md` for Cursor, Claude Code, Codex, and Hermes setup. Prefer `./scripts/install.sh`.

@@ -5,7 +5,7 @@ alwaysApply: true
 
 # Nexus contract (v2.2.0)
 
-Plugin `2.2.0` (Cursor, Claude Code, Codex). Follow `$using-nexus` (session bootstrap where hooks exist). Procedures live in skills — do not invent workflows.
+Plugin `2.2.0` (Cursor, Claude Code, Codex, Hermes). Follow `$using-nexus` (session bootstrap where hooks exist; Hermes uses profile `SOUL.md`). Procedures live in skills — do not invent workflows.
 
 ## Loop
 

@@ -16,7 +16,7 @@ App repos do **not** need a copied `AGENTS.md`. Install the plugin; keep product
 ## First Run
 
 1. Clone this repo (SSH or HTTPS below).
-2. Run `./scripts/install.sh` (or a single target: `cursor`, `codex`, `claude`).
+2. Run `./scripts/install.sh` (or a single target: `cursor`, `codex`, `claude`, `hermes`).
 3. **Cursor only:** open **Cursor Settings → Plugins**, confirm **Nexus** appears under local plugins and is enabled, then **Reload Window**.
 4. Open a **new agent session** in an app repo (not necessarily this repo).
 5. Send a short prompt such as `Implement a small change with Nexus closeout` — the agent should follow `$using-nexus` and ask `main` or a worktree before editing.
@@ -42,6 +42,7 @@ All targets use **symlinks** into this checkout, so edits here apply without re-
 | **Cursor** | `~/.cursor/plugins/local/nexus` → repo (plugin + hooks + rules) | Yes |
 | **Codex** | `~/.codex/skills/<skill>` → `skills/<skill>` | Yes |
 | **Claude Code** | `~/.claude/skills/<skill>` → `skills/<skill>` | Yes |
+| **Hermes** | Profile `nexus` (override with `NEXUS_HERMES_PROFILE`): skill symlinks + `SOUL.md` | Yes |
 
 Per-target install:
 
@@ -49,6 +50,7 @@ Per-target install:
 ./scripts/install.sh cursor
 ./scripts/install.sh codex
 ./scripts/install.sh claude
+./scripts/install.sh hermes
 ```
 
 ### Cursor
@@ -80,15 +82,38 @@ Use the plugin path only when you need SessionStart hooks; skills alone are enou
 
 Codex does not run a session hook today. Start tasks with an explicit Nexus prompt (for example: “Follow `$using-nexus` and run integrity-review before closeout”) or invoke skills from the Codex UI.
 
+### Hermes
+
+Requires the [Hermes Agent](https://github.com/nousresearch/hermes-agent) CLI. Installs into a dedicated profile (default name `nexus`) so the personal Hermes agent stays untouched:
+
+```bash
+./scripts/install.sh hermes
+# optional:
+NEXUS_HERMES_PROFILE=coder ./scripts/install.sh hermes
+NEXUS_HERMES_PROFILE=default ./scripts/install.sh hermes   # ~/.hermes
+```
+
+What it does:
+
+1. Creates the profile with `--no-skills` when missing.
+2. Symlinks Nexus skills into that profile’s `skills/` (skips `memory` — Hermes owns `/memory`).
+3. Writes `examples/hermes/soul.md` → profile `SOUL.md` (bootstrap; Hermes has no session hook).
+4. Sets `skills.write_approval=true` so Hermes cannot rewrite Nexus skills.
+
+Start coding sessions with `hermes -p nexus chat` (or `nexus chat` after the profile alias exists). Re-run install after pull; open a new Hermes session for SOUL/skill changes.
+
+App-repo preferences still live in `.nexus/user/preferences.md`. Hermes `MEMORY.md` / `USER.md` are for tone and environment only.
+
 ### Troubleshooting
 
 | Problem | Fix |
 | --- | --- |
 | Nexus missing under Cursor Plugins | Confirm `~/.cursor/plugins/local/nexus` is a symlink to this repo (`ls -la ~/.cursor/plugins/local/nexus`). Re-run `./scripts/install.sh cursor`. Reload Window. |
-| Agent ignores Nexus / no bootstrap text | New agent session after install or hook changes. On Cursor/Claude plugin path, confirm hooks are enabled and Reload Window. |
-| `install.sh` refuses a skill path | Remove or rename the conflicting folder under `~/.codex/skills/` or `~/.claude/skills/` (install replaces prior Nexus copies; other paths must be cleared manually). |
+| Agent ignores Nexus / no bootstrap text | New agent session after install or hook changes. On Cursor/Claude plugin path, confirm hooks are enabled and Reload Window. On Hermes, confirm profile `SOUL.md` matches `examples/hermes/soul.md` and start a new chat. |
+| `install.sh` refuses a skill path | Remove or rename the conflicting folder under `~/.codex/skills/`, `~/.claude/skills/`, or the Hermes profile `skills/` (install replaces prior Nexus copies; other paths must be cleared manually). |
 | Preferences not applied | Put `.nexus/user/preferences.md` in the **app repo** you have open, not in the Nexus checkout. See `examples/preferences.md`. |
 | Codex skills stale | New Codex session after adding or removing skill folders. |
+| Hermes install errors on `hermes` | Install Hermes Agent and ensure `hermes` is on `PATH`, then re-run `./scripts/install.sh hermes`. |
 
 ## How Work Flows
 
@@ -122,6 +147,8 @@ Use $memory to save commit superpowers docs: exclude
 | `.cursor-plugin/` | Cursor manifest + `hooks-cursor.json` |
 | `.claude-plugin/` | Claude Code manifest + `hooks/hooks.json` |
 | `.codex-plugin/` | Codex manifest |
+| `examples/preferences.md` | Starter app-repo preferences |
+| `examples/hermes/soul.md` | Hermes profile `SOUL.md` bootstrap |
 | `AGENTS.md` / `CLAUDE.md` | Pointers for agents working **in this repo** only |
 
 If [Superpowers](https://github.com/obra/superpowers) is also installed: use it for design/plan/SDD; Nexus owns workspace, closeout, and test policy. Superpowers is **optional**.

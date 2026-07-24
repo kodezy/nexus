@@ -60,7 +60,7 @@ If Superpowers is installed: use it for design/plan/SDD process when relevant. N
 
 ## Harnesses
 
-Nexus ships for Cursor (rules + hooks-cursor), Claude Code (SessionStart hook), and Codex (skills + `agents/openai.yaml`). Behavior is the same; only packaging differs.
+Nexus ships for Cursor (rules + hooks-cursor), Claude Code (SessionStart hook), Codex (skills + `agents/openai.yaml`), and Hermes (profile skills + `SOUL.md`). Behavior is the same; only packaging differs.
 
 ## User instructions
 
