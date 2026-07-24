@@ -66,7 +66,7 @@ Do not commit `.nexus/` contents.
 3. Treat memories as local context — do not override official repo docs or current code without checking.
 4. If a memory conflicts with current code or docs, report the conflict instead of assuming the memory is correct.
 
-Git workflow preferences in `.nexus/user/preferences.md` are read automatically by `git-assistant` (`workspace-choice.md`, `closeout.md`). Save keys such as `default workspace`, `closeout unify`, and `closeout push` there when the user asks to remember workflow defaults.
+Git workflow preferences in `.nexus/user/preferences.md` are injected at session start when hooks run, and otherwise read by `git-assistant` (`workspace-choice.md`, `closeout.md`). Save keys such as `default workspace`, `closeout unify`, and `closeout push` there when the user asks to remember workflow defaults.
 
 ## Delete Workflow
 

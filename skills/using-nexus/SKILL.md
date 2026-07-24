@@ -18,7 +18,9 @@ Do not improvise workspace choice, closeout, integrity review, architecture, or 
 
 ## Step 0 — Preferences
 
-If `.nexus/user/preferences.md` exists, read it before workspace choice or closeout. Apply keys such as `default workspace`, `closeout unify`, `closeout push`, and `commit superpowers docs`.
+When saved preferences were injected at session start, apply them for workspace choice and closeout (`default workspace`, `closeout unify`, `closeout push`, `commit superpowers docs`).
+
+If none were injected (for example Codex without hooks), read `.nexus/user/preferences.md` when present before workspace choice or closeout.
 
 ## The rule
 

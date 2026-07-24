@@ -52,7 +52,7 @@ If [Superpowers](https://github.com/obra/superpowers) is also installed: use it 
 
 ## How Work Flows
 
-1. Preferences — read `.nexus/user/` when present.
+1. Preferences — session-injected from `.nexus/user/` when hooks run, otherwise read when present.
 2. Workspace — `$git-assistant` workspace-choice (or `/workspace` on Cursor).
 3. Act — smallest change; `$architect` when creating structure.
 4. Style — `$code-style` on touched files.

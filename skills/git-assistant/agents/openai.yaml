@@ -1,4 +1,4 @@
 interface:
   display_name: "Git Assistant"
   short_description: "Workspace choice and git closeout for all harnesses"
-  default_prompt: "Use $git-assistant for Git tasks. Before implementation, check .nexus/user/preferences.md then workspace-choice.md. Closeout via closeout.md (commit, unify when worktree, push). Always confirm each git write phase."
+  default_prompt: "Use $git-assistant for Git tasks. Before implementation, use injected .nexus preferences or read preferences.md, then workspace-choice.md. Closeout via closeout.md (commit, unify when worktree, push). Always confirm each git write phase."

@@ -3,6 +3,9 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+project_dir="${CURSOR_PROJECT_DIR:-${CLAUDE_PROJECT_DIR:-$(pwd)}}"
+prefs_path="${project_dir}/.nexus/user/preferences.md"
+prefs_char_limit=800
 
 using_nexus_content=$(cat "${PLUGIN_ROOT}/skills/using-nexus/SKILL.md" 2>&1 || echo "Error reading using-nexus skill")
 
@@ -16,8 +19,19 @@ escape_for_json() {
   printf '%s' "$s"
 }
 
+prefs_block=""
+if [[ -f "${prefs_path}" ]]; then
+  prefs_size=$(wc -c < "${prefs_path}" | tr -d ' ')
+  prefs_content=$(head -c "${prefs_char_limit}" "${prefs_path}")
+  if (( prefs_size > prefs_char_limit )); then
+    prefs_content="${prefs_content}… (truncated; full file at .nexus/user/preferences.md)"
+  fi
+  escaped_prefs=$(escape_for_json "$prefs_content")
+  prefs_block="\n\n## Saved preferences (.nexus/user/preferences.md)\n\nApply for workspace choice and closeout:\n\n${escaped_prefs}"
+fi
+
 escaped=$(escape_for_json "$using_nexus_content")
-session_context="<EXTREMELY_IMPORTANT>\nYou have Nexus.\n\n**Below is the full content of your 'using-nexus' skill — follow it for this session. For other Nexus skills, read and follow their SKILL.md / docs:**\n\n${escaped}\n</EXTREMELY_IMPORTANT>"
+session_context="<EXTREMELY_IMPORTANT>\nYou have Nexus.\n\n**Below is the full content of your 'using-nexus' skill — follow it for this session. For other Nexus skills, read and follow their SKILL.md / docs:**\n\n${escaped}${prefs_block}\n</EXTREMELY_IMPORTANT>"
 
 # Cursor sets CURSOR_PLUGIN_ROOT (may also set CLAUDE_PLUGIN_ROOT).
 # Claude Code sets CLAUDE_PLUGIN_ROOT without COPILOT_CLI.
