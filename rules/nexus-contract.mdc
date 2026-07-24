@@ -10,7 +10,7 @@ Plugin `2.2.0` (Cursor, Claude Code, Codex). Follow `$using-nexus` (session boot
 ## Loop
 
 1. Preferences — read `.nexus/user/preferences.md` when present.
-2. Workspace — `$git-assistant` → `workspace-choice` before first edit (`main` | `worktree`).
+2. Workspace — `$git-assistant` → `workspace-choice` before first edit (`main` | named worktree).
 3. Act — smallest change; `$architect` before new files/modules.
 4. Style — `$code-style` on touched files.
 5. Review — `$integrity-review` on the affected area.

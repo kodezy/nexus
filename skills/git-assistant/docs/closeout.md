@@ -2,7 +2,7 @@
 
 Use when the user asks to create a commit, run a commit, invokes `/commit`, or when `integrity-review` hands off after a Clean or Corrected verdict.
 
-Closeout has three phases: **commit**, **unify** (worktree only), **push**. Each phase needs explicit user approval before running git write commands.
+Closeout has three phases: **commit** (with push approval when push is in play), **unify** (worktree only), **push** (execute if already approved). Git write commands still need explicit approval before they run.
 
 ## Hard rules
 
@@ -11,7 +11,7 @@ Closeout has three phases: **commit**, **unify** (worktree only), **push**. Each
 3. Never use Conventional Commits prefixes unless the user explicitly asks.
 4. Commit messages in English. Match recent `git log` tone.
 5. Never stage files outside the allowed scope for the active branch below.
-6. Never commit, merge, remove a worktree, or push without explicit user approval for that phase.
+6. Never commit, merge, remove a worktree, or push without explicit user approval (push approval belongs in the Phase 1 confirmation when push is in play).
 7. If a commit or merge hook fails, report the error and stop. Do not amend.
 8. Exclude secret-like paths (`.env`, credentials, private keys, and similar). Warn when any were candidates.
 9. After an integrity-review Uncertain verdict, do not run closeout until the uncertainty is resolved.
@@ -58,25 +58,37 @@ These paths are **not** auto-excluded. Apply `commit superpowers docs`:
 
 When the user answers an `ask` prompt, offer to save the choice via `$memory` (for example `commit superpowers docs: exclude`).
 
-Apply during Phases 2 and 3:
+Apply during Phase 1 (push) and Phase 2 (unify):
 
-| Preference | Phase 2 (unify) | Phase 3 (push) |
+| Preference | Phase 2 (unify) | Push (in Phase 1 confirmation) |
 | --- | --- | --- |
-| `ask` | Ask whether to unify | Ask whether to push |
-| `always` | Skip the yes/no question; show merge plan and ask once to approve unify | Skip the yes/no question; show push target and ask once to approve push |
-| `never` | Skip unify; keep worktree and branch | Skip push offer |
+| `ask` | Ask whether to unify | Include push target in the Phase 1 ask |
+| `always` | Skip the yes/no question; show merge plan and ask once to approve unify | Include push target in the Phase 1 ask (note the saved preference) |
+| `never` | Skip unify; keep worktree and branch | Omit push from the Phase 1 ask; skip Phase 3 |
 
-Git write commands still need explicit approval even when preference is `always`. Preferences change whether the phase is offered or skipped, not whether approval is required.
+Never say you will "offer push later". When push is in play, the Phase 1 question is already `add + commit + push`.
+
+Git write commands still need explicit approval even when preference is `always`. Preferences change whether unify/push are included, not whether approval is required.
 
 When the user asks to always unify or always push (or never), offer to save via `$memory`.
 
 ---
 
-## Phase 1 — Commit
+## Phase 1 — Commit (+ push approval when in play)
 
 Follow exactly one branch below.
 
 When invoked from an integrity-review handoff, use the same branches. Do not re-ask for a separate review summary.
+
+### Push target for Phase 1
+
+When `closeout push` is not `never`, resolve the intended push target before the confirmation:
+
+- **main mode:** current branch (usually `main`)
+- **worktree + unify likely:** `main` after unify (say so); if the user later declines unify, push the feature branch instead
+- **worktree + unify never:** feature branch
+
+Show remote (default `origin` when present) and commits that will be ahead after this commit.
 
 ### Branch A — staged files exist
 
@@ -88,7 +100,10 @@ When invoked from an integrity-review handoff, use the same branches. Do not re-
    - workspace: `main` or `worktree` (+ path and branch when worktree)
    - file list
    - proposed commit message
-5. Ask once: approve add + commit (or commit only when already staged).
+   - push target when `closeout push` is not `never`
+5. Ask once:
+   - push in play: approve add + commit + push to `<remote>/<branch>` (or commit + push when already staged)
+   - push skipped (`never`): approve add + commit (or commit only when already staged)
 6. On approval, commit with a HEREDOC:
 
 ```bash
@@ -100,12 +115,13 @@ EOF
 ```
 
 7. Show short post-commit `git status` and the new commit subject/hash.
-8. Continue to Phase 2 when workspace was `worktree`; otherwise continue to Phase 3.
+8. Record whether push was approved in this confirmation.
+9. Continue to Phase 2 when workspace was `worktree`; otherwise continue to Phase 3.
 
 ### Branch B — nothing staged and working tree clean
 
 1. Tell the user there is nothing to commit.
-2. Stop. Do not run unify or push offers unless the user asks.
+2. Stop. Do not run unify or push unless the user asks.
 
 ### Branch C — nothing staged, but unstaged and/or untracked changes exist
 
@@ -122,11 +138,15 @@ EOF
      - workspace: `main` or `worktree` (+ path and branch when worktree)
      - file list to `git add`
      - proposed commit message
-   - Ask once: approve add + commit together.
+     - push target when `closeout push` is not `never`
+   - Ask once:
+     - push in play: approve add + commit + push to `<remote>/<branch>`
+     - push skipped (`never`): approve add + commit together
 6. On approval:
    - `git add` only the approved paths
    - commit with the approved message (HEREDOC as in Branch A)
    - show short post-commit status
+   - record whether push was approved in this confirmation
 7. On refusal: adjust scope/message and ask again. Do not commit until approved.
 8. After a successful commit, continue to Phase 2 when workspace was `worktree`; otherwise continue to Phase 3.
 
@@ -171,20 +191,18 @@ Run after Phase 1 when workspace was `main`, or after Phase 2 when workspace was
 
 Skip when Phase 1 stopped with nothing to commit (Branch B).
 
-1. Determine push target:
+Skip when `closeout push` is `never`, or when Phase 1 did not include/approve push. Show final `git status` and stop.
+
+1. Determine push target (re-resolve after unify):
    - **main mode:** current branch (usually `main`)
    - **worktree + unified:** `main` at the primary repo
    - **worktree + not unified:** feature branch (from the worktree checkout or its remote tracking branch)
-2. Show:
+2. If push was already approved in Phase 1, execute without asking again. Briefly restate:
    - branch
    - remote (from `git remote -v`, default `origin` when present)
    - commits ahead of upstream (`git status -sb` or `git rev-list --count @{u}..HEAD` when upstream exists)
-3. Ask once: push to `<remote>/<branch>`?
-
-   When saved preference is `closeout push: always`, say so and ask once to approve the push instead of asking whether to push.
-
-   When saved preference is `closeout push: never`, skip this phase and show final `git status`.
-4. On approval only:
+3. Only ask again if the push target changed after unify in a way the Phase 1 confirmation did not cover (for example user declined unify and the Phase 1 ask only named `main`). Otherwise do not re-ask.
+4. On approval (from Phase 1 or the rare re-ask):
 
 ```bash
 git push -u origin <branch>
@@ -192,8 +210,6 @@ git push -u origin <branch>
 
 5. If there is nothing to push (no commits ahead of upstream): say so and stop.
 6. Show short post-push status.
-
-If the user declines push: show final `git status` and stop.
 
 ---
 

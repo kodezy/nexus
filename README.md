@@ -7,9 +7,9 @@ A private multi-harness production plugin for coding agents (Cursor, Claude Code
 ## What It Does
 
 - Bootstrap with `$using-nexus` (session hook on Cursor and Claude Code).
-- Choose `main` or `worktree` before edits — or apply `.nexus/user/preferences.md`.
+- Choose `main` or a named worktree before edits — or apply `.nexus/user/preferences.md`.
 - Prefer the smallest production-ready change; validate with evidence.
-- Close out: integrity review → commit → unify (worktree) → push (each step with approval).
+- Close out: integrity review → approve `add + commit + push` together → unify when worktree → execute push.
 
 App repos do **not** need a copied `AGENTS.md`. Install the plugin; keep product code and optional `.nexus/` memory in the app.
 

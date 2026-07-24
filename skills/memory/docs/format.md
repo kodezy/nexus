@@ -46,7 +46,7 @@ tags: [tooling]
 - **default workspace:** `main` — implement on the current checkout unless the request says otherwise
 - **worktree branch prefix:** `feat/`
 - **closeout unify:** `ask` — `ask` | `always` | `never` after a worktree commit
-- **closeout push:** `ask` — `ask` | `always` | `never` after commit (and unify when applicable)
+- **closeout push:** `ask` — `ask` | `always` | `never`; when not `never`, include push in the Phase 1 `add + commit + push` confirmation
 - **commit superpowers docs:** `ask` — `include` | `exclude` | `ask` for `docs/superpowers/` and `.superpowers/` at commit time
 ```
 

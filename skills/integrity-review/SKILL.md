@@ -59,10 +59,10 @@ After the verdict, follow exactly one path:
 1. **Uncertain:** Report the blocker and stop. Do not offer closeout.
 2. **Corrected:** Ensure corrections are validated, then continue with step 3 on the final diff.
 3. **Clean or Corrected:** Hand off to `git-assistant` → `docs/closeout.md` (full closeout behavior lives there):
-   - Phase 1 — commit (apply `commit superpowers docs` preference when those paths appear)
+   - Phase 1 — commit, with push included in the same approval when `closeout push` is not `never`
    - Phase 2 — unify when worktree (respect `closeout unify`: ask | always | never)
-   - Phase 3 — push (respect `closeout push`: ask | always | never)
+   - Phase 3 — execute push when already approved in Phase 1 (respect `closeout push`: ask | always | never)
 4. If there is nothing eligible to commit (clean tree or empty session set): say so and stop.
-5. Never commit, merge, remove a worktree, or push without explicit user approval for that phase.
+5. Never commit, merge, remove a worktree, or push without explicit user approval.
 
 Review-only requests with no eligible session changes still return the verdict; offer closeout only when candidates exist and the verdict is Clean or Corrected.

@@ -16,7 +16,7 @@ Single skill for every Git-related request, including workspace choice, commit m
 
 Apply this skill for any of:
 
-- choose workspace before implementation (`main` or `worktree`)
+- choose workspace before implementation (`main` or a named worktree)
 - inspect repo state (`status`, `diff`, `log`)
 - suggest commit messages
 - closeout after implementation or `integrity-review` (commit, unify, push)
