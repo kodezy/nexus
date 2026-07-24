@@ -51,18 +51,18 @@ When no applicable preference or override exists, before creating, editing, or d
 1. Derive a proposed worktree from the task:
    - branch name (apply saved `worktree branch prefix` when present)
    - path (apply saved `worktree path pattern`, else sibling `../<repo>-<slug>`)
-2. Ask with those names visible. Do **not** use a bare label `worktree`:
+2. Ask with the worktree path visible (branch is derived but not the prompt label):
 
 ```text
-main, or <branch> at <path>?
+main, or worktree at <path>?
 ```
 
-Example: `main, or feat/closeout-ux at ../nexus-closeout-ux?`
+Example: `main, or worktree at ../nexus-closeout-ux?`
 
 Options:
 
 - **main** — work directly in the current checkout (typically `main` or the active branch).
-- **`<branch>` at `<path>`** — isolated git worktree on that branch.
+- **worktree at `<path>`** — isolated git worktree on the proposed branch (`<branch>`).
 
 Wait for an explicit choice. Do not start implementation until the user answers. If the user picks the proposed option, that choice approves branch and path. If they counter-propose a name or path, use their values.
 
