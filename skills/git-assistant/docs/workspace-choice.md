@@ -11,9 +11,11 @@ Use before the first file change of any implementation request.
 
 Before asking `main` or a named worktree, resolve local workflow preferences:
 
-1. Use saved preferences from session context when injected at session start.
-2. Otherwise, if `.nexus/user/preferences.md` exists, read it.
-3. If missing or incomplete, skim other files under `.nexus/user/` for git-workflow defaults.
+1. Use saved preferences from session context when injected at session start (global and repo; repo overrides global on the same key).
+2. Otherwise read, when present:
+   - `~/.nexus/user/preferences.md` (or `$NEXUS_HOME/user/preferences.md`)
+   - `.nexus/user/preferences.md` in the app repo
+3. If missing or incomplete, skim other files under those `user/` dirs for git-workflow defaults.
 4. Look for these keys (bullet labels or `key: value` forms):
    - `default workspace` / `default_workspace`: `main` | `worktree`
    - `worktree branch prefix` (optional, for example `feat/`)
@@ -25,18 +27,18 @@ Preference resolution:
 | --- | --- |
 | User stated workspace in this message | Honor the request; do not ask |
 | User chose workspace earlier in this conversation | Reuse that choice |
-| `default workspace` is set in `.nexus/` | Apply it; tell the user briefly (`Using saved preference: main`) |
+| `default workspace` is set (repo or global; repo wins) | Apply it; tell the user briefly (`Using saved preference: main`) |
 | No saved preference | Ask once (see below) |
 
 When applying a saved `worktree` preference, still show the proposed branch name and worktree path and confirm them unless those defaults are also saved in `.nexus/`.
 
-When the user says to always use `main` or `worktree`, offer to save it:
+When the user says to always use `main` or `worktree`, offer to save it (global when they mean all projects; repo when they mean this repo only):
 
 ```text
 Use $memory to save default workspace: main
 ```
 
-Only write to `.nexus/` when the user explicitly asks to remember.
+Only write to `~/.nexus/` or `.nexus/` when the user explicitly asks to remember.
 
 ## Skip when
 

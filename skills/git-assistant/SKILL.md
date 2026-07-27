@@ -27,7 +27,7 @@ Apply this skill for any of:
 
 | Intent | Follow |
 | --- | --- |
-| Choose workspace before implementation | `docs/workspace-choice.md` (reads `.nexus/user/` first) |
+| Choose workspace before implementation | `docs/workspace-choice.md` (reads global then repo `user/` prefs) |
 | Suggest commit message(s) only | `docs/commit-messages.md` |
 | Create or run a commit | `docs/closeout.md` |
 | Finalize handoff after integrity review | `docs/closeout.md` |

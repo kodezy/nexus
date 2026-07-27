@@ -7,11 +7,11 @@ Production harness plugin for coding agents: workspace choice, integrity review,
 ## What It Does
 
 - Bootstrap with `$using-nexus` (session hook on Cursor and Claude Code).
-- Choose `main` or a named worktree before edits — or apply `.nexus/user/preferences.md`.
+- Choose `main` or a named worktree before edits — or apply `~/.nexus/user/preferences.md` and optional repo `.nexus/user/preferences.md`.
 - Prefer the smallest production-ready change; validate with evidence.
 - Close out: integrity review → approve `add + commit + push` together → unify when worktree → execute push.
 
-App repos do **not** need a copied `AGENTS.md`. Install the plugin; keep product code and optional `.nexus/` memory in the app.
+App repos do **not** need a copied `AGENTS.md`. Install the plugin; keep product code and optional `.nexus/` memory in the app. Cross-project memory lives in `~/.nexus/`.
 
 ## First Run
 
@@ -59,7 +59,7 @@ After `./scripts/install.sh cursor`:
 
 1. **Cursor Settings → Plugins** — enable **Nexus** if it is not already on.
 2. **Reload Window** (Command Palette → “Developer: Reload Window”).
-3. Start a new agent chat — the session hook injects `$using-nexus` and any `.nexus/user/preferences.md` from the open project.
+3. Start a new agent chat — the session hook injects `$using-nexus` plus any `~/.nexus/user/preferences.md` and repo `.nexus/user/preferences.md` (repo overrides global).
 
 Commands: `/workspace`, `/closeout`.
 
@@ -102,7 +102,7 @@ What it does:
 
 Start coding sessions with `hermes -p nexus chat` (or `nexus chat` after the profile alias exists). Re-run install after pull; open a new Hermes session for SOUL/skill changes.
 
-App-repo preferences still live in `.nexus/user/preferences.md`. Hermes `MEMORY.md` / `USER.md` are for tone and environment only.
+Global preferences live in `~/.nexus/user/preferences.md`; app-repo overrides in `.nexus/user/preferences.md`. Hermes `MEMORY.md` / `USER.md` are for tone and environment only.
 
 ### Troubleshooting
 
@@ -111,29 +111,37 @@ App-repo preferences still live in `.nexus/user/preferences.md`. Hermes `MEMORY.
 | Nexus missing under Cursor Plugins | Confirm `~/.cursor/plugins/local/nexus` is a symlink to this repo (`ls -la ~/.cursor/plugins/local/nexus`). Re-run `./scripts/install.sh cursor`. Reload Window. |
 | Agent ignores Nexus / no bootstrap text | New agent session after install or hook changes. On Cursor/Claude plugin path, confirm hooks are enabled and Reload Window. On Hermes, confirm profile `SOUL.md` matches `examples/hermes/soul.md` and start a new chat. |
 | `install.sh` refuses a skill path | Remove or rename the conflicting folder under `~/.codex/skills/`, `~/.claude/skills/`, or the Hermes profile `skills/` (install replaces prior Nexus copies; other paths must be cleared manually). |
-| Preferences not applied | Put `.nexus/user/preferences.md` in the **app repo** you have open, not in the Nexus checkout. See `examples/preferences.md`. |
+| Preferences not applied | Put global defaults in `~/.nexus/user/preferences.md`, and optional overrides in the **app repo** `.nexus/user/preferences.md` (not in the Nexus checkout). See `examples/preferences.md`. |
 | Codex skills stale | New Codex session after adding or removing skill folders. |
 | Hermes install errors on `hermes` | Install Hermes Agent and ensure `hermes` is on `PATH`, then re-run `./scripts/install.sh hermes`. |
 
 ## How Work Flows
 
-1. Preferences — session-injected from `.nexus/user/` when hooks run, otherwise read when present.
+1. Preferences — session-injected from `~/.nexus/user/` and `.nexus/user/` when hooks run (repo overrides global); otherwise read when present.
 2. Workspace — `$git-assistant` workspace-choice (or `/workspace` on Cursor).
 3. Act — smallest change; `$architect` when creating structure.
 4. Style — `$code-style` on touched files.
 5. Review — `$integrity-review`.
 6. Closeout — `$git-assistant` closeout (or `/closeout` on Cursor).
 
-## Local Memory (app repos)
+## Local Memory
 
-- `.nexus/user/` — `default workspace`, `closeout unify`, `closeout push`, `commit superpowers docs`
-- `.nexus/project/` — codebase learnings
+### Global (`~/.nexus/`, or `$NEXUS_HOME`)
 
-Starter file: copy `examples/preferences.md` into `.nexus/user/preferences.md` in your app repo.
+- `user/preferences.md` — cross-project workflow defaults (`default workspace`, `closeout unify`, `closeout push`, `commit superpowers docs`)
+- `notes/` — free-form personal notes (read on demand via `$memory`, not session-injected)
+
+### App repo (`.nexus/`)
+
+- `user/` — repo overrides for the same preference keys
+- `project/` — codebase learnings
+
+Starter: copy from `examples/preferences.md` into `~/.nexus/user/preferences.md` and/or the app repo `.nexus/user/preferences.md`.
 
 ```text
 Use $memory to save default workspace: worktree
 Use $memory to save commit superpowers docs: exclude
+Use $memory to save globally: prefer concise replies
 ```
 
 ## Plugin Layout
@@ -147,7 +155,7 @@ Use $memory to save commit superpowers docs: exclude
 | `.cursor-plugin/` | Cursor manifest + `hooks-cursor.json` |
 | `.claude-plugin/` | Claude Code manifest + `hooks/hooks.json` |
 | `.codex-plugin/` | Codex manifest |
-| `examples/preferences.md` | Starter app-repo preferences |
+| `examples/preferences.md` | Starter global and app-repo preferences |
 | `examples/hermes/soul.md` | Hermes profile `SOUL.md` bootstrap |
 | `AGENTS.md` / `CLAUDE.md` | Pointers for agents working **in this repo** only |
 
@@ -157,4 +165,4 @@ If [Superpowers](https://github.com/obra/superpowers) is also installed: use it 
 
 ## Version
 
-Plugin version **2.2.0** (all manifests).
+Plugin version **2.3.0** (all manifests).

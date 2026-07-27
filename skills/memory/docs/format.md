@@ -25,7 +25,45 @@ tags: [auth, api]
 
 ## Examples
 
-### User preference
+### Global preference
+
+Path: `~/.nexus/user/preferences.md` (or `$NEXUS_HOME/user/preferences.md`)
+
+```markdown
+---
+created: 2026-07-27
+updated: 2026-07-27
+tags: [tooling]
+---
+
+# Preferences
+
+## Git workflow
+
+- **default workspace:** `worktree` — isolate implementation unless the request says otherwise
+- **closeout unify:** `ask`
+- **closeout push:** `never`
+- **commit superpowers docs:** `exclude`
+```
+
+### Global note
+
+Path: `~/.nexus/notes/communication.md`
+
+```markdown
+---
+created: 2026-07-27
+updated: 2026-07-27
+tags: [communication]
+---
+
+# Communication
+
+- Prefer concise replies.
+- Answer in the user's language when they write in that language.
+```
+
+### Repo preference (overrides global on the same key)
 
 Path: `.nexus/user/preferences.md`
 

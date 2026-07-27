@@ -18,9 +18,14 @@ Do not improvise workspace choice, closeout, integrity review, architecture, or 
 
 ## Step 0 — Preferences
 
-When saved preferences were injected at session start, apply them for workspace choice and closeout (`default workspace`, `closeout unify`, `closeout push`, `commit superpowers docs`).
+When saved preferences were injected at session start, apply them for workspace choice and closeout (`default workspace`, `closeout unify`, `closeout push`, `commit superpowers docs`). Repo preferences override global preferences on the same key.
 
-If none were injected (for example Codex without hooks), read `.nexus/user/preferences.md` when present before workspace choice or closeout.
+If none were injected (for example Codex without hooks), read both when present before workspace choice or closeout:
+
+1. `~/.nexus/user/preferences.md` (or `$NEXUS_HOME/user/preferences.md`) — cross-project defaults
+2. `.nexus/user/preferences.md` — repo overrides
+
+Global free-form notes under `~/.nexus/notes/` are not injected; use `$memory` to read them when relevant.
 
 ## The rule
 

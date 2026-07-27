@@ -3,13 +3,13 @@ description: Nexus production harness — always-on policy summary
 alwaysApply: true
 ---
 
-# Nexus contract (v2.2.0)
+# Nexus contract (v2.3.0)
 
-Plugin `2.2.0` (Cursor, Claude Code, Codex, Hermes). Follow `$using-nexus` (session bootstrap where hooks exist; Hermes uses profile `SOUL.md`). Procedures live in skills — do not invent workflows.
+Plugin `2.3.0` (Cursor, Claude Code, Codex, Hermes). Follow `$using-nexus` (session bootstrap where hooks exist; Hermes uses profile `SOUL.md`). Procedures live in skills — do not invent workflows.
 
 ## Loop
 
-1. Preferences — use session-injected `.nexus/user/preferences.md` when present; otherwise read before workspace choice or closeout.
+1. Preferences — use session-injected preferences when present (global `~/.nexus/user/` plus repo `.nexus/user/`; repo overrides global on the same key); otherwise read both before workspace choice or closeout.
 2. Workspace — `$git-assistant` → `workspace-choice` before first edit (`main` | named worktree).
 3. Act — smallest change; `$architect` before new files/modules.
 4. Style — `$code-style` on touched files.
@@ -44,4 +44,6 @@ Plugin `2.2.0` (Cursor, Claude Code, Codex, Hermes). Follow `$using-nexus` (sess
 
 ## Memory
 
-`.nexus/user/` preferences and `.nexus/project/` learnings are local to the app repo. Write only via `$memory` on explicit request. No secrets.
+- Global: `~/.nexus/user/` preferences and `~/.nexus/notes/` (machine-wide; `$NEXUS_HOME` overrides root).
+- Repo: `.nexus/user/` preferences (override global on the same key) and `.nexus/project/` learnings.
+- Write only via `$memory` on explicit request. No secrets. Never store global memory in the Nexus plugin checkout.

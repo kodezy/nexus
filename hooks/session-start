@@ -4,7 +4,9 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 project_dir="${CURSOR_PROJECT_DIR:-${CLAUDE_PROJECT_DIR:-$(pwd)}}"
-prefs_path="${project_dir}/.nexus/user/preferences.md"
+nexus_home="${NEXUS_HOME:-${HOME}/.nexus}"
+global_prefs_path="${nexus_home}/user/preferences.md"
+repo_prefs_path="${project_dir}/.nexus/user/preferences.md"
 prefs_char_limit=800
 
 using_nexus_content=$(cat "${PLUGIN_ROOT}/skills/using-nexus/SKILL.md" 2>&1 || echo "Error reading using-nexus skill")
@@ -19,15 +21,37 @@ escape_for_json() {
   printf '%s' "$s"
 }
 
-prefs_block=""
-if [[ -f "${prefs_path}" ]]; then
-  prefs_size=$(wc -c < "${prefs_path}" | tr -d ' ')
-  prefs_content=$(head -c "${prefs_char_limit}" "${prefs_path}")
-  if (( prefs_size > prefs_char_limit )); then
-    prefs_content="${prefs_content}… (truncated; full file at .nexus/user/preferences.md)"
+read_prefs_snippet() {
+  local path="$1"
+  local size content
+  size=$(wc -c < "${path}" | tr -d ' ')
+  content=$(head -c "${prefs_char_limit}" "${path}")
+  if (( size > prefs_char_limit )); then
+    content="${content}… (truncated; full file at ${path})"
   fi
-  escaped_prefs=$(escape_for_json "$prefs_content")
-  prefs_block="\n\n## Saved preferences (.nexus/user/preferences.md)\n\nApply for workspace choice and closeout:\n\n${escaped_prefs}"
+  printf '%s' "${content}"
+}
+
+prefs_block=""
+has_global=0
+has_repo=0
+
+if [[ -f "${global_prefs_path}" ]]; then
+  has_global=1
+  escaped_global=$(escape_for_json "$(read_prefs_snippet "${global_prefs_path}")")
+  prefs_block="${prefs_block}\n\n## Global preferences (~/.nexus/user/preferences.md)\n\nApply as cross-project defaults for workspace choice and closeout:\n\n${escaped_global}"
+fi
+
+if [[ -f "${repo_prefs_path}" ]]; then
+  has_repo=1
+  escaped_repo=$(escape_for_json "$(read_prefs_snippet "${repo_prefs_path}")")
+  prefs_block="${prefs_block}\n\n## Repo preferences (.nexus/user/preferences.md)\n\nApply for workspace choice and closeout:\n\n${escaped_repo}"
+fi
+
+if (( has_global == 1 && has_repo == 1 )); then
+  prefs_block="${prefs_block}\n\n## Preference precedence\n\nRepo preferences override global preferences on the same key. Keys only in global still apply."
+elif (( has_global == 1 )); then
+  prefs_block="${prefs_block}\n\n## Preference precedence\n\nNo repo preferences file; use global preferences as defaults."
 fi
 
 escaped=$(escape_for_json "$using_nexus_content")

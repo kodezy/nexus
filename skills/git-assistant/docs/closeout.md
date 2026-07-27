@@ -35,7 +35,7 @@ If the session used a worktree, also note `primary_repo`, `worktree_path`, and `
 
 ## Check saved closeout preferences
 
-Use session-injected preferences, or read `.nexus/user/preferences.md` (and skim other `.nexus/user/` files when needed) for:
+Use session-injected preferences, or read global then repo preferences (`~/.nexus/user/preferences.md` or `$NEXUS_HOME/user/preferences.md`, then `.nexus/user/preferences.md`; repo overrides global on the same key; skim other files under those `user/` dirs when needed) for:
 
 - `closeout unify` / `closeout_unify`: `ask` | `always` | `never` (default `ask`)
 - `closeout push` / `closeout_push`: `ask` | `always` | `never` (default `ask`)
