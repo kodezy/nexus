@@ -1,0 +1,4 @@
+interface:
+  display_name: "Subagent Guide"
+  short_description: "Coordinate bounded, independent subagent work."
+  default_prompt: "Use $subagent-guide to decide whether delegation is justified, define focused task scopes and handoffs, then integrate and validate the combined result."

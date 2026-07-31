@@ -44,6 +44,7 @@ Process / gate skills first, then domain skills:
 | React UI | `$frontend` |
 | Logging | `$log-writer` then `$code-style` |
 | README | `$readme-writer` |
+| Creating or coordinating subagents | `$subagent-guide` |
 | Remember / recall | `$memory` |
 | Finishing a code change | `$code-style` → `$integrity-review` → `$git-assistant` closeout |
 | Bug / unexpected behavior | gather evidence; then `$integrity-review` when closing out |

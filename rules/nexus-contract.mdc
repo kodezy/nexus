@@ -28,6 +28,7 @@ Plugin `2.3.0` (Cursor, Claude Code, Codex, Hermes). Follow `$using-nexus` (sess
 | React | `$frontend` |
 | README | `$readme-writer` |
 | Logs | `$log-writer` |
+| Subagent coordination | `$subagent-guide` |
 | Memory | `$memory` |
 | Browser | `$playwright` |
 
