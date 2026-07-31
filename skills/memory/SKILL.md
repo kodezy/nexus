@@ -60,11 +60,10 @@ When unsure:
 
 For workflow keys (`default workspace`, `closeout unify`, `closeout push`, `commit workflow docs`, `workflow docs paths`, and related):
 
-1. Session-injected preferences when hooks ran
-2. Repo `.nexus/user/preferences.md` overrides `~/.nexus/user/preferences.md` on the same key
-3. Keys only in global still apply
+1. Repo `.nexus/user/preferences.md` overrides `~/.nexus/user/preferences.md` on the same key
+2. Keys only in global still apply
 
-Git workflow preferences are injected at session start when hooks run (global and repo). Otherwise `git-assistant` (`workspace-choice.md`, `closeout.md`) and `$using-nexus` read both paths.
+Git workflow preferences are read on demand by `git-assistant` (`workspace-choice.md`, `closeout.md`) and `$using-nexus`.
 
 ## Initialization
 

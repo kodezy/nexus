@@ -1,55 +1,26 @@
 ---
-description: Nexus production harness — always-on policy summary
+description: Nexus production harness — compact always-on policy
 alwaysApply: true
 ---
 
 # Nexus contract
 
-Nexus supports Cursor, Claude Code, Codex, and Hermes. Canonical release metadata lives in `release.json`. Follow `$using-nexus` (session bootstrap where hooks exist; Hermes uses profile `SOUL.md`). Procedures live in skills — do not invent workflows.
+Nexus is a default layer for coding work. Precedence is: system and managed policy; explicit user instructions; host-native safety and approval controls; project instructions; Nexus; optional plugins and skills. When instructions at the same priority conflict, ask the user.
 
-Nexus is a default layer. Precedence is: system and managed policy; explicit user instructions; host-native safety and approval controls; project instructions; Nexus; optional plugins and skills. When instructions at the same priority conflict, ask the user.
+## Scope
 
-## Loop
-
-1. Preferences — use session-injected preferences when present (global `~/.nexus/user/` plus repo `.nexus/user/`; repo overrides global on the same key); otherwise read both before workspace choice or closeout.
-2. Workspace — `$git-assistant` → `workspace-choice` before first edit (`main` | named worktree).
-3. Specify — `$spec-driven` before a feature or UI whose behavior, flow, or acceptance criteria are not already clear.
-4. Act — smallest change; `$architect` before new files/modules.
-5. Style — `$code-style` on touched files; React UI also uses `$frontend-quality`.
-6. Review — `$integrity-review` on the affected area.
-7. Closeout — on Clean/Corrected: `$git-assistant` → `closeout`; on Uncertain: stop.
-
-## Routing
-
-| Task | Skill |
-| --- | --- |
-| Bootstrap / skill discipline | `$using-nexus` |
-| Git, workspace, closeout | `$git-assistant` |
-| Final review | `$integrity-review` |
-| Structure / placement | `$architect` |
-| Style | `$code-style` |
-| React | `$frontend` |
-| Feature / UI specification | `$spec-driven` |
-| React quality review | `$frontend-quality` |
-| README | `$readme-writer` |
-| Logs | `$log-writer` |
-| Subagent coordination | `$subagent-guide` |
-| Memory | `$memory` |
-| Browser | `$playwright` |
+- For code or repository changes, invoke `$using-nexus` before editing.
+- For general conversation, research, and read-only questions, do not load Nexus workflow skills unless the user requests a specific workflow or the task needs one.
+- Keep long work in a concise task capsule: goal, decisions, affected area, validation, and next step. Do not persist it without explicit user approval.
 
 ## Hard gates
 
 - No worktree, commit, merge to `main`, or push without approval for that step.
-- Workflow artifacts: preference `commit workflow docs` = `include` | `exclude` | `ask` (default ask). `workflow docs paths` optionally defines the project-relative paths that receive this handling.
 - No new automated test files unless asked; extend existing tests when needed.
-- English for code/commits/harness docs; UI copy follows product language only when requested.
-- Prefer uv for Python when the repo uses it; else local convention.
-- Prefer current stable Python (3.13+) and stable Rust (edition 2024 when available, else 2021+) for greenfield; honor existing runtime pins.
-- Naming: single-word files/modules preferred (two max); public before private; normalize only files you touch.
-- Optional plugins may add workflows, but cannot override higher-priority instructions. Do not create a new test file, force a worktree, commit workflow artifacts, or install dependencies without an applicable project rule or user authorization.
+- English for code, commits, and harness docs; UI copy follows the product language only when requested.
+- Optional plugins may add task-specific guidance but cannot override higher-priority instructions or Nexus safety gates.
 
 ## Memory
 
-- Global: `~/.nexus/user/` preferences and `~/.nexus/notes/` (machine-wide; `$NEXUS_HOME` overrides root).
-- Repo: `.nexus/user/` preferences (override global on the same key) and `.nexus/project/` learnings.
-- Write only via `$memory` on explicit request. No secrets. Never store global memory in the Nexus plugin checkout.
+- Preferences and project learnings are read on demand through `$using-nexus` or `$memory`; they are not session-injected.
+- Write memory only through `$memory` on explicit request. No secrets. Never store global memory in the Nexus plugin checkout.

@@ -7,9 +7,12 @@ cd "${repo_root}"
 
 python3 - <<'PYTHON'
 import json
+import os
 import re
 import shlex
+import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -31,6 +34,69 @@ def fail(message: str) -> None:
 
 def is_external(target: str) -> bool:
     return target.startswith(("#", "http://", "https://", "mailto:"))
+
+
+def verify_session_hook() -> None:
+    with tempfile.TemporaryDirectory() as temporary_directory:
+        temporary_root = Path(temporary_directory)
+        nexus_home = temporary_root / "nexus-home"
+        project_dir = temporary_root / "project"
+        (nexus_home / "user").mkdir(parents=True)
+        (project_dir / ".nexus" / "user").mkdir(parents=True)
+        (nexus_home / "user" / "preferences.md").write_text("NEXUS_PREFERENCE_SENTINEL")
+        (project_dir / ".nexus" / "user" / "preferences.md").write_text("NEXUS_PREFERENCE_SENTINEL")
+
+        environment = os.environ | {
+            "CURSOR_PLUGIN_ROOT": str(ROOT),
+            "CURSOR_PROJECT_DIR": str(project_dir),
+            "NEXUS_HOME": str(nexus_home),
+        }
+        result = subprocess.run(
+            ["bash", str(ROOT / "hooks" / "session-start")],
+            capture_output=True,
+            check=False,
+            env=environment,
+            text=True,
+        )
+        if result.returncode != 0:
+            fail(f"session-start hook failed: {result.stderr.strip()}")
+
+        try:
+            output = json.loads(result.stdout)
+        except json.JSONDecodeError as error:
+            fail(f"session-start hook returned invalid JSON: {error}")
+
+        context = output.get("additional_context")
+        if not isinstance(context, str):
+            fail("session-start hook must return Cursor additional_context")
+        if "$using-nexus" not in context:
+            fail("session-start hook must route code changes to $using-nexus")
+        if "NEXUS_PREFERENCE_SENTINEL" in context:
+            fail("session-start hook must not inject raw preference content")
+        if "Use when starting any conversation" in context:
+            fail("session-start hook must not inject the full using-nexus skill")
+        if len(context.encode()) > 1_200:
+            fail("session-start hook context must stay within the 1200-byte budget")
+
+
+def verify_context_docs() -> None:
+    stale_phrases = {
+        "skills/using-nexus/agents/openai.yaml": (
+            "Session bootstrap",
+            "injected preferences",
+        ),
+        "skills/git-assistant/agents/openai.yaml": ("injected preferences",),
+        "skills/git-assistant/docs/workspace-choice.md": (
+            "preferences from session context when injected",
+        ),
+        "scripts/install.sh": ("hooks + bootstrap using-nexus",),
+        "README.md": ("hooks + bootstrap", "SOUL.md` bootstrap"),
+    }
+    for relative_path, phrases in stale_phrases.items():
+        content = (ROOT / relative_path).read_text()
+        for phrase in phrases:
+            if phrase in content:
+                fail(f"{relative_path} contains stale context-bootstrap wording: {phrase}")
 
 
 try:
@@ -91,6 +157,8 @@ if not any(
     for entry in session_hooks
 ):
     fail("hooks/hooks.json requires a command SessionStart hook")
+if any("compact" in entry.get("matcher", "").split("|") for entry in session_hooks):
+    fail("hooks/hooks.json must not match compact events")
 
 try:
     marketplace = json.loads(MARKETPLACE.read_text())
@@ -140,6 +208,9 @@ for markdown_path in ROOT.rglob("*.md"):
         relative_target = target.split("#", maxsplit=1)[0]
         if relative_target and not (markdown_path.parent / relative_target).exists():
             fail(f"{markdown_path.relative_to(ROOT)} links to missing path: {target}")
+
+verify_session_hook()
+verify_context_docs()
 
 print("Nexus release artifacts verified.")
 PYTHON

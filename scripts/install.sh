@@ -176,7 +176,7 @@ install_claude() {
     link_skill_tree "${claude_skills}" "Claude"
     cat <<EOF
 
-  Optional plugin install (hooks + bootstrap using-nexus):
+  Optional plugin install (hooks + compact core policy):
     /plugin marketplace add ${repo_root}
     /plugin install nexus@nexus
 

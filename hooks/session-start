@@ -1,71 +1,35 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-project_dir="${CURSOR_PROJECT_DIR:-${CLAUDE_PROJECT_DIR:-$(pwd)}}"
-nexus_home="${NEXUS_HOME:-${HOME}/.nexus}"
-global_prefs_path="${nexus_home}/user/preferences.md"
-repo_prefs_path="${project_dir}/.nexus/user/preferences.md"
-prefs_char_limit=800
-
-using_nexus_content=$(cat "${PLUGIN_ROOT}/skills/using-nexus/SKILL.md" 2>&1 || echo "Error reading using-nexus skill")
-
 escape_for_json() {
-  local s="$1"
-  s="${s//\\/\\\\}"
-  s="${s//\"/\\\"}"
-  s="${s//$'\n'/\\n}"
-  s="${s//$'\r'/\\r}"
-  s="${s//$'\t'/\\t}"
-  printf '%s' "$s"
+  local value="$1"
+  value="${value//\\/\\\\}"
+  value="${value//\"/\\\"}"
+  value="${value//$'\n'/\\n}"
+  value="${value//$'\r'/\\r}"
+  value="${value//$'\t'/\\t}"
+  printf '%s' "$value"
 }
 
-read_prefs_snippet() {
-  local path="$1"
-  local size content
-  size=$(wc -c < "${path}" | tr -d ' ')
-  content=$(head -c "${prefs_char_limit}" "${path}")
-  if (( size > prefs_char_limit )); then
-    content="${content}… (truncated; full file at ${path})"
-  fi
-  printf '%s' "${content}"
-}
+session_context=$(cat <<'EOF'
+<NEXUS>
+Nexus is available for code and repository work. Precedence is: system and managed policy; explicit user instructions; host-native safety and approval controls; project instructions; Nexus; optional plugins.
 
-prefs_block=""
-has_global=0
-has_repo=0
+For a code or repository change, invoke `$using-nexus` before editing. Do not load Nexus workflow skills for general conversation, research, or read-only questions.
 
-if [[ -f "${global_prefs_path}" ]]; then
-  has_global=1
-  escaped_global=$(escape_for_json "$(read_prefs_snippet "${global_prefs_path}")")
-  prefs_block="${prefs_block}\n\n## Global preferences (~/.nexus/user/preferences.md)\n\nApply as cross-project defaults for workspace choice and closeout:\n\n${escaped_global}"
-fi
+Never create a worktree, commit, merge, or push without explicit approval. For long work, keep a concise task capsule with the goal, decisions, affected area, validation, and next step; do not persist it unless the user asks.
+</NEXUS>
+EOF
+)
+escaped=$(escape_for_json "$session_context")
 
-if [[ -f "${repo_prefs_path}" ]]; then
-  has_repo=1
-  escaped_repo=$(escape_for_json "$(read_prefs_snippet "${repo_prefs_path}")")
-  prefs_block="${prefs_block}\n\n## Repo preferences (.nexus/user/preferences.md)\n\nApply for workspace choice and closeout:\n\n${escaped_repo}"
-fi
-
-if (( has_global == 1 && has_repo == 1 )); then
-  prefs_block="${prefs_block}\n\n## Preference precedence\n\nRepo preferences override global preferences on the same key. Keys only in global still apply."
-elif (( has_global == 1 )); then
-  prefs_block="${prefs_block}\n\n## Preference precedence\n\nNo repo preferences file; use global preferences as defaults."
-fi
-
-escaped=$(escape_for_json "$using_nexus_content")
-session_context="<EXTREMELY_IMPORTANT>\nYou have Nexus.\n\n**Below is the full content of your 'using-nexus' skill — follow it for this session. For other Nexus skills, read and follow their SKILL.md / docs:**\n\n${escaped}${prefs_block}\n</EXTREMELY_IMPORTANT>"
-
-# Cursor sets CURSOR_PLUGIN_ROOT (may also set CLAUDE_PLUGIN_ROOT).
+# Cursor sets CURSOR_PLUGIN_ROOT (and may also set CLAUDE_PLUGIN_ROOT).
 # Claude Code sets CLAUDE_PLUGIN_ROOT without COPILOT_CLI.
-# Copilot CLI / unknown: top-level additionalContext.
+# Copilot CLI and unknown hosts use top-level additionalContext.
 if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
-  printf '{\n  "additional_context": "%s"\n}\n' "$session_context"
+  printf '{\n  "additional_context": "%s"\n}\n' "$escaped"
 elif [ -n "${CLAUDE_PLUGIN_ROOT:-}" ] && [ -z "${COPILOT_CLI:-}" ]; then
-  printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$session_context"
+  printf '{\n  "hookSpecificOutput": {\n    "hookEventName": "SessionStart",\n    "additionalContext": "%s"\n  }\n}\n' "$escaped"
 else
-  printf '{\n  "additionalContext": "%s"\n}\n' "$session_context"
+  printf '{\n  "additionalContext": "%s"\n}\n' "$escaped"
 fi
-
-exit 0

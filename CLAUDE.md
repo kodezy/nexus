@@ -4,7 +4,7 @@ Harness source for Cursor, Claude Code, Codex, and Hermes. **Consumers install t
 
 ## If you are an agent in this repo
 
-1. Follow `skills/using-nexus/SKILL.md`.
+1. Before code or repository changes, follow `skills/using-nexus/SKILL.md`.
 2. Follow the policy in `rules/nexus-contract.mdc` (same contract for all harnesses).
 3. Procedures live under `skills/*/SKILL.md` and skill docs — do not invent workflows.
 

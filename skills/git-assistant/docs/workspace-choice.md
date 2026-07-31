@@ -11,12 +11,11 @@ Use before the first file change of any implementation request.
 
 Before asking `main` or a named worktree, resolve local workflow preferences:
 
-1. Use saved preferences from session context when injected at session start (global and repo; repo overrides global on the same key).
-2. Otherwise read, when present:
+1. Read, when present:
    - `~/.nexus/user/preferences.md` (or `$NEXUS_HOME/user/preferences.md`)
    - `.nexus/user/preferences.md` in the app repo
-3. If missing or incomplete, skim other files under those `user/` dirs for git-workflow defaults.
-4. Look for these keys (bullet labels or `key: value` forms):
+2. If missing or incomplete, skim other files under those `user/` dirs for git-workflow defaults.
+3. Look for these keys (bullet labels or `key: value` forms):
    - `default workspace` / `default_workspace`: `main` | `worktree`
    - `worktree branch prefix` (optional, for example `feat/`)
    - `worktree path pattern` (optional, for example `../<repo>-<slug>`)
