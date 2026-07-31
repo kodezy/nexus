@@ -14,10 +14,11 @@ Procedures live in Nexus skills — do not invent workflows for workspace choice
 
 1. Preferences — read `~/.nexus/user/preferences.md` then the app repo `.nexus/user/preferences.md` before workspace choice or closeout (repo overrides global on the same key); otherwise ask when needed.
 2. Workspace — `git-assistant` → workspace-choice before the first edit (`main` or a named worktree).
-3. Act — smallest production-ready change; `architect` before new files or modules.
-4. Style — `code-style` on touched files.
-5. Review — `integrity-review` on the affected area.
-6. Closeout — on Clean or Corrected: `git-assistant` closeout; on Uncertain: stop.
+3. Specify — `spec-driven` before a feature or UI whose behavior, flow, or acceptance criteria are unclear.
+4. Act — smallest production-ready change; `architect` before new files or modules.
+5. Style — `code-style` on touched files; React UI also uses `frontend-quality`.
+6. Review — `integrity-review` on the affected area.
+7. Closeout — on Clean or Corrected: `git-assistant` closeout; on Uncertain: stop.
 
 ## Hard gates
 

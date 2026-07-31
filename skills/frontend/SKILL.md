@@ -24,6 +24,7 @@ Use these skills together on frontend work, each for a different job:
 - **`frontend` owns:** UI structure, component boundaries, state placement, data fetching shape, layout patterns, styling direction, and UI copy density.
 - **`architect` owns:** file/module placement and file/folder names (match the project; React components may use `PascalCase` files when that is the local pattern).
 - **`code-style` owns:** identifier naming, imports, module/component body order, comments/doc policy, spacing, and final formatting polish.
+- **`frontend-quality` owns:** final responsive, accessibility, visual-consistency, and concise-UX review.
 - Practical rule: `frontend` decides **how the UI should be built**; `architect` decides **where files live and how they are named**; `code-style` decides **how the code should read**.
 
 ---
@@ -55,6 +56,7 @@ Also look for: `tsx` / `jsx`, React components or hooks, Tailwind.
 3. **Structure:** use `architect` for file/module placement and file names.
 4. **Implement** with React patterns for that runtime.
 5. **Style finalization:** run `code-style` using [typescript.md](../code-style/docs/typescript.md).
+6. **Quality review:** run `frontend-quality` before `integrity-review`.
 
 ---
 
@@ -67,7 +69,9 @@ Also look for: `tsx` / `jsx`, React components or hooks, Tailwind.
 - State stays local first, then is lifted only when sharing is required.
 - Data fetching and effects are clear and predictable for the runtime.
 - UI copy stays minimal (no redundant descriptions).
+- New React projects use Tailwind unless the user requests another styling system; existing projects keep their styling system.
 - Styling stays clean and consistent (Tailwind + CSS variables when applicable).
+- Responsive and accessible behavior is reviewed with `frontend-quality`.
 - Finish with `code-style` (`typescript.md`).
 
 ---

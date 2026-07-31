@@ -7,14 +7,17 @@ alwaysApply: true
 
 Nexus supports Cursor, Claude Code, Codex, and Hermes. Canonical release metadata lives in `release.json`. Follow `$using-nexus` (session bootstrap where hooks exist; Hermes uses profile `SOUL.md`). Procedures live in skills — do not invent workflows.
 
+Nexus is a default layer. Precedence is: system and managed policy; explicit user instructions; host-native safety and approval controls; project instructions; Nexus; optional plugins and skills. When instructions at the same priority conflict, ask the user.
+
 ## Loop
 
 1. Preferences — use session-injected preferences when present (global `~/.nexus/user/` plus repo `.nexus/user/`; repo overrides global on the same key); otherwise read both before workspace choice or closeout.
 2. Workspace — `$git-assistant` → `workspace-choice` before first edit (`main` | named worktree).
-3. Act — smallest change; `$architect` before new files/modules.
-4. Style — `$code-style` on touched files.
-5. Review — `$integrity-review` on the affected area.
-6. Closeout — on Clean/Corrected: `$git-assistant` → `closeout`; on Uncertain: stop.
+3. Specify — `$spec-driven` before a feature or UI whose behavior, flow, or acceptance criteria are not already clear.
+4. Act — smallest change; `$architect` before new files/modules.
+5. Style — `$code-style` on touched files; React UI also uses `$frontend-quality`.
+6. Review — `$integrity-review` on the affected area.
+7. Closeout — on Clean/Corrected: `$git-assistant` → `closeout`; on Uncertain: stop.
 
 ## Routing
 
@@ -26,6 +29,8 @@ Nexus supports Cursor, Claude Code, Codex, and Hermes. Canonical release metadat
 | Structure / placement | `$architect` |
 | Style | `$code-style` |
 | React | `$frontend` |
+| Feature / UI specification | `$spec-driven` |
+| React quality review | `$frontend-quality` |
 | README | `$readme-writer` |
 | Logs | `$log-writer` |
 | Subagent coordination | `$subagent-guide` |
@@ -35,13 +40,13 @@ Nexus supports Cursor, Claude Code, Codex, and Hermes. Canonical release metadat
 ## Hard gates
 
 - No worktree, commit, merge to `main`, or push without approval for that step.
-- Superpowers docs (`docs/superpowers/`, `.superpowers/`): preference `commit superpowers docs` = `include` | `exclude` | `ask` (default ask).
+- Workflow artifacts: preference `commit workflow docs` = `include` | `exclude` | `ask` (default ask). `workflow docs paths` optionally defines the project-relative paths that receive this handling.
 - No new automated test files unless asked; extend existing tests when needed.
 - English for code/commits/harness docs; UI copy follows product language only when requested.
 - Prefer uv for Python when the repo uses it; else local convention.
 - Prefer current stable Python (3.13+) and stable Rust (edition 2024 when available, else 2021+) for greenfield; honor existing runtime pins.
 - Naming: single-word files/modules preferred (two max); public before private; normalize only files you touch.
-- If Superpowers is also loaded: Nexus wins for workspace, closeout, and test policy.
+- Optional plugins may add workflows, but cannot override higher-priority instructions. Do not create a new test file, force a worktree, commit workflow artifacts, or install dependencies without an applicable project rule or user authorization.
 
 ## Memory
 

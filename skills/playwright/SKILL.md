@@ -1,12 +1,12 @@
 ---
 name: "playwright"
-description: "Use when the task requires automating a real browser from the terminal (navigation, form filling, snapshots, screenshots, data extraction, UI-flow debugging) via `playwright-cli` or the bundled wrapper script."
+description: "Use when the task requires automating a real browser from the terminal (navigation, form filling, snapshots, screenshots, data extraction, UI-flow debugging) via `playwright-cli`."
 ---
 
 
 # Playwright CLI Skill
 
-Drive a real browser from the terminal using `playwright-cli`. Prefer the bundled wrapper script so the CLI works even when it is not globally installed.
+Drive a real browser from the terminal using `playwright-cli` through `npx`, so the skill works from every supported Codex skill location.
 Treat this skill as CLI-first automation. Do not pivot to `@playwright/test` unless the user explicitly asks for test files.
 
 ## Prerequisite check (required)
@@ -29,28 +29,43 @@ npm install -g @playwright/cli@latest
 playwright-cli --help
 ```
 
-Once `npx` is present, proceed with the wrapper script. A global install of `playwright-cli` is optional.
+Once `npx` is present, proceed with `pwcli`. A global install of `playwright-cli` is optional.
 
-## Skill path (set once)
+## Command (set once)
 
 ```bash
-export CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
-export PWCLI="$CODEX_HOME/skills/playwright/scripts/playwright_cli.sh"
+pwcli() {
+  local has_session_flag=false
+  local arg
+  local command=(npx --yes --package @playwright/cli playwright-cli)
+
+  for arg in "$@"; do
+    if [[ "$arg" == "--session" || "$arg" == --session=* ]]; then
+      has_session_flag=true
+      break
+    fi
+  done
+  if [[ "$has_session_flag" == false && -n "${PLAYWRIGHT_CLI_SESSION:-}" ]]; then
+    command+=(--session "$PLAYWRIGHT_CLI_SESSION")
+  fi
+  command+=("$@")
+  "${command[@]}"
+}
 ```
 
-User-scoped skills install under `$CODEX_HOME/skills` (default: `~/.codex/skills`).
+The function does not depend on where Codex installed the skill.
 
 ## Quick start
 
-Use the wrapper script:
+Use the function:
 
 ```bash
-"$PWCLI" open https://playwright.dev --headed
-"$PWCLI" snapshot
-"$PWCLI" click e15
-"$PWCLI" type "Playwright"
-"$PWCLI" press Enter
-"$PWCLI" screenshot
+pwcli open https://playwright.dev --headed
+pwcli snapshot
+pwcli click e15
+pwcli type "Playwright"
+pwcli press Enter
+pwcli screenshot
 ```
 
 If the user prefers a global install, this is also valid:
@@ -71,10 +86,10 @@ playwright-cli --help
 Minimal loop:
 
 ```bash
-"$PWCLI" open https://example.com
-"$PWCLI" snapshot
-"$PWCLI" click e3
-"$PWCLI" snapshot
+pwcli open https://example.com
+pwcli snapshot
+pwcli click e3
+pwcli snapshot
 ```
 
 ## When to snapshot again
@@ -93,41 +108,31 @@ Refs can go stale. When a command fails due to a missing ref, snapshot again.
 ### Form fill and submit
 
 ```bash
-"$PWCLI" open https://example.com/form
-"$PWCLI" snapshot
-"$PWCLI" fill e1 "user@example.com"
-"$PWCLI" fill e2 "password123"
-"$PWCLI" click e3
-"$PWCLI" snapshot
+pwcli open https://example.com/form
+pwcli snapshot
+pwcli fill e1 "user@example.com"
+pwcli fill e2 "password123"
+pwcli click e3
+pwcli snapshot
 ```
 
 ### Debug a UI flow with traces
 
 ```bash
-"$PWCLI" open https://example.com --headed
-"$PWCLI" tracing-start
+pwcli open https://example.com --headed
+pwcli tracing-start
 # ...interactions...
-"$PWCLI" tracing-stop
+pwcli tracing-stop
 ```
 
 ### Multi-tab work
 
 ```bash
-"$PWCLI" tab-new https://example.com
-"$PWCLI" tab-list
-"$PWCLI" tab-select 0
-"$PWCLI" snapshot
+pwcli tab-new https://example.com
+pwcli tab-list
+pwcli tab-select 0
+pwcli snapshot
 ```
-
-## Wrapper script
-
-The wrapper script uses `npx --package @playwright/cli playwright-cli` so the CLI can run without a global install:
-
-```bash
-"$PWCLI" --help
-```
-
-Prefer the wrapper unless the repository already standardizes on a global install.
 
 ## References
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Spec Driven"
+  short_description: "Define concise, testable product specs."
+  default_prompt: "Use $spec-driven to define a focused specification before implementing this feature."

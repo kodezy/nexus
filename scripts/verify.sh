@@ -20,6 +20,7 @@ MANIFESTS = {
     ".claude-plugin/plugin.json": ("name", "version"),
     ".cursor-plugin/plugin.json": ("name", "version"),
 }
+MARKETPLACE = ROOT / ".agents/plugins/marketplace.json"
 MARKDOWN_LINK = re.compile(r"!?(?:\[[^]]*]\(([^)]+)\))")
 
 
@@ -79,6 +80,40 @@ for field, target in {
 }.items():
     if isinstance(target, str) and not (ROOT / target).exists():
         fail(f".codex-plugin/plugin.json references missing {field}: {target}")
+
+if codex_manifest.get("hooks") != "./hooks/hooks.json":
+    fail(".codex-plugin/plugin.json must reference ./hooks/hooks.json")
+
+hook_config = json.loads((ROOT / "hooks/hooks.json").read_text())
+session_hooks = hook_config.get("hooks", {}).get("SessionStart", [])
+if not any(
+    any(hook.get("type") == "command" for hook in entry.get("hooks", []))
+    for entry in session_hooks
+):
+    fail("hooks/hooks.json requires a command SessionStart hook")
+
+try:
+    marketplace = json.loads(MARKETPLACE.read_text())
+except FileNotFoundError:
+    fail(".agents/plugins/marketplace.json is missing")
+except json.JSONDecodeError as error:
+    fail(f".agents/plugins/marketplace.json is invalid JSON: {error}")
+
+entries = marketplace.get("plugins", [])
+nexus_entry = next((entry for entry in entries if entry.get("name") == release["name"]), None)
+if not nexus_entry:
+    fail("marketplace is missing the Nexus plugin entry")
+source = nexus_entry.get("source", {})
+source_path = source.get("path")
+if source.get("source") != "local" or not isinstance(source_path, str):
+    fail("marketplace Nexus entry must use a local source path")
+if not source_path.startswith("./"):
+    fail("marketplace Nexus source path must be relative to the marketplace root")
+if not (ROOT / source_path / ".codex-plugin/plugin.json").is_file():
+    fail("marketplace Nexus source path must contain .codex-plugin/plugin.json")
+policy = nexus_entry.get("policy", {})
+if policy.get("installation") != "AVAILABLE" or policy.get("authentication") != "ON_INSTALL":
+    fail("marketplace Nexus entry has an invalid installation policy")
 
 cursor_hooks = json.loads((ROOT / "hooks/hooks-cursor.json").read_text())
 for entry in cursor_hooks.get("hooks", {}).get("sessionStart", []):

@@ -26,6 +26,7 @@ When the user asks for a **new** React app and does not specify a stack:
 - Prefer **Vite + React + TypeScript** for dashboards, internal tools, and SPA UIs.
 - Prefer **Next.js App Router** only when SSR, SEO, or server-first routing is a stated need.
 - Prefer current stable React (19.x line when available) and current stable Vite for greenfield work.
+- Use Tailwind for styling unless the user explicitly requests another system.
 - Keep dependency upgrades in their own change; do not mix large upgrades with feature work.
 
 ### Do not force
@@ -103,6 +104,14 @@ export function OrderCard({ order, onCancel }: OrderCardProps) {
 - Good: title `Accounts` alone, or a description that states a non-obvious constraint or state.
 - Prefer short empty/error strings over paragraphs.
 
+## UI quality
+
+- Design for the primary task first. Remove cards, icons, helper text, and controls that do not help the user complete it.
+- Start with the narrow viewport, then confirm the layout at a wider viewport. Do not hide the primary action or require horizontal scrolling.
+- Use semantic HTML before ARIA. Inputs need labels, icon-only controls need accessible names, and interactive controls need visible keyboard focus.
+- Use buttons for actions and links for navigation. Do not recreate native behavior with non-interactive elements.
+- Implement loading, empty, error, disabled, and success states when the feature can reach them.
+
 ## Data fetching
 
 ### Vite SPA / client router (declarative)
@@ -142,6 +151,7 @@ export function OrderCard({ order, onCancel }: OrderCardProps) {
 - Keep visual primitives consistent: spacing scale, radius, typography, colors.
 - Dark mode: use `prefers-color-scheme` or an explicit theme toggle with variables.
 - Match the project's Tailwind major (v3 config vs v4 CSS-first); do not upgrade Tailwind inside unrelated feature work.
+- Use existing primitives first. Add shadcn/ui or Radix only when an accessible primitive is needed and the dependency fits the project.
 
 ## Hooks and modern React
 

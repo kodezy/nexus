@@ -19,7 +19,8 @@ tags: [tooling]
 - **worktree branch prefix:** `feat/`
 - **closeout unify:** `ask` — `ask` | `always` | `never` after a worktree commit
 - **closeout push:** `ask` — `ask` | `always` | `never`
-- **commit superpowers docs:** `exclude` — `include` | `exclude` | `ask`
+- **commit workflow docs:** `exclude` — `include` | `exclude` | `ask`
+- **workflow docs paths:** `docs/superpowers/, .superpowers/` — optional comma-separated project-relative paths
 ```
 
 Free-form cross-project notes go in `~/.nexus/notes/` (one topic per file). They are read on demand via `$memory`, not injected at session start.
@@ -43,7 +44,8 @@ tags: [tooling]
 - **worktree branch prefix:** `feat/`
 - **closeout unify:** `ask` — `ask` | `always` | `never` after a worktree commit
 - **closeout push:** `ask` — `ask` | `always` | `never`; when not `never`, include push in the `add + commit + push` confirmation
-- **commit superpowers docs:** `ask` — `include` | `exclude` | `ask` for `docs/superpowers/` and `.superpowers/` at commit time
+- **commit workflow docs:** `ask` — `include` | `exclude` | `ask` for workflow artifact paths at commit time
+- **workflow docs paths:** `docs/superpowers/, .superpowers/` — optional comma-separated project-relative paths
 ```
 
 Or ask the agent in any session:

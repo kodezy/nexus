@@ -7,11 +7,11 @@ description: Write and refactor README documentation that is clear, simple, and 
 
 ## Objective
 
-Write documentation that is clear, simple, and practical. Keep README files easy to understand, maintain, and evolve.
+Write documentation that is clear, direct, and practical. Keep README files short, easy to scan, and easy to maintain.
 
 ## Build The README In This Order
 
-Use this default section order unless the project has an explicit existing standard:
+Use this default order only for sections the reader needs. Omit empty, obvious, or low-value sections.
 
 1. Title and brief description
 2. Features
@@ -20,7 +20,7 @@ Use this default section order unless the project has an explicit existing stand
 5. Configuration
 6. Usage
 7. Architecture (if relevant)
-8. Additional sections (API docs, contributing, license, etc.)
+8. API, Contributing, or License (only when relevant)
 
 ## Write With This Style
 
@@ -31,10 +31,13 @@ Use this default section order unless the project has an explicit existing stand
 - Use specific versions and concrete details.
 - Keep sentences short and focused (one idea per sentence).
 - Prefer bullet points over long paragraphs.
+- State each fact once. Link to deeper documentation instead of repeating it.
 
 ## Apply Naming And Formatting Rules
 
-- Use clear section headers such as `## Installation`, `## Configuration`, `## Usage`.
+- Prefer a single, familiar word for each section header: `## Install`, `## Configure`, `## Usage`, `## API`.
+- Keep related content under one section; add a subsection only when it improves scanning.
+- Do not shorten a heading into an unclear abbreviation or forced label.
 - Use fenced code blocks for commands, snippets, and file paths.
 - Use inline code for single terms such as `main.py`, `pyproject.toml`, and `uv sync`.
 - Use bold only for high-signal emphasis such as **required** and **optional**.
@@ -48,6 +51,12 @@ Use this default section order unless the project has an explicit existing stand
 - Include expected output only when it adds practical clarity.
 - Keep `$` prefix usage consistent if chosen.
 - Never include secrets, credentials, or real tokens.
+
+## Validate Links
+
+- Verify every link before adding or retaining it, including relative paths and anchors.
+- Never leave a dead link, placeholder URL, empty target, or `TODO`/`TBD` link in a README.
+- If a link cannot be verified, ask the user for the confirmed destination or omit the link.
 
 ## Prefer Concrete Examples
 
@@ -65,7 +74,7 @@ Use this default section order unless the project has an explicit existing stand
 
 ### Features
 
-- Use 5 to 10 bullets when possible.
+- Include only capabilities that help a reader decide or get started.
 - Keep one capability per bullet.
 - Start with action verbs when practical.
 
@@ -99,6 +108,12 @@ Use this default section order unless the project has an explicit existing stand
 - Include only when structure matters to onboarding.
 - Use a short tree view with concise annotations.
 
+### Additional Sections
+
+- Add a section only when it answers a likely reader question.
+- Prefer one-word names such as `API`, `Contributing`, or `License`.
+- Keep secondary details in linked documentation when possible.
+
 ## Keep Visual Organization Scannable
 
 - Keep heading levels consistent (`##` then `###`).
@@ -115,6 +130,8 @@ Use this default section order unless the project has an explicit existing stand
 - Avoid vague terms such as “soon” or “sometimes”.
 - Avoid duplicated content across sections.
 - Avoid sensitive data in any example.
+- Avoid creating sections just to follow a template.
+- Avoid “coming soon” links and links that must be filled in later.
 
 ## Maintenance Checklist
 
@@ -124,4 +141,6 @@ Before finishing README edits:
 - Remove outdated sections.
 - Validate commands locally when possible.
 - Verify links and references.
+- Confirm every retained link resolves; ask the user when verification is not possible.
 - Confirm version numbers are current.
+- Remove sections and examples that do not help the primary reader.

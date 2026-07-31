@@ -1,20 +1,6 @@
 # Playwright CLI Reference
 
-Use the wrapper script unless the CLI is already installed globally:
-
-```bash
-export CODEX_HOME="${CODEX_HOME:-$HOME/.codex}"
-export PWCLI="$CODEX_HOME/skills/playwright/scripts/playwright_cli.sh"
-"$PWCLI" --help
-```
-
-User-scoped skills install under `$CODEX_HOME/skills` (default: `~/.codex/skills`).
-
-Optional convenience alias:
-
-```bash
-alias pwcli="$PWCLI"
-```
+Start by defining `pwcli` in the [main skill](../SKILL.md#command-set-once). It works regardless of the local skill directory or plugin cache location.
 
 ## Core
 

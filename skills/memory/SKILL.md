@@ -58,7 +58,7 @@ When unsure:
 
 ## Preference Precedence
 
-For workflow keys (`default workspace`, `closeout unify`, `closeout push`, `commit superpowers docs`, and related):
+For workflow keys (`default workspace`, `closeout unify`, `closeout push`, `commit workflow docs`, `workflow docs paths`, and related):
 
 1. Session-injected preferences when hooks ran
 2. Repo `.nexus/user/preferences.md` overrides `~/.nexus/user/preferences.md` on the same key

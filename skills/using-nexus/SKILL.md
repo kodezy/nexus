@@ -18,7 +18,7 @@ Do not improvise workspace choice, closeout, integrity review, architecture, or 
 
 ## Step 0 — Preferences
 
-When saved preferences were injected at session start, apply them for workspace choice and closeout (`default workspace`, `closeout unify`, `closeout push`, `commit superpowers docs`). Repo preferences override global preferences on the same key.
+When saved preferences were injected at session start, apply them for workspace choice and closeout (`default workspace`, `closeout unify`, `closeout push`, `commit workflow docs`, `workflow docs paths`). Repo preferences override global preferences on the same key.
 
 If none were injected (for example Codex without hooks), read both when present before workspace choice or closeout:
 
@@ -27,9 +27,22 @@ If none were injected (for example Codex without hooks), read both when present 
 
 Global free-form notes under `~/.nexus/notes/` are not injected; use `$memory` to read them when relevant.
 
+## Authority order
+
+Nexus provides defaults; it does not override higher-priority instructions. Resolve conflicts in this order:
+
+1. System and managed policy
+2. Explicit user instructions
+3. Host-native safety, approval, and configuration controls
+4. Project instructions (`AGENTS.md`, `CLAUDE.md`, Cursor rules, or equivalents)
+5. Nexus contract and skills
+6. Optional plugins and skills
+
+When instructions at the same priority conflict, stop and ask the user. Do not treat a Nexus default as permission to bypass a host control or another established project rule.
+
 ## The rule
 
-Invoke relevant Nexus skills **before** editing, exploring, or answering implementation questions. Announce `Using $skill to …` and follow the skill. If it turns out wrong, stop using it.
+After applying higher-priority instructions, invoke relevant Nexus skills **before** editing, exploring, or answering implementation questions. Announce `Using $skill to …` and follow the skill. If it turns out wrong, stop using it.
 
 Always-on policy lives in `rules/nexus-contract.mdc`. Skills hold procedures — read the current skill file; do not rely on memory of an older version.
 
@@ -42,6 +55,8 @@ Process / gate skills first, then domain skills:
 | Implementation will edit files | `$git-assistant` → `workspace-choice` (after Step 0) |
 | New module / folder / placement | `$architect` |
 | React UI | `$frontend` |
+| Feature / UI specification | `$spec-driven` |
+| Final React UI quality review | `$frontend-quality` |
 | Logging | `$log-writer` then `$code-style` |
 | README | `$readme-writer` |
 | Creating or coordinating subagents | `$subagent-guide` |
@@ -58,15 +73,15 @@ Process / gate skills first, then domain skills:
 | "I'll just edit quickly" | Workspace choice and contract still apply |
 | "I remember how closeout works" | Read `closeout.md` — preferences may have changed |
 | "Skip integrity for a tiny change" | Code changes still close out via `$integrity-review` |
-| "Superpowers already covers this" | For git/workspace/closeout/tests, Nexus wins |
+| "An optional plugin says something else" | Apply the authority order; Nexus supplies defaults, not overrides |
 
-## Superpowers coexistence
+## Host and plugin coexistence
 
-If Superpowers is installed: use it for design/plan/SDD process when relevant. Nexus owns workspace choice, closeout, and test policy (no new automated tests unless asked).
+Use optional plugins when their workflow fits the task and does not conflict with higher-priority instructions. For example, Superpowers can help with design, planning, or subagent-driven development. Nexus defaults remain: do not create a test file, force a worktree, commit workflow artifacts, or install dependencies without an applicable project rule or user authorization. Use existing tests when they cover the change; otherwise ask before adding a test file.
 
 ## Harnesses
 
-Nexus ships for Cursor (rules + hooks-cursor), Claude Code (SessionStart hook), Codex (skills + `agents/openai.yaml`), and Hermes (profile skills + `SOUL.md`). Behavior is the same; only packaging differs.
+Nexus ships for Cursor (rules + hooks-cursor), Claude Code (SessionStart hook), Codex (skills, plugins, and hooks), and Hermes (profile skills + `SOUL.md`). Host capabilities and instruction surfaces vary; see the README compatibility matrix instead of assuming identical behavior.
 
 ## User instructions
 

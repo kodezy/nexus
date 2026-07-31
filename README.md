@@ -11,7 +11,7 @@ Production harness plugin for coding agents: workspace choice, integrity review,
 - Prefer the smallest production-ready change; validate with evidence.
 - Close out: integrity review → approve `add + commit + push` together → unify when worktree → execute push.
 
-App repos do **not** need a copied `AGENTS.md`. Install the plugin; keep product code and optional `.nexus/` memory in the app. Cross-project memory lives in `~/.nexus/`.
+App repos do **not** need a copied Nexus `AGENTS.md`. Nexus complements, but never replaces, the app's existing `AGENTS.md`, `CLAUDE.md`, Cursor rules, or host configuration. Keep optional Nexus workflow preferences in `.nexus/`; cross-project preferences live in `~/.nexus/`.
 
 ## First Run
 
@@ -19,7 +19,7 @@ App repos do **not** need a copied `AGENTS.md`. Install the plugin; keep product
 2. Run `./scripts/install.sh` (or a single target: `cursor`, `codex`, `claude`, `hermes`).
 3. **Cursor only:** open **Cursor Settings → Plugins**, confirm **Nexus** appears under local plugins and is enabled, then **Reload Window**.
 4. Open a **new agent session** in an app repo (not necessarily this repo).
-5. Send a short prompt such as `Implement a small change with Nexus closeout` — the agent should follow `$using-nexus` and ask `main` or a worktree before editing.
+5. Send a short prompt such as `Implement a small change with Nexus closeout` — the agent should follow `$using-nexus` and choose the workspace from preferences or ask before editing.
 
 ## Install
 
@@ -35,12 +35,12 @@ cd nexus
 ./scripts/install.sh
 ```
 
-All targets use **symlinks** into this checkout, so edits here apply without re-installing. Open a new agent session (or Reload Window on Cursor) after changing hooks or the plugin manifest.
+Claude skill installs use **symlinks** into this checkout, so skill edits apply without re-installing. Plugin-hosted files follow each host's cache and refresh behavior. After changing hooks or manifests, refresh the Codex plugin, reload Cursor, or open a new agent session for the relevant host.
 
 | Harness | What install does | Live updates |
 | --- | --- | --- |
 | **Cursor** | `~/.cursor/plugins/local/nexus` → repo (plugin + hooks + rules) | Yes |
-| **Codex** | `~/.codex/skills/<skill>` → `skills/<skill>` | Yes |
+| **Codex** | Adds this checkout as a local Marketplace | No; refresh the plugin after changes |
 | **Claude Code** | `~/.claude/skills/<skill>` → `skills/<skill>` | Yes |
 | **Hermes** | Profile `nexus` (override with `NEXUS_HERMES_PROFILE`): skill symlinks + `SOUL.md` | Yes |
 
@@ -49,9 +49,9 @@ All targets use **symlinks** into this checkout, so edits here apply without re-
 | Harness | Session bootstrap | Commands | Skill installation | Live updates |
 | --- | --- | --- | --- | --- |
 | **Cursor** | Yes, through the session-start hook | `/workspace`, `/closeout` | Plugin manifest | Yes; reload after hook or manifest changes |
-| **Codex** | No; invoke `$using-nexus` explicitly | No | `~/.codex/skills/` symlinks | Yes; start a new session after skill discovery changes |
+| **Codex** | Yes, after installing Nexus and trusting its hook | No | Local Marketplace plugin | Refresh after manifest or hook changes |
 | **Claude Code** | Yes, when installed as a plugin | No | `~/.claude/skills/` symlinks | Yes; start a new session after hook or manifest changes |
-| **Hermes** | Yes, through the `SOUL.md` profile bootstrap | No | Profile skill symlinks | Yes; start a new session after `SOUL.md` or skill changes |
+| **Hermes** | Yes, through the `SOUL.md` profile bootstrap | No | Profile skill symlinks + copied `SOUL.md` | Skills: yes. `SOUL.md`: re-run install |
 
 Per-target install:
 
@@ -87,9 +87,15 @@ Use the plugin path only when you need SessionStart hooks; skills alone are enou
 
 ### Codex
 
-**Recommended:** `./scripts/install.sh codex` — each skill symlinks into `~/.codex/skills/`.
+Nexus installs as a local Marketplace plugin. Add this checkout as a marketplace source, enable Nexus in `/plugins`, and trust its hook in `/hooks`:
 
-Codex does not run a session hook today. Start tasks with an explicit Nexus prompt (for example: “Follow `$using-nexus` and run integrity-review before closeout”) or invoke skills from the Codex UI.
+```bash
+codex plugin marketplace add /path/to/nexus
+```
+
+`./scripts/install.sh codex` runs the marketplace command for you. The repository marketplace is at `.agents/plugins/marketplace.json`. Plugin installs are cached by Codex, so refresh the plugin after changing its manifest or hook files.
+
+This local Marketplace is private to the machine that adds it. It does not publish or share Nexus.
 
 ### Hermes
 
@@ -106,7 +112,7 @@ What it does:
 
 1. Creates the profile with `--no-skills` when missing.
 2. Symlinks Nexus skills into that profile’s `skills/` (skips `memory` — Hermes owns `/memory`).
-3. Writes `examples/hermes/soul.md` → profile `SOUL.md` (bootstrap; Hermes has no session hook).
+3. Copies `examples/hermes/soul.md` to profile `SOUL.md` (bootstrap; Hermes has no session hook).
 4. Sets `skills.write_approval=true` so Hermes cannot rewrite Nexus skills.
 
 Start coding sessions with `hermes -p nexus chat` (or `nexus chat` after the profile alias exists). Re-run install after pull; open a new Hermes session for SOUL/skill changes.
@@ -119,25 +125,26 @@ Global preferences live in `~/.nexus/user/preferences.md`; app-repo overrides in
 | --- | --- |
 | Nexus missing under Cursor Plugins | Confirm `~/.cursor/plugins/local/nexus` is a symlink to this repo (`ls -la ~/.cursor/plugins/local/nexus`). Re-run `./scripts/install.sh cursor`. Reload Window. |
 | Agent ignores Nexus / no bootstrap text | New agent session after install or hook changes. On Cursor/Claude plugin path, confirm hooks are enabled and Reload Window. On Hermes, confirm profile `SOUL.md` matches `examples/hermes/soul.md` and start a new chat. |
-| `install.sh` refuses a skill path | Remove or rename the conflicting folder under `~/.codex/skills/`, `~/.claude/skills/`, or the Hermes profile `skills/` (install replaces prior Nexus copies; other paths must be cleared manually). |
+| `install.sh` refuses a skill path | Remove or rename the conflicting folder under `~/.claude/skills/` or the Hermes profile `skills/`; Nexus never replaces a different skill automatically. |
 | Preferences not applied | Put global defaults in `~/.nexus/user/preferences.md`, and optional overrides in the **app repo** `.nexus/user/preferences.md` (not in the Nexus checkout). See `examples/preferences.md`. |
-| Codex skills stale | New Codex session after adding or removing skill folders. |
+| Codex plugin stale | Refresh Nexus in `/plugins`, review its hook again in `/hooks` if it changed, then start a new session. |
 | Hermes install errors on `hermes` | Install Hermes Agent and ensure `hermes` is on `PATH`, then re-run `./scripts/install.sh hermes`. |
 
 ## How Work Flows
 
 1. Preferences — session-injected from `~/.nexus/user/` and `.nexus/user/` when hooks run (repo overrides global); otherwise read when present.
 2. Workspace — `$git-assistant` workspace-choice (or `/workspace` on Cursor).
-3. Act — smallest change; `$architect` when creating structure.
-4. Style — `$code-style` on touched files.
-5. Review — `$integrity-review`.
-6. Closeout — `$git-assistant` closeout (or `/closeout` on Cursor).
+3. Specify — `$spec-driven` when a feature or UI needs its flow and acceptance criteria defined.
+4. Act — smallest change; `$architect` when creating structure.
+5. Style — `$code-style` on touched files; React UI also uses `$frontend-quality`.
+6. Review — `$integrity-review`.
+7. Closeout — `$git-assistant` closeout (or `/closeout` on Cursor).
 
 ## Local Memory
 
 ### Global (`~/.nexus/`, or `$NEXUS_HOME`)
 
-- `user/preferences.md` — cross-project workflow defaults (`default workspace`, `closeout unify`, `closeout push`, `commit superpowers docs`)
+- `user/preferences.md` — cross-project workflow defaults (`default workspace`, `closeout unify`, `closeout push`, `commit workflow docs`, `workflow docs paths`)
 - `notes/` — free-form personal notes (read on demand via `$memory`, not session-injected)
 
 ### App repo (`.nexus/`)
@@ -149,7 +156,7 @@ Starter: copy from `examples/preferences.md` into `~/.nexus/user/preferences.md`
 
 ```text
 Use $memory to save default workspace: worktree
-Use $memory to save commit superpowers docs: exclude
+Use $memory to save commit workflow docs: exclude
 Use $memory to save globally: prefer concise replies
 ```
 
@@ -158,10 +165,14 @@ Use $memory to save globally: prefer concise replies
 | Path | Role |
 | --- | --- |
 | `skills/using-nexus/` | Bootstrap skill (injected at session start where hooks exist) |
+| `skills/spec-driven/` | Lightweight feature and UI specification workflow |
+| `skills/frontend-quality/` | Responsive, accessible, concise React UI review |
 | `rules/nexus-contract.mdc` | Always-on policy (Cursor); same contract for all harnesses |
 | `skills/` | Workflows (+ `agents/openai.yaml` for Codex UI) |
+| `.agents/plugins/marketplace.json` | Local Codex marketplace entry for the full plugin |
 | `commands/` | `/workspace`, `/closeout` (Cursor) |
-| `.cursor-plugin/` | Cursor manifest + `hooks-cursor.json` |
+| `.cursor-plugin/` | Cursor manifest |
+| `hooks/hooks-cursor.json` | Cursor session hook |
 | `.claude-plugin/` | Claude Code manifest + `hooks/hooks.json` |
 | `.codex-plugin/` | Codex manifest |
 | `examples/preferences.md` | Starter global and app-repo preferences |
@@ -178,9 +189,13 @@ Run this before publishing or changing plugin metadata:
 
 The command checks canonical release metadata in `release.json`, platform manifest consistency, skill descriptors, Cursor manifest paths, and repository-relative Markdown links.
 
-If [Superpowers](https://github.com/obra/superpowers) is also installed: use it for design/plan/SDD; Nexus owns workspace, closeout, and test policy. Superpowers is **optional**.
+## Coexistence
 
-**Updates vs Superpowers:** marketplace Superpowers often auto-updates when the IDE refreshes the plugin cache. A **local** Nexus checkout with symlinks updates when you edit/pull this repo — no marketplace step required.
+Nexus is a default layer, not a replacement for a host or project harness. Resolve instructions in this order: system and managed policy; explicit user instructions; host-native approval and safety controls; project instructions; Nexus; optional plugins and skills.
+
+Use [Superpowers](https://github.com/obra/superpowers) or another workflow plugin when it fits the request and does not conflict with a higher-priority instruction. Nexus does not create test files, force worktrees, commit workflow artifacts, or install dependencies without an applicable project rule or user authorization. Optional workflow artifacts are controlled by `commit workflow docs` and `workflow docs paths` preferences. Superpowers is **optional**.
+
+**Updates vs Superpowers:** marketplace Superpowers may update when the host refreshes its plugin cache. Cursor and Claude symlinks follow this checkout live; Codex needs a plugin refresh, and Hermes needs `install.sh hermes` again when `SOUL.md` changes.
 
 ## Version
 

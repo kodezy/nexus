@@ -39,24 +39,25 @@ Use session-injected preferences, or read global then repo preferences (`~/.nexu
 
 - `closeout unify` / `closeout_unify`: `ask` | `always` | `never` (default `ask`)
 - `closeout push` / `closeout_push`: `ask` | `always` | `never` (default `ask`)
-- `commit superpowers docs` / `commit_superpowers_docs`: `include` | `exclude` | `ask` (default `ask`)
+- `commit workflow docs` / `commit_workflow_docs`: `include` | `exclude` | `ask` (default `ask`)
+- `workflow docs paths` / `workflow_docs_paths`: optional comma-separated project-relative paths; default `docs/superpowers/`, `.superpowers/`
 
-### Superpowers plans/docs paths
+### Workflow artifact paths
 
-Treat as Superpowers plans/docs when the path is under:
+Treat paths configured by `workflow docs paths` as workflow artifacts. When no preference is saved, the default paths are:
 
 - `docs/superpowers/` (including `plans/`, `specs/`, and siblings)
 - `.superpowers/`
 
-These paths are **not** auto-excluded. Apply `commit superpowers docs`:
+These paths are **not** auto-excluded. Apply `commit workflow docs`:
 
 | Preference | Behavior |
 | --- | --- |
-| `ask` (default when no memory) | Before commit confirmation, ask whether to include Superpowers plans/docs in this commit |
+| `ask` (default when no memory) | Before commit confirmation, ask whether to include workflow artifacts in this commit |
 | `include` | Keep them in the candidate file list like any other path |
 | `exclude` | Remove them from candidates; mention they were skipped per saved preference |
 
-When the user answers an `ask` prompt, offer to save the choice via `$memory` (for example `commit superpowers docs: exclude`).
+When the user answers an `ask` prompt, offer to save the choice via `$memory` (for example `commit workflow docs: exclude`).
 
 Apply during Phase 1 (push) and Phase 2 (unify):
 
@@ -93,7 +94,7 @@ Show remote (default `origin` when present) and commits that will be ahead after
 ### Branch A — staged files exist
 
 1. Use only staged files. Ignore unstaged/untracked for this round.
-2. If staged paths include Superpowers plans/docs, apply `commit superpowers docs` (ask / include / exclude) before continuing.
+2. If staged paths include workflow artifacts, apply `commit workflow docs` (ask / include / exclude) before continuing.
 3. Draft one subject line from the staged diff and recent commit style (`commit-messages.md`).
 4. Show the user in one confirmation:
    - source: `staged`
@@ -127,7 +128,7 @@ EOF
 
 1. Build the session file set: paths this agent created or edited in the current conversation (Write/Edit/equivalent tools).
 2. Intersect dirty paths (`git status` unstaged + untracked) with the session file set. Untracked files are allowed only if they are in the session set.
-3. Drop secret-like paths. Apply `commit superpowers docs` to any Superpowers plans/docs in the candidate list. Warn when secret-like paths were candidates.
+3. Drop secret-like paths. Apply `commit workflow docs` to workflow artifacts in the candidate list. Warn when secret-like paths were candidates.
 4. If the remaining candidate list is empty:
    - Tell the user there is no session context to commit.
    - Stop.

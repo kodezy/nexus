@@ -2,7 +2,6 @@
 set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-codex_home="${CODEX_HOME:-${HOME}/.codex}"
 claude_skills="${HOME}/.claude/skills"
 skills_src="${repo_root}/skills"
 hermes_soul_src="${repo_root}/examples/hermes/soul.md"
@@ -10,20 +9,20 @@ hermes_profile="${NEXUS_HERMES_PROFILE:-nexus}"
 
 usage() {
     cat <<'EOF'
-Install Nexus so local harnesses track this checkout live (symlinks).
+Install Nexus into local agent harnesses.
 
 Usage:
   ./scripts/install.sh           # install all detected targets
   ./scripts/install.sh cursor    # ~/.cursor/plugins/local/nexus → this repo
-  ./scripts/install.sh codex     # ~/.codex/skills/<skill> → this repo skills
+  ./scripts/install.sh codex     # add this checkout as a local Codex marketplace
   ./scripts/install.sh claude    # ~/.claude/skills/<skill> → this repo skills
   ./scripts/install.sh hermes    # Hermes profile (default: nexus) skills + SOUL
   ./scripts/install.sh --help
 
 Hermes profile name: set NEXUS_HERMES_PROFILE (default nexus). Use default for ~/.hermes.
 
-Edits in this repo are picked up without re-running install.
-Reload / new session may still be needed for hooks or skill discovery.
+Cursor and Claude skill symlinks update live. Reopen the relevant host after
+changing a plugin manifest or hook.
 EOF
 }
 
@@ -35,6 +34,34 @@ skill_excluded() {
         [[ "${name}" == "${skip}" ]] && return 0
     done
     return 1
+}
+
+links_to() {
+    local dest="$1"
+    local source="$2"
+    local target
+
+    [[ -L "${dest}" ]] || return 1
+    target="$(cd "$(dirname "${dest}")" && cd "$(readlink "${dest}")" && pwd -P)" || return 1
+    [[ "${target}" == "$(cd "${source}" && pwd -P)" ]]
+}
+
+link_or_refuse() {
+    local dest="$1"
+    local source="$2"
+    local label="$3"
+
+    if [[ -e "${dest}" || -L "${dest}" ]]; then
+        if links_to "${dest}" "${source}"; then
+            echo "  ${label}: already linked ${dest} -> ${source}"
+            return 0
+        fi
+        echo "error: ${dest} already exists and is not this Nexus source; remove or rename it manually first" >&2
+        return 1
+    fi
+
+    ln -s "${source}" "${dest}"
+    echo "  ${label}: ${dest} -> ${source}"
 }
 
 link_skill_tree() {
@@ -55,23 +82,26 @@ link_skill_tree() {
         [[ -f "${skill_dir}SKILL.md" ]] || continue
         name="$(basename "${skill_dir}")"
         if skill_excluded "${name}" "$@"; then
+            continue
+        fi
+        dest="${dest_root}/${name}"
+        if [[ -e "${dest}" || -L "${dest}" ]] && ! links_to "${dest}" "${skill_dir%/}"; then
+            echo "error: ${dest} already exists and is not this Nexus source; remove or rename it manually first" >&2
+            return 1
+        fi
+    done
+
+    for skill_dir in "${skills_src}"/*/; do
+        [[ -d "${skill_dir}" ]] || continue
+        [[ -f "${skill_dir}SKILL.md" ]] || continue
+        name="$(basename "${skill_dir}")"
+        if skill_excluded "${name}" "$@"; then
             echo "  ${label}: skip ${name}"
             continue
         fi
         dest="${dest_root}/${name}"
 
-        if [[ -L "${dest}" ]]; then
-            rm "${dest}"
-        elif [[ -d "${dest}" && -f "${dest}/SKILL.md" ]]; then
-            # Prior copy install (rsync) — replace with live symlink
-            rm -rf "${dest}"
-        elif [[ -e "${dest}" ]]; then
-            echo "error: ${dest} exists and is not a Nexus skill copy/symlink; remove or rename it first" >&2
-            return 1
-        fi
-
-        ln -sfn "${skill_dir%/}" "${dest}"
-        echo "  ${label}: ${dest} -> ${skill_dir%/}"
+        link_or_refuse "${dest}" "${skill_dir%/}" "${label}"
     done
 }
 
@@ -122,22 +152,23 @@ install_hermes_write_approval() {
 install_cursor() {
     local dest="${HOME}/.cursor/plugins/local/nexus"
     mkdir -p "$(dirname "${dest}")"
-    if [[ -L "${dest}" ]]; then
-        rm "${dest}"
-    elif [[ -e "${dest}" ]]; then
-        echo "error: ${dest} exists and is not a symlink; remove it manually first" >&2
-        return 1
-    fi
-    ln -sfn "${repo_root}" "${dest}"
+    link_or_refuse "${dest}" "${repo_root}" "Cursor"
     chmod +x "${repo_root}/hooks/session-start" 2>/dev/null || true
-    echo "Cursor: ${dest} -> ${repo_root}"
     echo "  Live. Reload Window after hook/manifest changes."
 }
 
 install_codex() {
-    echo "Codex skills (symlink, live):"
-    link_skill_tree "${codex_home}/skills" "Codex"
-    echo "  New session after adding/removing skill folders."
+    if ! command -v codex >/dev/null 2>&1; then
+        echo "error: codex CLI not found; install Codex first" >&2
+        return 1
+    fi
+
+    codex plugin marketplace add "${repo_root}"
+    cat <<'EOF'
+
+  Open /plugins, install Nexus, then review and trust its SessionStart hook in /hooks.
+  Start a new session after installing or changing the plugin.
+EOF
 }
 
 install_claude() {
@@ -194,7 +225,7 @@ case "${target}" in
         else
             echo "Cursor: skipped (not detected)"
         fi
-        if [[ -d "${codex_home}" ]] || command -v codex >/dev/null 2>&1; then
+        if command -v codex >/dev/null 2>&1; then
             install_codex
         else
             echo "Codex: skipped (not detected)"
