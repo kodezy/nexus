@@ -44,6 +44,15 @@ All targets use **symlinks** into this checkout, so edits here apply without re-
 | **Claude Code** | `~/.claude/skills/<skill>` → `skills/<skill>` | Yes |
 | **Hermes** | Profile `nexus` (override with `NEXUS_HERMES_PROFILE`): skill symlinks + `SOUL.md` | Yes |
 
+### Platform Compatibility
+
+| Harness | Session bootstrap | Commands | Skill installation | Live updates |
+| --- | --- | --- | --- | --- |
+| **Cursor** | Yes, through the session-start hook | `/workspace`, `/closeout` | Plugin manifest | Yes; reload after hook or manifest changes |
+| **Codex** | No; invoke `$using-nexus` explicitly | No | `~/.codex/skills/` symlinks | Yes; start a new session after skill discovery changes |
+| **Claude Code** | Yes, when installed as a plugin | No | `~/.claude/skills/` symlinks | Yes; start a new session after hook or manifest changes |
+| **Hermes** | Yes, through the `SOUL.md` profile bootstrap | No | Profile skill symlinks | Yes; start a new session after `SOUL.md` or skill changes |
+
 Per-target install:
 
 ```bash
@@ -159,10 +168,20 @@ Use $memory to save globally: prefer concise replies
 | `examples/hermes/soul.md` | Hermes profile `SOUL.md` bootstrap |
 | `AGENTS.md` / `CLAUDE.md` | Pointers for agents working **in this repo** only |
 
+## Maintainer Verification
+
+Run this before publishing or changing plugin metadata:
+
+```bash
+./scripts/verify.sh
+```
+
+The command checks canonical release metadata in `release.json`, platform manifest consistency, skill descriptors, Cursor manifest paths, and repository-relative Markdown links.
+
 If [Superpowers](https://github.com/obra/superpowers) is also installed: use it for design/plan/SDD; Nexus owns workspace, closeout, and test policy. Superpowers is **optional**.
 
 **Updates vs Superpowers:** marketplace Superpowers often auto-updates when the IDE refreshes the plugin cache. A **local** Nexus checkout with symlinks updates when you edit/pull this repo — no marketplace step required.
 
 ## Version
 
-Plugin version **2.3.0** (all manifests).
+Canonical release metadata lives in `release.json`. The verification script checks every manifest that exposes shared release fields.

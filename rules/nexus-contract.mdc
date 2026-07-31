@@ -3,9 +3,9 @@ description: Nexus production harness — always-on policy summary
 alwaysApply: true
 ---
 
-# Nexus contract (v2.3.0)
+# Nexus contract
 
-Plugin `2.3.0` (Cursor, Claude Code, Codex, Hermes). Follow `$using-nexus` (session bootstrap where hooks exist; Hermes uses profile `SOUL.md`). Procedures live in skills — do not invent workflows.
+Nexus supports Cursor, Claude Code, Codex, and Hermes. Canonical release metadata lives in `release.json`. Follow `$using-nexus` (session bootstrap where hooks exist; Hermes uses profile `SOUL.md`). Procedures live in skills — do not invent workflows.
 
 ## Loop
 
