@@ -1,6 +1,6 @@
 # Behavior: closeout
 
-Use when the user asks to create a commit, run a commit, invokes `/commit`, or when `integrity-review` hands off after a Clean or Corrected verdict.
+Use when the user asks to create a commit, run a commit, invokes `/commit`, or when `integrity-review` hands off after a Validated or Corrected verdict.
 
 Closeout has three phases: **commit** (with push approval when push is in play), **unify** (worktree only), **push** (execute if already approved). Git write commands still need explicit approval before they run.
 
@@ -14,7 +14,7 @@ Closeout has three phases: **commit** (with push approval when push is in play),
 6. Never commit, merge, remove a worktree, or push without explicit user approval (push approval belongs in the Phase 1 confirmation when push is in play).
 7. If a commit or merge hook fails, report the error and stop. Do not amend.
 8. Exclude secret-like paths (`.env`, credentials, private keys, and similar). Warn when any were candidates.
-9. After an integrity-review Uncertain verdict, do not run closeout until the uncertainty is resolved.
+9. After an integrity-review Uncertain or Blocked verdict, do not run closeout until it is resolved.
 
 ## Inspect first
 

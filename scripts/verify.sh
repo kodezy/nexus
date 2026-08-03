@@ -71,6 +71,8 @@ def verify_session_hook() -> None:
             fail("session-start hook must return Cursor additional_context")
         if "$using-nexus" not in context:
             fail("session-start hook must route code changes to $using-nexus")
+        if "Prefer existing tests" not in context or "report Uncertain" not in context:
+            fail("session-start hook must include the test and validation gate")
         if "NEXUS_PREFERENCE_SENTINEL" in context:
             fail("session-start hook must not inject raw preference content")
         if "Use when starting any conversation" in context:
@@ -90,13 +92,30 @@ def verify_context_docs() -> None:
             "preferences from session context when injected",
         ),
         "scripts/install.sh": ("hooks + bootstrap using-nexus",),
-        "README.md": ("hooks + bootstrap", "SOUL.md` bootstrap"),
+        "README.md": (
+            "hooks + bootstrap",
+            "SOUL.md` bootstrap",
+            "Hermes has no session hook",
+        ),
+        "skills/integrity-review/SKILL.md": ("Clean or Corrected", "**Clean:**"),
+        "commands/closeout.md": ("Clean or Corrected",),
+        "rules/nexus-contract.mdc": ("No new automated test files unless asked",),
+        "examples/hermes/soul.md": ("No new automated test files unless asked",),
     }
     for relative_path, phrases in stale_phrases.items():
         content = (ROOT / relative_path).read_text()
         for phrase in phrases:
             if phrase in content:
-                fail(f"{relative_path} contains stale context-bootstrap wording: {phrase}")
+                fail(f"{relative_path} contains stale policy wording: {phrase}")
+
+    integrity_review = (ROOT / "skills/integrity-review/SKILL.md").read_text()
+    for phrase in ("## Validation receipt", "**Validated:**", "**Blocked:**"):
+        if phrase not in integrity_review:
+            fail(f"skills/integrity-review/SKILL.md is missing validation policy: {phrase}")
+
+    hermes_soul = (ROOT / "examples/hermes/soul.md").read_text()
+    if "Read or write the Nexus paths directly with file tools" not in hermes_soul:
+        fail("examples/hermes/soul.md must document the Hermes memory adapter")
 
 
 try:

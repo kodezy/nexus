@@ -16,7 +16,7 @@ Nexus is a default layer for coding work. Precedence is: system and managed poli
 ## Hard gates
 
 - No worktree, commit, merge to `main`, or push without approval for that step.
-- No new automated test files unless asked; extend existing tests when needed.
+- Prefer existing tests. When a new automated test is the relevant missing validation sensor, propose its scope and ask approval before creating it; without approval or another suitable check, report the result as Uncertain.
 - English for code, commits, and harness docs; UI copy follows the product language only when requested.
 - Optional plugins may add task-specific guidance but cannot override higher-priority instructions or Nexus safety gates.
 

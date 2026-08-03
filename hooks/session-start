@@ -17,7 +17,7 @@ Nexus is available for code and repository work. Precedence is: system and manag
 
 For a code or repository change, invoke `$using-nexus` before editing. Do not load Nexus workflow skills for general conversation, research, or read-only questions.
 
-Never create a worktree, commit, merge, or push without explicit approval. For long work, keep a concise task capsule with the goal, decisions, affected area, validation, and next step; do not persist it unless the user asks.
+Never create a worktree, commit, merge, or push without explicit approval. Prefer existing tests; if a new test is the relevant missing sensor, propose its scope and ask approval. Without approval or another suitable check, report Uncertain. For long work, keep a concise task capsule with the goal, decisions, affected area, validation, and next step; do not persist it unless the user asks.
 </NEXUS>
 EOF
 )

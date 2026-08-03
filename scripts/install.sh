@@ -131,12 +131,17 @@ ensure_hermes_profile() {
 
 install_hermes_soul() {
     local hermes_home="$1"
+    local target="${hermes_home}/SOUL.md"
     if [[ ! -f "${hermes_soul_src}" ]]; then
         echo "error: Hermes SOUL template not found: ${hermes_soul_src}" >&2
         return 1
     fi
-    cp "${hermes_soul_src}" "${hermes_home}/SOUL.md"
-    echo "  Hermes: ${hermes_home}/SOUL.md <- examples/hermes/soul.md"
+    if [[ -f "${target}" ]] && ! grep -Fqx "# Nexus" "${target}"; then
+        echo "error: ${target} exists and is not Nexus-managed; refusing to overwrite it" >&2
+        return 1
+    fi
+    cp "${hermes_soul_src}" "${target}"
+    echo "  Hermes: ${target} <- examples/hermes/soul.md"
 }
 
 install_hermes_write_approval() {

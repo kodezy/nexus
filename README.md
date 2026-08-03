@@ -111,8 +111,8 @@ NEXUS_HERMES_PROFILE=default ./scripts/install.sh hermes   # ~/.hermes
 What it does:
 
 1. Creates the profile with `--no-skills` when missing.
-2. Symlinks Nexus skills into that profile’s `skills/` (skips `memory` — Hermes owns `/memory`).
-3. Copies `examples/hermes/soul.md` to profile `SOUL.md` (compact core policy; Hermes has no session hook).
+2. Symlinks Nexus skills into that profile’s `skills/` (skips `memory` — Hermes owns `/memory`; the installed `SOUL.md` directs Nexus preference and note access to `~/.nexus/` and `.nexus/` through file tools).
+3. Copies `examples/hermes/soul.md` to profile `SOUL.md` (compact core policy; Nexus does not configure a Hermes shell hook).
 4. Sets `skills.write_approval=true` so Hermes cannot rewrite Nexus skills.
 
 Start coding sessions with `hermes -p nexus chat` (or `nexus chat` after the profile alias exists). Re-run install after pull; open a new Hermes session for SOUL/skill changes.
@@ -140,6 +140,23 @@ Global preferences live in `~/.nexus/user/preferences.md`; app-repo overrides in
 6. Style — `$code-style` on touched files; React UI also uses `$frontend-quality`.
 7. Review — `$integrity-review`.
 8. Closeout — `$git-assistant` closeout (or `/closeout` on Cursor).
+
+## Validation in Consumer Projects
+
+Nexus supplies the workflow, not a universal test command. Each app repository should keep its trusted validation commands in its own `AGENTS.md`, `CLAUDE.md`, or native rules. Keep the list small and state what each command proves:
+
+```md
+## Validation
+
+- Fast: `npm run lint && npm run typecheck`
+- Tests: `npm test`
+- Build: `npm run build`
+- UI behavior: `npx playwright test`
+```
+
+During `$integrity-review`, the agent chooses checks proportional to the change and returns a validation receipt: scope, criteria checked, commands or runtime exercise, result, and remaining uncertainty. It may report **Validated** or **Corrected** only with verifiable evidence. If a relevant check is missing, it reports **Uncertain**; if an external prerequisite prevents validation, it reports **Blocked**.
+
+Prefer existing tests. When a new test is the relevant missing validation sensor, Nexus requires the agent to propose its scope and request approval before creating it. This prevents boilerplate while avoiding unverified feature work.
 
 ## Local Memory
 
@@ -194,7 +211,7 @@ The command checks canonical release metadata in `release.json`, platform manife
 
 Nexus is a default layer, not a replacement for a host or project harness. Resolve instructions in this order: system and managed policy; explicit user instructions; host-native approval and safety controls; project instructions; Nexus; optional plugins and skills.
 
-Use [Superpowers](https://github.com/obra/superpowers) or another workflow plugin as task-specific guidance. Nexus owns workspace choice, Git approval, closeout, and the rule against creating a new automated test file without user approval. Optional workflow artifacts are controlled by `commit workflow docs` and `workflow docs paths` preferences. Superpowers is **optional**.
+Use [Superpowers](https://github.com/obra/superpowers) or another workflow plugin as task-specific guidance. Nexus owns workspace choice, Git approval, closeout, and approval for a new test when it is the relevant missing validation sensor. Optional workflow artifacts are controlled by `commit workflow docs` and `workflow docs paths` preferences. Superpowers is **optional**.
 
 **Updates vs Superpowers:** marketplace Superpowers may update when the host refreshes its plugin cache. Cursor and Claude symlinks follow this checkout live; Codex needs a plugin refresh, and Hermes needs `install.sh hermes` again when `SOUL.md` changes.
 

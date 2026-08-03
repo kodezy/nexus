@@ -30,6 +30,6 @@ Apply this order: system and managed policy; explicit user instructions; host-na
 
 ## Compatibility
 
-Optional plugins are task-specific. Nexus owns workspace choice, Git approval, closeout, and the rule against creating a new automated test file without user approval. Another plugin may guide planning, testing, or implementation only when it does not conflict with those gates.
+Optional plugins are task-specific. Nexus owns workspace choice, Git approval, closeout, and approval for a new automated test when it is the relevant missing validation sensor. Another plugin may guide planning, testing, or implementation only when it does not conflict with those gates.
 
-Use existing tests for test-first work when available. If a new test file is needed, ask the user before creating it.
+Use existing tests for test-first work when available. If a new test file is the relevant missing sensor, propose its scope and ask the user before creating it. Without approval or another suitable check, report the implementation as Uncertain rather than validated.
