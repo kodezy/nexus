@@ -2,7 +2,7 @@
 
 ![Nexus harness illustration](assets/nexus.png)
 
-Production harness plugin for coding agents: workspace choice, integrity review, and git closeout with explicit approvals.
+Harness plugin for coding agents: workspace choice, integrity review, and git closeout with explicit approvals.
 
 ## What It Does
 
