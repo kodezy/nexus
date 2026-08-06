@@ -1,6 +1,6 @@
 ---
 name: readme-writer
-description: Write and refactor short, scannable README files. Use when creating or updating README.md or other project Markdown docs (Install, Run, Use, Config, Structure, Packages, Docs, API).
+description: Write and refactor short, scannable README files. Use when creating or updating README.md or other project Markdown docs (Install, Run, Use, Config, Structure, Packages, Docs, API). Never leave placeholders — ask for real values or omit.
 ---
 
 # README Writer
@@ -8,6 +8,25 @@ description: Write and refactor short, scannable README files. Use when creating
 ## Objective
 
 Write READMEs that are short, direct, and easy to scan. One job per section. Omit empty sections.
+
+## No Placeholders
+
+Never ship a README with fields for the user to fill in later.
+
+Before writing or updating the file, gather concrete values for anything you cannot verify from the repo or existing docs. Ask the user when information is missing — do not guess and do not leave blanks.
+
+Forbidden in output:
+
+- Placeholder URLs or text: `https://github.com/your-org/your-repo`, `[link]`, `TODO`, `TBD`, `coming soon`, `insert … here`
+- Angle-bracket or bracket stand-ins: `<Project Name>`, `[your-username]`, `example.com`
+- Instructional filler: “Add your GitHub link”, “Replace with …”, “Fill in …”
+- Empty link targets, stub sections, or badge blocks waiting for real values
+
+When a value is unknown:
+
+1. Ask for the exact text or URL you need.
+2. If the user does not provide it, omit that link, badge, or section — do not add a stub.
+3. Write only what is confirmed; finish the README after answers arrive.
 
 ## Choose A Variant
 
@@ -91,7 +110,8 @@ One factual sentence.
 
 - Verify every link before adding or keeping it.
 - Never leave dead, placeholder, or `TODO` links.
-- If a link cannot be verified, ask or omit it.
+- If a link cannot be verified, ask the user for the real URL — then add it or omit the link. Never write a stand-in.
+- Common asks before first draft: repository URL, docs site, demo/deploy URL, issue tracker, license file path, and any external badges the user wants.
 
 ## Avoid
 
@@ -101,6 +121,7 @@ One factual sentence.
 - Mixing install methods without clear separation
 - Vague words (“soon”, “sometimes”)
 - Renaming a healthy README wholesale without being asked
+- Placeholder or “fill in later” content of any kind
 
 ## Checklist
 
@@ -108,3 +129,4 @@ One factual sentence.
 - Empty sections removed
 - Every retained link resolves
 - Variant matches the project type
+- No placeholders, stubs, or “replace me” text — missing facts were asked or omitted
