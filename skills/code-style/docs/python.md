@@ -28,13 +28,78 @@ Highest priority: simple, clear, pragmatic names.
 Top to bottom:
 
 1. **Module docstring** — when present, first line of the file; skip entirely when the module does not need one.
-2. **`import` / `from … import`** — standard library, blank line, third-party, blank line, local. One group per layer.
-3. **Global constants** — module-level `UPPER_SNAKE_CASE` and immutable config.
-4. **Classes**
-5. **Module-level functions** — public free functions first, then private helpers (`_`).
-6. **`if __name__ == "__main__":`** — last in the file.
+2. **`from __future__ import …`** — **only when required**; omit by default on 3.13+ (see **Type hints and modern idioms** below).
+3. **`import` / `from … import`** — standard library, blank line, third-party, blank line, local. One group per layer.
+4. **Global constants** — module-level `UPPER_SNAKE_CASE` and immutable config (see **Constants** below).
+5. **Classes**
+6. **Module-level functions** — public free functions first, then private helpers (`_`).
+7. **`if __name__ == "__main__":`** — last in the file.
 
 **How this compares to other languages:** imports and constants sit at the top; **types are optional and lightweight** (PEP 484 hints on parameters, attributes, and return values—no separate “types block” unless you need one, e.g. `TYPE_CHECKING` imports). **Behavior lives inside the `class`** (methods), not in a separate block like Rust’s `impl`. Module-level **functions come after** all classes: public free functions first, then private helpers. The **entry hook** is **`if __name__ == "__main__":`** at the bottom.
+
+### Type hints and modern idioms
+
+**Baseline:** use features allowed by the repo's declared runtime (`requires-python`, `.python-version`, CI). On **3.13+** greenfield, write modern idioms by default. Do not copy legacy patterns from older codebases unless the repo still supports that older runtime.
+
+#### `from __future__ import annotations`
+
+- **Default: omit.** Do not paste this into new modules "just in case."
+- Add it only when there is a **concrete need** on the pinned runtime (for example, a library boundary that must postpone annotation evaluation and cannot be solved with quotes, reordering, or a narrow `TYPE_CHECKING` import).
+- On **3.14+**, prefer native lazy annotations; do not add the future import for new code.
+
+#### Type hints (prefer modern builtins)
+
+| Avoid (legacy) | Prefer (3.10+ / 3.13+ greenfield) |
+| --- | --- |
+| `Optional[X]` | `X \| None` |
+| `Union[A, B]` | `A \| B` |
+| `List`, `Dict`, `Tuple`, `Set` from `typing` | `list`, `dict`, `tuple`, `set` |
+| `Type[X]` | `type[X]` |
+| `typing_extensions` for features already in stdlib | stdlib on the pinned runtime |
+
+- Use `type Alias = ...` (3.12+) for module-level type aliases when it reads better than assignment.
+- Use `enum.StrEnum` (3.11+) for string enums instead of manual `str, Enum` mixes.
+- Use `TYPE_CHECKING` imports only to break **real** circular imports; do not wrap every cross-reference.
+- Prefer fixing definition order or a quoted forward ref (`"MyClass"`) over blanket future imports.
+
+#### Other legacy residues to avoid on modern runtimes
+
+- f-strings for interpolation — not `%` formatting or `.format()` in new/changed code.
+- `pathlib.Path` for new path handling — not `os.path` joins unless matching surrounding legacy code.
+- `@dataclass(..., slots=True)` on 3.10+ when using dataclasses (unless a project-wide convention says otherwise).
+- `match` / `case` when it is clearer than long `if` / `elif` chains (3.10+).
+
+**When touching existing files:** do not mass-migrate unrelated lines; apply modern idioms to code you change when the file's runtime allows.
+
+### Constants
+
+- Declare **one constant per line**; do not assign multiple unrelated names in one statement.
+- **Group related constants by domain** with one blank line between groups (e.g. HTTP limits, cache TTLs, feature flags).
+- Prefer readability and clean Git diffs over minimizing line count.
+- When several constants describe a single concept, prefer structured config over more globals:
+  - `enum.Enum` or `enum.StrEnum` for a closed set of variants
+  - `@dataclass(frozen=True)` or `typing.TypedDict` for a fixed field set
+  - dedicated module when the surface is large or reused across packages
+- **Placement:** keep scalar `UPPER_SNAKE_CASE` values in the constants block. Place config `Enum`, `@dataclass(frozen=True)`, and `TypedDict` types in the **Classes** section (file order step 5), not mixed into the scalar constants block.
+
+Scalar constants:
+
+```python
+MAX_RETRIES = 3
+REQUEST_TIMEOUT_SECONDS = 5.0
+
+CACHE_TTL_SECONDS = 60.0
+```
+
+Structured config (in the **Classes** section, after scalar constants):
+
+```python
+@dataclass(frozen=True)
+class RetryPolicy:
+    max_retries: int = 3
+    timeout_seconds: float = 5.0
+    backoff_seconds: float = 0.25
+```
 
 ### Documentation and comments
 
@@ -43,7 +108,7 @@ Top to bottom:
 - **Module docstring** (slot 1 above): include only when it adds real value; if the module is self-explanatory, skip it and start with imports.
 - **Function / class docstrings** and **`#` line comments**: same bar—not for restating what the code already says.
 
-- Use type hints and modern patterns (`|` for unions, f-strings, `with`, comprehensions).
+- Use type hints and modern patterns (`|` unions, builtin generics `list[str]`, f-strings, `with`, comprehensions). See **Type hints and modern idioms** above; do not add `from __future__ import annotations` unless required.
 - Prefer f-strings for general string interpolation in Python code.
 - Use `except Exception as exception:` always (do not use `e`).
 - Avoid unnecessary abstractions; refactor only when there is a clear readability gain.

@@ -25,6 +25,7 @@ Highest priority: simple, clear, pragmatic names.
 ## Structure and Organization
 
 - Prefer explicit types on public APIs and non-obvious values; avoid implicit `any`.
+- Use ES modules (`import` / `export`); avoid `namespace`, `require()`, and other legacy module patterns in new code unless the file already uses them.
 - Use early returns and guard clauses to keep control flow shallow.
 - One primary responsibility per file.
 
@@ -34,7 +35,7 @@ Top to bottom:
 
 1. **`import`** — third-party packages first, then path aliases, then relative imports (`./`, `../`). Blank line between those three groups. Include `import type` here.
 2. **`type` / `interface`** — shared shapes for this module.
-3. **Module-level constants** — `UPPER_SNAKE_CASE` and other file-level immutable values.
+3. **Module-level constants** — `UPPER_SNAKE_CASE` and other file-level immutable values (see **Constants** below).
 4. **`class` declarations** — before any module-level functions.
 5. **Module-level functions/components** — exported functions/components first, then non-exported helpers last. **If there is a default export, it is last among the publics** (still before private helpers).
 
@@ -62,6 +63,39 @@ React-specific style rules:
 - Keep JSX readable and use early returns to reduce nesting.
 - Use `useMemo` and `useCallback` only when there is measurable benefit (identity stability or measured cost). Prefer derived values over effect + setState mirrors.
 - UI copy density and runtime/data patterns belong to `frontend`; do not invent redundant descriptions while styling.
+
+### Constants
+
+- Declare **one constant per line**; do not chain unrelated `const` declarations on one line.
+- **Group related constants by domain** with one blank line between groups (e.g. HTTP limits, cache TTLs, feature flags).
+- Prefer readability and clean Git diffs over minimizing line count.
+- **Naming:** scalar module-level literals use `UPPER_SNAKE_CASE`; structured `as const` config objects use idiomatic `camelCase`.
+- When several constants describe a single concept, prefer a typed config over more globals:
+  - `as const` object + `type` alias for a fixed key set
+  - `enum` for a closed set of named variants
+  - dedicated module when the surface is large or reused across files
+- A `type` alias derived via `typeof` from an `as const` object may sit **immediately below** that object in the constants block (exception to the usual types-before-constants order).
+
+Scalar constants:
+
+```typescript
+const MAX_RETRIES = 3;
+const REQUEST_TIMEOUT_MS = 5_000;
+
+const CACHE_TTL_MS = 60_000;
+```
+
+Structured config (same constants block; derived type may follow the object):
+
+```typescript
+const retryPolicy = {
+  maxRetries: 3,
+  timeoutMs: 5_000,
+  backoffMs: 250,
+} as const;
+
+type RetryPolicy = typeof retryPolicy;
+```
 
 ### Documentation and comments
 

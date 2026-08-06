@@ -43,6 +43,7 @@ If repository style conflicts with generic guidance, local project conventions w
 9. Apply minimal viable changes: avoid broad rewrites when a focused style update solves the task.
 10. **Docs and comments:** default is none. Add docstrings, `///`/`//!`, or line comments only when necessary (e.g. public API, non-obvious logic, safety notes); prefer self-explanatory code. Language specifics: `docs/typescript.md`, `docs/python.md`, `docs/rust.md`.
 11. Keep code direct and pragmatic: avoid indirection and abstraction without clear readability or maintenance gain.
+12. **Version-aware idioms:** match the repo's declared language/runtime version and prefer current idioms it supports. Do not add compatibility boilerplate (e.g. Python `from __future__ import annotations`, TypeScript `namespace`, Rust pre-2018 patterns) unless a concrete need exists. Language specifics: `docs/python.md`, `docs/typescript.md`, `docs/rust.md`.
 
 ## Style Scope
 
@@ -71,7 +72,7 @@ Top-to-bottom intent (full steps in each language doc):
 
 | Layer | Python | Rust | TypeScript |
 | --- | --- | --- | --- |
-| **Imports** | Top (`import` / `from`). | Top (`use`; see `docs/rust.md` for `mod` / inner attrs before `use`). | Top (`import`; include `import type` here). |
+| **Imports** | Top (`import` / `from`); optional `from __future__ import …` only when required (after docstring, before imports). | Top (`use`; see `docs/rust.md` for `mod` / inner attrs before `use`). | Top (`import`; include `import type` here). |
 | **Constants** | Immediately after imports. | Immediately after the import block (`const` / `static` / `type` aliases). | **After** `type` / `interface` (not immediately after imports). |
 | **Types** | Optional: hints on names; no top types block unless needed (e.g. `TYPE_CHECKING`). | Central: `struct` / `enum` / `trait`, then `impl`. | **First-class:** dedicated `type` / `interface` block high in the file. |
 | **Classes / ADTs** | `class` after constants (before module-level `def`). | `struct` / `enum` (and `trait`) before matching `impl`. | `class` before module-level functions. |
@@ -81,10 +82,21 @@ Top-to-bottom intent (full steps in each language doc):
 
 `.tsx` module order follows `docs/typescript.md` (same **types → constants** idea as `.ts`).
 
+## Constants
+
+Apply these rules whenever declaring module-level or shared immutable values:
+
+1. **One constant per line.** Do not declare multiple unrelated constants on the same line.
+2. **Group by domain.** Separate related constant groups with one blank line. Use language-specific grouping when it improves scanability (e.g. Rust `mod`, Python `Enum`/`dataclass`, TypeScript `as const` object).
+3. **Readability over brevity.** Prefer clear layout and stable Git diffs over minimizing line count.
+4. **Prefer structured config over constant sprawl.** When several constants represent one concept (timeouts, limits, feature flags, endpoint paths), replace scattered globals with a typed configuration object, struct, record, enum, or dedicated module instead of adding more top-level constants. This is an intentional exception to Canonical Rule 11 when the grouped shape is clearer than more globals.
+
+Language-specific placement and examples: `docs/typescript.md`, `docs/python.md`, `docs/rust.md`.
+
 ## Organization Rules
 
 - Keep imports/includes at the top of the file, grouped and consistently ordered.
-- **Constants:** after imports in Python and Rust; **after types** in TypeScript and `.tsx` (see table above).
+- **Constants:** after imports in Python and Rust; **after types** in TypeScript and `.tsx` (see table above). Follow the **Constants** section above for layout and grouping.
 - Keep public APIs before private helpers at module level and inside classes/`impl`.
 - In classes/`impl` blocks, order is strict: constructor or essential dunders first, then other public methods, then private methods last.
 - Group related methods only within the same visibility band (among publics, or among privates); never interleave private above remaining public for “logical” grouping.
@@ -166,7 +178,7 @@ When escalating: leave the code in place, report it in `blockers` / `next_step`,
 - Naming is clear and coherent.
 - Production file names prefer single-word (two words max; Python/Rust `_`, new TS/React kebab-case unless local folder uses `_`); tests exempt.
 - Related logic is not fragmented across unnecessary files.
-- Organization improves readability.
+- Organization improves readability; constants follow the **Constants** section (one per line, grouped by domain).
 - Diff stays focused and pragmatic.
 - Affected area has no obvious dead code, legacy fallback, or residue left by this change.
 - Ambiguous leftovers are reported in `blockers` / `next_step` (not silently kept as “done”).

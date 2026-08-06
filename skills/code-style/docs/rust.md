@@ -26,6 +26,7 @@ Highest priority: simple, clear, pragmatic names.
 - Prefer the **stable** Rust toolchain (`rustup default stable` / `rust-toolchain.toml` channel `stable`) unless the project pins another channel.
 - Prefer **edition 2024** for greenfield crates when the stable toolchain supports it; otherwise edition **2021+**. Match `edition` / `rust-version` already set in `Cargo.toml`.
 - Use modern language features supported by that edition and toolchain.
+- Avoid pre-edition-2018 residues in new code (`extern crate` at crate root, `try!` instead of `?`) unless matching existing crate style.
 
 ### Order inside a `.rs` file
 
@@ -34,7 +35,7 @@ Top to bottom:
 1. **Inner attributes** — `#! [...]` when needed.
 2. **`mod`** — child module declarations.
 3. **`use`** — `std`, then other crates, then `crate::`, then `super::`, then `self::`; blank line between groups.
-4. **`const` / `static` / `type`**
+4. **`const` / `static` / `type`** — see **Constants** below.
 5. **`struct` / `enum` / `union`**
 6. **`trait`**
 7. **`impl`** — after the `struct`/`enum`/`trait` each block implements (inherent `impl` right after its type; `impl Trait for` after that `trait`).
@@ -42,6 +43,44 @@ Top to bottom:
 9. **`fn main`** — in the binary root only; last.
 
 **How this compares to other languages:** **`use`** is the import layer at the top (after inner `#!` and `mod` when present). **Constants** (`const` / `static` / `type` aliases) follow the import block. **Types are central:** `struct` / `enum` / `union` and `trait` define shape; **methods and trait items live only in `impl`**, not inside the `struct`/`enum` braces. **Free functions** sit **after** that type/`impl` chain. **Entry** for binaries is **`fn main`**, last. This differs from Python/TypeScript, where behavior is written inside the class body.
+
+### Constants
+
+- Declare **one constant per line**; do not declare multiple unrelated `const`/`static` items on one line.
+- **Group related constants by domain** with one blank line between groups (e.g. HTTP limits, cache TTLs, feature flags). Use a child `mod` when a group is large or reused.
+- Prefer readability and clean Git diffs over minimizing line count.
+- When several constants describe a single concept, prefer structured config over more globals:
+  - `struct` + `impl` with associated `const` defaults (see below)
+  - `enum` for a closed set of variants
+  - dedicated submodule when the surface is large or shared across crates
+- **Placement:** keep scalar `SCREAMING_SNAKE_CASE` values in the constants block. Config `struct`/`enum` types belong in steps 5–7; a `const` whose type is a local `struct` must come **after** that `struct` (and typically lives in an `impl` associated `const`, not above the type definition).
+
+Scalar constants:
+
+```rust
+const MAX_RETRIES: u32 = 3;
+const REQUEST_TIMEOUT_MS: u64 = 5_000;
+
+const CACHE_TTL_MS: u64 = 60_000;
+```
+
+Structured config (`struct` + `impl`; not in the scalar constants block):
+
+```rust
+struct RetryPolicy {
+    max_retries: u32,
+    timeout_ms: u64,
+    backoff_ms: u64,
+}
+
+impl RetryPolicy {
+    pub const DEFAULT: Self = Self {
+        max_retries: 3,
+        timeout_ms: 5_000,
+        backoff_ms: 250,
+    };
+}
+```
 
 ### Documentation and comments
 
