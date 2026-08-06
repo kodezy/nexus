@@ -104,7 +104,7 @@ impl RetryPolicy {
 
 ## Visual Block Separation
 
-Core rule: one blank line separates logical blocks; never two blank lines.
+Core rule: one blank line separates **coarse** phases inside a function; never two blank lines. Typical phases when present: validation, preparation, main effect, cleanup, return (order follows the function’s flow). Do not micro-split related statements; do not use comments to label or separate blocks. Prefer readable phase layout over minimizing line count.
 
 ### Between Functions and Structs
 
@@ -235,9 +235,14 @@ mod order {
 - Use `Option<T>` for optional values.
 - Define specific, descriptive error types.
 - Use `thiserror` or `anyhow` when appropriate, but keep it simple.
-- Propagate errors with `?` instead of `match` when possible.
+- Propagate errors with `?` instead of `match` when possible; keep `match` arms narrow when you must handle locally.
 - Use `map_err` to convert between error types when needed.
 - Avoid `unwrap()` and `expect()` in production code; use only in tests or when truly guaranteed.
+
+## Calls and imports
+
+- Prefer top-level `use`. Nested/`use` inside a function only for lazy loading or to break a real circular dependency.
+- When a signature or call has many clear parameter groups, prefer a typed options struct or a small helper over a long flat argument list — not for short, clear signatures.
 
 ## Summary
 

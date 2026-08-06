@@ -103,12 +103,18 @@ type RetryPolicy = typeof retryPolicy;
 
 ### Formatting
 
-- Keep one blank line between logical sections where it aids scanning.
+- Keep one blank line between coarse phases where it aids scanning; do not blank-line inside a single phase or inside argument lists.
 - Do not change behavior while styling (return values, side effects, exports).
+
+### Calls, imports, and failure scope
+
+- Prefer top-level `import`. Local imports only for lazy loading or to break a real circular dependency.
+- When a signature or call has many clear parameter groups, prefer a typed options object or a small helper over a long flat argument list — not for short, clear signatures.
+- Keep `try`/`catch`/`finally` scopes small: wrap only the call that can fail and its direct handlers.
 
 ## Visual Block Separation
 
-Core rule: one blank line separates logical blocks; never two blank lines. Use space to separate contexts (validation, calculation, return). Avoid multiple conditions on the same line when it hurts readability; prefer guard clauses and named intermediate booleans.
+Core rule: one blank line separates **coarse** phases inside a function; never two blank lines. Typical phases when present: validation, preparation, main effect, cleanup, return (order follows the function’s flow). Do not micro-split related statements; do not use comments to label or separate blocks. Prefer readable phase layout over minimizing line count. Avoid multiple conditions on the same line when it hurts readability; prefer guard clauses and named intermediate booleans.
 
 ### Between Functions and Classes
 

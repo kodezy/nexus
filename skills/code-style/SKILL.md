@@ -95,8 +95,10 @@ Language-specific placement and examples: `docs/typescript.md`, `docs/python.md`
 
 ## Organization Rules
 
-- Keep imports/includes at the top of the file, grouped and consistently ordered.
+- Keep imports/includes at the top of the file, grouped and consistently ordered. Prefer top-level imports/`use`; use a local import only for lazy loading or to break a real circular dependency (see language docs).
 - **Constants:** after imports in Python and Rust; **after types** in TypeScript and `.tsx` (see table above). Follow the **Constants** section above for layout and grouping.
+- When a signature or call has many parameters that already form clear groups, prefer a typed options/config object or a small helper over a long flat argument list. Do not invent wrappers for short, clear signatures (same exception to Canonical Rule 11 as structured constants).
+- Keep failure-handling scopes small: wrap only the statement(s) that can fail (Python `try`/`except`/`finally`, TypeScript `try`/`catch`/`finally`, Rust `?` or a narrow `match`). Do not extract a helper solely to shrink a `try` block.
 - Keep public APIs before private helpers at module level and inside classes/`impl`.
 - In classes/`impl` blocks, order is strict: constructor or essential dunders first, then other public methods, then private methods last.
 - Group related methods only within the same visibility band (among publics, or among privates); never interleave private above remaining public for “logical” grouping.
@@ -108,25 +110,41 @@ Language-specific placement and examples: `docs/typescript.md`, `docs/python.md`
 ## Formatting
 
 - Follow the project’s formatter and linter (e.g. Black, Ruff, Prettier, rustfmt) when present; otherwise match the style of the file and adjacent modules.
-- Keep indentation and spacing consistent; avoid unnecessary blank lines.
+- Keep indentation and spacing consistent. Use blank lines only at **coarse phase** boundaries inside functions; do not blank-line inside a single phase, and do not insert blank lines inside argument lists.
+- Do not use comments to label or separate phases, argument groups, or blocks — structure and blank lines are enough (Canonical Rule 10).
+
+### Coarse phase separation (all languages)
+
+Separate function bodies into a few coarse phases with **exactly one** blank line between phases (never two). Use only the phases that apply; do not invent empty phases. Common phases:
+
+- **Validation** — guards / early `return` / `raise`
+- **Preparation** — locals, normalization, derived values
+- **Main effect** — core work (IO, mutation, call)
+- **Cleanup** — release / restore when present
+- **Return** — terminal result
+
+Order follows the function’s natural flow (often validate-then-prepare, or prepare-then-validate when guards need locals). Do **not** micro-split: related assignments and related `if`s in the same phase stay together. Prefer readable phase layout over minimizing line count.
+
+Language docs under Visual Block Separation show the same pattern. Python enforces this mandatorily below.
 
 ### Python: mandatory blank-line block separation
 
-When touching Python code, enforce **exactly one** blank line between logical blocks. This is mandatory even if the surrounding file is inconsistent.
+When touching Python code, enforce **exactly one** blank line between coarse phases. This is mandatory even if the surrounding file is inconsistent.
 
-Use **one blank line** (never two) to separate:
+Typical phase mapping (skip phases that do not apply):
 
-- **Variable collection / normalization** (parsing, conversions, primary locals)
-- **Guard clauses / validations** (early `continue`/`return`/`raise` checks)
-- **Main effect** (core loop body, IO, mutations, writes)
-- **Post-processing** (sorting, dedupe, aggregation)
-- **Final return** (the “real” output / terminal return)
+- **Preparation** — variable collection / normalization (parsing, conversions, primary locals)
+- **Validation** — guard clauses (early `continue`/`return`/`raise`)
+- **Main effect** — core loop body, IO, mutations, writes
+- **Cleanup / post-processing** — sorting, dedupe, aggregation, resource release when present
+- **Return** — the real output / terminal return
 
 Also enforce:
 
 - Do not “stick” assignments directly to a control block. If an `if`/`for`/`try` begins a new logical phase, there must be **one blank line** before it.
-- Do not insert extra blank lines inside a single logical block.
+- Do not insert extra blank lines inside a single phase.
 - Avoid stacked `if` blocks with no separation when they represent different phases (e.g., validations vs main effect).
+- Keep `try`/`except`/`finally` bodies as small as practical (only the failing call and its direct handlers).
 
 ## Workflow
 
@@ -178,7 +196,7 @@ When escalating: leave the code in place, report it in `blockers` / `next_step`,
 - Naming is clear and coherent.
 - Production file names prefer single-word (two words max; Python/Rust `_`, new TS/React kebab-case unless local folder uses `_`); tests exempt.
 - Related logic is not fragmented across unnecessary files.
-- Organization improves readability; constants follow the **Constants** section (one per line, grouped by domain).
+- Organization improves readability; constants follow the **Constants** section (one per line, grouped by domain); function bodies use coarse phase blank lines (no comment separators).
 - Diff stays focused and pragmatic.
 - Affected area has no obvious dead code, legacy fallback, or residue left by this change.
 - Ambiguous leftovers are reported in `blockers` / `next_step` (not silently kept as “done”).

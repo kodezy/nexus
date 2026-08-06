@@ -111,6 +111,9 @@ class RetryPolicy:
 - Use type hints and modern patterns (`|` unions, builtin generics `list[str]`, f-strings, `with`, comprehensions). See **Type hints and modern idioms** above; do not add `from __future__ import annotations` unless required.
 - Prefer f-strings for general string interpolation in Python code.
 - Use `except Exception as exception:` always (do not use `e`).
+- Keep `try`/`except`/`finally` scopes small: wrap only the call that can fail and its direct handlers.
+- Prefer top-level imports. Local imports only for lazy loading or a real circular dependency (`TYPE_CHECKING` for type-only cycles).
+- When a signature or call has many clear parameter groups, prefer a typed options object (`dataclass`/`TypedDict`) or a small helper over a long flat argument list — not for short, clear signatures.
 - Avoid unnecessary abstractions; refactor only when there is a clear readability gain.
 - In classes, method ordering is strict: **essential dunders first** (e.g. `__init__`, and other essential magic methods when present), then **other public methods**, then **private methods last** (prefixed with `_`). Never place private methods above remaining public methods for grouping.
 - Internal parameters should be private (`_param`) by default, except when the name is part of an external contract.
@@ -118,7 +121,7 @@ class RetryPolicy:
 
 ## Visual Block Separation
 
-Core rule: one blank line separates logical blocks; never two blank lines. Use space to separate contexts (validation, calculation, return). Avoid multiple conditions on the same line or variable; prefer well-defined blocks and named intermediate booleans for readability.
+Core rule: one blank line separates **coarse** phases inside a function; never two blank lines. Typical phases when present: validation, preparation, main effect, cleanup, return (order follows the function’s flow). Do not micro-split related statements; do not use comments to label or separate blocks. Prefer readable phase layout over minimizing line count. Avoid multiple conditions on the same line or variable; prefer named intermediate booleans when they clarify a phase.
 
 ### Between Functions and Classes
 
