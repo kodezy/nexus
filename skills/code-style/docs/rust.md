@@ -28,6 +28,30 @@ Highest priority: simple, clear, pragmatic names.
 - Use modern language features supported by that edition and toolchain.
 - Avoid pre-edition-2018 residues in new code (`extern crate` at crate root, `try!` instead of `?`) unless matching existing crate style.
 
+### Module organization
+
+Design child `mod` blocks and sibling files around cohesive **concepts**, not around individual types.
+
+- One **concept** per module or crate subtree, not one module per struct or trait. Keep related behavior together; do not split solely for file size.
+- Split when a module has multiple independent responsibilities, is hard to navigate, or has multiple reasons to change.
+- Avoid `utils`, `helpers`, `common`, `misc`. Place code in the owning module or a named shared module (`format`, `dates`, `validation`). Crate layout: `architect`.
+
+```rust
+mod order {
+    pub struct Order {
+        // ...
+    }
+
+    pub fn create() -> Order {
+        // ...
+    }
+
+    fn validate() -> bool {
+        // ...
+    }
+}
+```
+
 ### Order inside a `.rs` file
 
 Top to bottom:
@@ -197,24 +221,6 @@ impl OrderManager {
     }
 
     fn calculate_fees(&self, amount: f64) -> f64 {
-        // ...
-    }
-}
-```
-
-### Module Organization
-
-```rust
-mod order {
-    pub struct Order {
-        // ...
-    }
-
-    pub fn create() -> Order {
-        // ...
-    }
-
-    fn validate() -> bool {
         // ...
     }
 }

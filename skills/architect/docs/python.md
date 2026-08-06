@@ -57,10 +57,16 @@ Keep dependency changes focused; do not mix broad upgrades with unrelated featur
 - **Verb + noun for actions (two-word cap):** `create_order`, `cancel_order`, `sync_users`, `login_user`.
 - **Noun for concepts/services (prefer one word):** `client`, `notifier`, `cache`, `session`, `repository`.
 
-## One purpose per module
+## Module organization
 
-- Each file should have one clear responsibility (for example: one workflow, one action type, one service).
-- If a file grows too large, split by responsibility and keep simple names (for example, multiple workflows in `workflows/`, multiple services in `services/`).
+Design modules around cohesive **concepts**, not around individual classes, functions, or file types.
+
+- Prefer **one module per concept**, not one module per class (for example: `billing.py` or `services/billing.py`, not one file per small helper).
+- Keep related functionality together to minimize context needed to understand or change a feature. Do not split solely to reduce file size or line count.
+- Split only when a module has **multiple independent responsibilities**, becomes hard to navigate, or has **multiple reasons to change**. When splitting, use simple names by responsibility (for example: multiple workflows in `workflows/`, multiple services in `services/`).
+- Avoid generic catch-all modules (`utils`, `helpers`, `common`, `misc`). Place code in the owning package (for example: date logic in `billing` or a dedicated `dates` module). Create a named shared module only when a real cross-cutting concept emerges.
+- Organize packages by **domain or subsystem** (`api`, `services`, `storage`). Prioritize cohesion and predictable locations over minimizing file count.
+- Preserve or improve architectural consistency when restructuring; do not introduce unnecessary granularity.
 - Avoid "hub" modules that only re-export many items without conceptual grouping; prefer exporting only what is used outside the package.
 
 ## Where to place new code
@@ -94,5 +100,5 @@ Keep dependency changes focused; do not mix broad upgrades with unrelated featur
 - Dependencies and runs: **uv** for greenfield and uv-managed repos; Poetry/pip-only (or other established tools) follow local convention until migration is requested.
 - Structure aligned with the project: module → submodule → files with short names.
 - File/module names: simple, pragmatic, descriptive, snake_case; avoid long compounds.
-- One clear purpose per module; flat structure or only a few levels.
+- One clear purpose per module; concept-first layout; flat structure or only a few levels.
 - Place new code in the same folder type and naming pattern the module already uses.

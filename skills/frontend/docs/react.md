@@ -47,11 +47,10 @@ Use a feature-oriented structure as the project grows. For small scopes, keep it
 ```
 src/
 ├── app/                    # shell, providers, bootstrap, router entry
-├── features/               # feature modules (UI + hooks + local helpers)
+├── features/               # feature modules (UI + hooks + local logic)
 ├── components/ or shared/ui/  # reusable UI (match local name)
 ├── hooks/ or shared/hooks/    # shared custom hooks
 ├── services/ or shared/api/   # API and integration layer
-├── utils/ or shared/utils/    # pure helpers
 ├── types/ or shared/model/    # shared types when not local to a feature
 └── styles/ or shared/styles/  # global styles or theme tokens
 ```
@@ -67,17 +66,16 @@ Vite apps often use `shared/` instead of top-level `components/` / `hooks/`. Nex
 | Shared UI | `components/` or `shared/ui/` |
 | Reusable logic | `hooks/` or `shared/hooks/` |
 | Data / API | `services/` or `shared/api/` |
-| Utilities | `utils/` or `shared/utils/` |
 | Shared types | `types/`, `shared/model/`, or colocated when local |
 
 ### Placement rules
 
 - Keep feature-specific code inside `features/<feature>/`.
 - Move code to shared folders only after real reuse appears.
-- Prefer colocated types/helpers while scope is local.
+- Prefer colocated types and helpers while scope is local.
+- Avoid `utils/`, `helpers/`, `common/`, `misc`. Keep logic with the owning feature or use a named shared module (`format`, `dates`, `validation`) per `architect`.
 - Prefer flat paths until a feature has several pieces, then nest under `features/<name>/`.
-- One primary component or one hook per file when practical.
-- Prefer fewer files, but **split when one file mixes independent responsibilities** or becomes hard to scan (large route files with several tabs/panels are a split signal).
+- Prefer one concept per module; split when one file mixes independent responsibilities or becomes hard to scan (large route files with several tabs/panels are a split signal).
 - File names follow `architect`.
 
 ## Components

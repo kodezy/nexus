@@ -23,6 +23,12 @@ Highest priority: simple, clear, pragmatic names.
 - When the project already declares a runtime (`requires-python`, `.python-version`, CI matrix), use that version and only the features it supports.
 - Dependency installs and run workflow: `architect` → `docs/python.md` (not this style guide).
 
+### Module organization
+
+- One **concept** per module or package, not one module per class. Keep related behavior together; do not split solely for file size.
+- Split when a module has multiple independent responsibilities, is hard to navigate, or has multiple reasons to change.
+- Avoid `utils`, `helpers`, `common`, `misc`. Place code in the owning package or a named shared module (`format`, `dates`, `validation`). Package layout: `architect`.
+
 ### Order inside a `.py` file
 
 Top to bottom:

@@ -22,12 +22,24 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 2. **Match existing structure:** Place code in the same hierarchy the project already uses, organized by module/submodule (e.g. `src/api`, `src/services`, `src/ui/components`).
 3. **Simple file names:** Prefer **single-word** names when possible (`parser`, `client`, `cache`, `route`). If one word is not enough, use **at most two words**. Default separator for Python/Rust is `_` (`create_order`, `sync_users`). For TypeScript/React, see File naming below (prefer kebab-case for new two-word `.ts`/`.tsx` files). Avoid longer compounds (e.g. `billing_webhook_processing_service`, `market_offer_creator`).
 4. **Tests exempt:** Test files do not need this pattern; follow project test naming (`test_parser.py`, `orders_test.rs`, descriptive pytest names).
-5. **Fewer files first:** Prefer extending an existing module when responsibility is the same and cohesion stays clear.
-6. **Split only with clear boundary:** Create a new file/package only when at least one condition is true: different responsibility from the current module, independent lifecycle, stable reuse by 2+ modules, or the current file loses readability due to mixed concerns.
-7. **One clear purpose per module:** Each file or package should have a single, obvious responsibility.
-8. **Flat when possible:** Avoid deep nesting; group by module, then keep submodules at one or two levels when it stays clear.
-9. **No over-engineering:** Add layers (e.g. services, handlers, repositories) only when the project already uses them in that area.
-10. **Local conventions win:** If the codebase does something different from this skill, follow the codebase.
+5. **Concept-first modules:** Design around cohesive concepts, not individual classes, functions, or file types. Prefer one module per concept, not one module per class. See **Module organization** below.
+6. **Fewer files first:** Prefer extending an existing module when responsibility is the same and cohesion stays clear. Do not split solely to reduce file size or line count.
+7. **Split only with clear boundary:** Create a new file/package only when at least one condition is true: multiple independent responsibilities, the module becomes difficult to navigate, multiple reasons to change, independent lifecycle, stable reuse by 2+ modules, or readability loss from mixed concerns.
+8. **One clear purpose per module:** Each file or package should have a single, obvious responsibility.
+9. **Flat when possible:** Avoid deep nesting; group by module, then keep submodules at one or two levels when it stays clear.
+10. **No over-engineering:** Add layers (e.g. services, handlers, repositories) only when the project already uses them in that area.
+11. **Local conventions win:** If the codebase does something different from this skill, follow the codebase.
+
+## Module organization
+
+Design modules around cohesive **concepts**, not around individual classes, functions, or file types.
+
+- Prefer **one module per concept**, not one module per class.
+- Keep related functionality together to minimize the context required to understand or modify a feature. Do not split modules solely to reduce file size or line count.
+- Split a module only when it begins representing **multiple independent responsibilities**, becomes difficult to navigate, or has **multiple reasons to change**.
+- Avoid generic catch-all modules such as `utils`, `helpers`, `common`, or `misc`. Place code in the module that owns the concept. When a shared abstraction naturally emerges, create a dedicated, well-named module for that responsibility (for example: `format`, `dates`, `validation` — not `utils`).
+- Organize packages by **domain or subsystem** whenever practical. Within each package, prioritize cohesion, discoverability, and predictable locations over minimizing the number of files.
+- When making structural changes, preserve or improve the project's architectural consistency instead of introducing unnecessary granularity.
 
 ## Scope
 
@@ -52,8 +64,10 @@ Keep architecture simple, clear, and direct. Every new module, package, or featu
 - File names prefer single-word; two words max with the language-appropriate separator (Python/Rust `_`, new TS/React kebab-case unless the folder already uses `_`); tests exempt.
 - Python dependencies/runs follow `docs/python.md` (uv for greenfield/uv-managed; Poetry/pip-only when that is local; current stable Python 3.13+ for greenfield).
 - Rust toolchain/Cargo follow `docs/rust.md` (stable; edition 2024 for greenfield when available).
+- Modules are organized by concept, not by class or file type.
 - Existing module was preferred when responsibility matched.
 - New files were created only when split criteria were explicitly met.
+- No new `utils` / `helpers` / `common` / `misc` catch-alls; code lives in the owning concept or a named shared module.
 - One clear responsibility per module.
 - No extra layers or folders without a matching pattern in the project.
 - Imports and public API follow the style of nearby modules.

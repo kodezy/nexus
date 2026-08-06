@@ -43,10 +43,16 @@ Keep Rust architecture simple, clear, and direct, in the same style as the proje
 - **Noun for concepts/services (prefer one word):** `client`, `notifier`, `cache`, `session`, `repository`.
 - **Module as folder:** `services/` -> `services/mod.rs` re-exporting items, or `services.rs`; submodules as `services/notifier.rs` (declared in `mod.rs` or parent module).
 
-## One purpose per module
+## Module organization
 
-- Each file should have one clear responsibility (for example: one workflow, one action type, one service).
-- If a file grows too large, split by responsibility and keep simple names (for example, multiple workflows in `workflows/`, multiple services in `services/`).
+Design modules around cohesive **concepts**, not around individual classes, functions, or file types.
+
+- Prefer **one module per concept**, not one module per struct or trait (for example: `services/billing.rs`, not one file per small helper).
+- Keep related functionality together to minimize context needed to understand or change a feature. Do not split solely to reduce file size or line count.
+- Split only when a module has **multiple independent responsibilities**, becomes hard to navigate, or has **multiple reasons to change**. When splitting, use simple names by responsibility (for example: multiple workflows in `workflows/`, multiple services in `services/`).
+- Avoid generic catch-all modules (`utils`, `helpers`, `common`, `misc`). Place code in the owning module (for example: date logic in `billing` or a dedicated `dates` module). Create a named shared module only when a real cross-cutting concept emerges.
+- Organize crates and `src/` modules by **domain or subsystem** (`api`, `services`, `storage`). Prioritize cohesion and predictable locations over minimizing file count.
+- Preserve or improve architectural consistency when restructuring; do not introduce unnecessary granularity.
 - Avoid "hub" modules that only re-export many items without conceptual grouping; prefer re-exporting only what is part of the crate or module public API.
 
 ## Where to place new code
@@ -81,6 +87,6 @@ Keep Rust architecture simple, clear, and direct, in the same style as the proje
 - Toolchain: **stable**; new crates prefer edition **2024** (else **2021+**); honor existing `Cargo.toml` pins.
 - Structure aligned with the project: module -> submodule -> files with short names.
 - File/module names: simple, pragmatic, descriptive, snake_case; avoid long compounds.
-- One clear purpose per module; flat structure or only a few levels.
+- One clear purpose per module; concept-first layout; flat structure or only a few levels.
 - Place new code in the same folder type and naming pattern the module already uses.
 - Extra binaries in `src/bin/<name>.rs`; public API exposed with deliberate `pub`/`pub use`.

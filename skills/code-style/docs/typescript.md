@@ -27,7 +27,8 @@ Highest priority: simple, clear, pragmatic names.
 - Prefer explicit types on public APIs and non-obvious values; avoid implicit `any`.
 - Use ES modules (`import` / `export`); avoid `namespace`, `require()`, and other legacy module patterns in new code unless the file already uses them.
 - Use early returns and guard clauses to keep control flow shallow.
-- One primary responsibility per file.
+- One primary responsibility per file; prefer one **concept** per module, not one file per type or helper.
+- Package and folder layout (features, services, shared modules): `architect` — avoid `utils` / `helpers` / `common` / `misc` catch-alls.
 
 ### Order inside a `.ts`, `.tsx`, or `.jsx` file
 

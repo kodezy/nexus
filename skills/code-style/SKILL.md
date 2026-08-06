@@ -38,7 +38,7 @@ If repository style conflicts with generic guidance, local project conventions w
 4. Keep local consistency: match dominant style from the target file and adjacent modules.
 5. Enforce readable naming: names should communicate intent with minimal ambiguity.
 6. Prefer simple file names: single-word when possible; at most two words when needed. Python/Rust use `_`; new TypeScript/React files prefer kebab-case unless the folder already uses `_` (see `architect` for placement). Tests are exempt from this pattern.
-7. Prefer fewer files with better cohesion: keep related logic together unless there is a clear boundary to split.
+7. Prefer fewer files with better cohesion: keep related logic together unless there is a clear boundary to split. Package and folder boundaries follow `architect` (concept-first modules; avoid `utils` / `helpers` / `common` / `misc` catch-alls).
 8. Keep formatting uniform: spacing, blank lines, and wrapping should be predictable and stable.
 9. Apply minimal viable changes: avoid broad rewrites when a focused style update solves the task.
 10. **Docs and comments:** default is none. Add docstrings, `///`/`//!`, or line comments only when necessary (e.g. public API, non-obvious logic, safety notes); prefer self-explanatory code. Language specifics: `docs/typescript.md`, `docs/python.md`, `docs/rust.md`.
@@ -95,6 +95,7 @@ Language-specific placement and examples: `docs/typescript.md`, `docs/python.md`
 
 ## Organization Rules
 
+- Package and folder layout: concept-first modules by domain or subsystem (`architect`). Avoid generic catch-all folders (`utils`, `helpers`, `common`, `misc`); colocate with the owning concept or use a named module for a real shared abstraction.
 - Keep imports/includes at the top of the file, grouped and consistently ordered. Prefer top-level imports/`use`; use a local import only for lazy loading or to break a real circular dependency (see language docs).
 - **Constants:** after imports in Python and Rust; **after types** in TypeScript and `.tsx` (see table above). Follow the **Constants** section above for layout and grouping.
 - When a signature or call has many parameters that already form clear groups, prefer a typed options/config object or a small helper over a long flat argument list. Do not invent wrappers for short, clear signatures (same exception to Canonical Rule 11 as structured constants).
@@ -104,8 +105,8 @@ Language-specific placement and examples: `docs/typescript.md`, `docs/python.md`
 - Group related methods only within the same visibility band (among publics, or among privates); never interleave private above remaining public for “logical” grouping.
 - When touching a file, normalize that file's order and fix obviously unclear names; do not style-sweep untouched files.
 - Avoid deep nesting when a guard clause or early return improves readability.
-- Prefer keeping related code in existing modules when cohesion remains clear.
-- Split into a new file only with a clear boundary (different responsibility, independent lifecycle, stable reuse by 2+ modules, or readability loss from mixed concerns).
+- Prefer keeping related code in existing modules when cohesion remains clear. Do not split solely to reduce file size or line count.
+- Split into a new file only with a clear boundary (multiple independent responsibilities, hard to navigate, multiple reasons to change, independent lifecycle, stable reuse by 2+ modules, or readability loss from mixed concerns).
 
 ## Formatting
 
