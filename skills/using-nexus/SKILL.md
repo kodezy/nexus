@@ -15,13 +15,15 @@ Use this skill before a code or repository change. Do not invoke it for general 
 
 For long work, maintain a concise task capsule in the current task state: goal, confirmed decisions, affected area, validation, and next step. Keep it temporary unless the user explicitly asks to save it.
 
+When resuming long work or starting a new sub-task in the same session, re-read `~/.nexus/user/preferences.md` and `.nexus/user/preferences.md` (repo overrides global) before the first edit.
+
 ## Authority
 
 Apply this order: system and managed policy; explicit user instructions; host-native safety and approval controls; project instructions; Nexus; optional plugins and skills. Ask the user when instructions at the same priority conflict.
 
 ## Route the change
 
-1. Before the first edit, use `$git-assistant` → `workspace-choice`. Read preferences only when choosing a workspace or closing out; repo preferences override global preferences.
+1. Before the first edit, use `$git-assistant` → `workspace-choice`. Read preferences when choosing a workspace, closing out, or resuming long work; repo preferences override global preferences.
 2. Use `$spec-driven` when a feature or UI still has material ambiguity.
 3. Use `$architect` before adding files, modules, or structural boundaries.
 4. Use the domain skill that fits the changed area: `$frontend`, `$log-writer`, `$readme-writer`, `$playwright`, or another relevant skill.
