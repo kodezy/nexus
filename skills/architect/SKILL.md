@@ -77,7 +77,7 @@ Design modules around cohesive **concepts**, not around individual classes, func
 Use this repository structure as baseline for placement and naming:
 
 - Top-level content is grouped by purpose (`skills/`, `rules/`, plugin manifest), not by deep product hierarchies.
-- Skill folders use short, kebab-case names (`code-style`, `log-writer`, `readme-writer`).
+- Skill folders use short, kebab-case names (`api-docs-writer`, `code-style`, `log-writer`, `readme-writer`).
 - Supporting material stays close to the owning skill (`docs/`, `scripts/`, `assets/`, `references/`, `agents/` for Codex metadata) instead of being scattered.
 - Keep this same approach: simple names, clear ownership, and minimal file fragmentation inside each skill or module.
 

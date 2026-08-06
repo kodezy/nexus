@@ -30,6 +30,7 @@ One factual sentence.
 
 Add only when needed:
 
+- `## API` — HTTP service; link to `docs/API.md` (use `$api-docs-writer`)
 - `## Config` — project has configuration
 - `## Structure` — short tree (~5–8 lines) that helps onboarding
 
@@ -51,8 +52,8 @@ One factual sentence.
 ## Docs
 ```
 
-- Use when the reader’s goal is import / call an API.
-- Prefer a link under `## API` if the full surface lives elsewhere.
+- Use when the reader’s goal is import or call a library API.
+- HTTP surface: link `## API` to `docs/API.md` (`$api-docs-writer`); keep import/usage notes here for the library API.
 
 ### Monorepo
 

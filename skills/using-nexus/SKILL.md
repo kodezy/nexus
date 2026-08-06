@@ -26,7 +26,7 @@ Apply this order: system and managed policy; explicit user instructions; host-na
 1. Before the first edit, use `$git-assistant` → `workspace-choice`. Read preferences when choosing a workspace, closing out, or resuming long work; repo preferences override global preferences.
 2. Use `$spec-driven` when a feature or UI still has material ambiguity.
 3. Use `$architect` before adding files, modules, or structural boundaries.
-4. Use the domain skill that fits the changed area: `$frontend`, `$log-writer`, `$readme-writer`, `$playwright`, or another relevant skill.
+4. Use the domain skill that fits the changed area: `$api-docs-writer`, `$frontend`, `$log-writer`, `$readme-writer`, `$playwright`, or another relevant skill.
 5. Apply `$code-style` to touched code files. Use `$frontend-quality` for React UI work.
 6. Finish with `$integrity-review`, then `$git-assistant` closeout only after explicit approval.
 
