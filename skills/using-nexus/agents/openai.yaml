@@ -1,4 +1,4 @@
 interface:
   display_name: "Using Nexus"
   short_description: "Route Nexus workflows for code and repository changes."
-  default_prompt: "Use $using-nexus before editing code or repository files. Read preferences on demand for workspace choice or closeout, then invoke only the relevant Nexus workflows."
+  default_prompt: "Use $using-nexus before editing code or repository files. Read preferences on demand for workspace choice or closeout. Docs: $readme-writer (monorepo: docs/monorepo.md); API reference: $api-docs-writer. Then invoke only the other relevant Nexus workflows."

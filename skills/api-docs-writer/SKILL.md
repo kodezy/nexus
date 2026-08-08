@@ -9,7 +9,7 @@ description: Write short, scannable HTTP API reference docs. Use when creating o
 
 Write API reference docs that are short, direct, and easy to scan. One job per section. Omit empty sections.
 
-Answer **how to call** the API. OpenAPI (or generated schema) owns exact types. Business flows belong in a separate doc, linked from `## Docs`.
+Answer **how to call** the API. OpenAPI (or generated schema) owns exact types. Business flows belong in a separate doc, linked from `## Docs`. UI pages, filters, and screen workflows belong in the UI package doc — not here.
 
 ## Choose A Variant
 
@@ -66,7 +66,11 @@ Group by path prefix (`/accounts`, `/workers`). One block per route.
 
 ### Docs
 
-Links only: OpenAPI, operational flows, README, related guides.
+Links only: OpenAPI, operational flows, README, related guides. In a monorepo with a UI package, link its doc index from `## Docs`.
+
+### Monitoring and aggregates
+
+When a table maps a goal to an endpoint, name the **UI page** when one exists (`Metrics page`), then the route. Do not use an endpoint path segment as the page name.
 
 ## Endpoint Block
 
@@ -108,10 +112,12 @@ Use `$readme-writer` for README structure.
 ## Avoid
 
 - Operational guides, sequence diagrams, or long flows in `docs/API.md` — link a separate doc.
+- UI page guides, sidebar maps, or component behavior — link the UI package doc.
 - Duplicating full OpenAPI schemas or every response field.
 - Endpoint index plus full per-route docs for the same route.
 - Documenting internal wire protocols unless callers use them directly.
 - Sections filled only to match a template.
+- Naming a UI page after an API path (e.g. `/metrics/dashboard` is not a page called "Dashboard").
 
 ## Checklist
 
@@ -120,3 +126,4 @@ Use `$readme-writer` for README structure.
 - Empty sections removed.
 - Schemas defer to OpenAPI where types are exhaustive.
 - Flows and runbooks live under `## Docs`, not in the endpoint reference.
+- Monorepo: UI doc index linked from `## Docs`; monitoring tables use page names where applicable.

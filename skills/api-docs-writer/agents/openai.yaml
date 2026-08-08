@@ -1,4 +1,4 @@
 interface:
   display_name: "API Docs Writer"
   short_description: "Write short HTTP API reference docs (docs/API.md)."
-  default_prompt: "Use $api-docs-writer to write or improve docs/API.md. Default to Compact (Overview, Auth, Conventions, Endpoints, Docs). Use Large only when the API has many routes — index in API.md, detail in docs/api/<group>.md for non-obvious routes only. Keep flows and OpenAPI schemas out of the reference; link them from Docs. Omit empty sections; verify paths against code."
+  default_prompt: "Use $api-docs-writer to write or improve docs/API.md. Default to Compact (Overview, Auth, Conventions, Endpoints, Docs). Use Large only when the API has many routes — index in API.md, detail in docs/api/<group>.md for non-obvious routes only. Keep flows, UI guides, and OpenAPI schemas out of the reference; link them from Docs. Monitoring tables: UI page name + endpoint. Monorepo: link UI doc index from ## Docs. Omit empty sections; verify paths against code."

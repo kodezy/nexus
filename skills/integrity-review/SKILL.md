@@ -23,7 +23,22 @@ Before the verdict, confirm:
 - naming and placement match the contract and local project patterns;
 - touched files follow public-before-private member/module order and clear identifiers (`code-style`);
 - `architect` was used when structure or architecture changed;
-- the final diff has no unintended edits or temporary debug residue.
+- the final diff has no unintended edits or temporary debug residue;
+- when project documentation changed (see **Documentation changes** below), that checklist is satisfied.
+
+## Documentation changes
+
+When the diff touches consumer project Markdown (`README.md`, `**/docs/**/*.md`, operations guides such as `OPERATIONS.md`):
+
+1. Scope to touched files plus linked indexes they must stay consistent with.
+2. Verify env vars against each package's `.env.example` — no cross-package attribution.
+3. Verify commands, ports, and URLs against code, Compose, or manifests in the repo.
+4. Confirm canonical terms match across touched docs (see `$readme-writer` → `docs/monorepo.md` in monorepos).
+5. For UI docs, confirm page and tab names match nav labels in code.
+6. Confirm relative links resolve; remove or fix broken targets.
+7. Flag internal plan folders (for example `docs/superpowers/`) as non-user docs when linked from official indexes.
+
+A docs-only change still needs a validation receipt (link check, `.env.example` diff, or code spot-check).
 
 ## Review sequence
 

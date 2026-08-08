@@ -1,4 +1,4 @@
 interface:
   display_name: "README Writer"
   short_description: "Write short App/CLI READMEs; Lib and Monorepo variants when needed."
-  default_prompt: "Use $readme-writer to write or improve a short README. Default to App/CLI (Install, Run, Docs; Config/Structure/API only if needed). For HTTP APIs, link ## API to docs/API.md via $api-docs-writer. Use Lib or Monorepo only when the project type matches. Keep an existing healthy structure unless asked to restructure. Omit empty sections; validate links. Never use placeholders — ask for real URLs and names, or omit."
+  default_prompt: "Use $readme-writer to write or improve a short README. Default to App/CLI (Install, Run, Docs; Config/Structure/API only if needed). For HTTP APIs, link ## API to docs/API.md via $api-docs-writer. Monorepo: follow docs/monorepo.md in this skill — per-package env vars from .env.example, root ## Docs links all package indexes, external components marked. Use Lib or Monorepo only when the project type matches. Keep an existing healthy structure unless asked to restructure. Omit empty sections; validate links. Never use placeholders — ask for real URLs and names, or omit."

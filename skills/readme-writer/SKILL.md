@@ -87,7 +87,9 @@ One factual sentence.
 ```
 
 - Use when the root README must point at multiple packages.
-- `## Packages` = short list or tree; details stay in each package README.
+- `## Packages` = short list or tree; details stay in each package README or `docs/README.md`.
+- `## Docs` = link every package-level doc index (API, UI, operations).
+- Follow [docs/monorepo.md](docs/monorepo.md) for env attribution, ports, terminology, UI names, and cross-links.
 
 ## Style
 
@@ -130,3 +132,4 @@ One factual sentence.
 - Every retained link resolves
 - Variant matches the project type
 - No placeholders, stubs, or “replace me” text — missing facts were asked or omitted
+- Monorepo: [docs/monorepo.md](docs/monorepo.md) checklist satisfied when multiple packages are documented
