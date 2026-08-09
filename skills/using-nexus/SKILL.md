@@ -27,11 +27,12 @@ Apply this order: system and managed policy; explicit user instructions; host-na
 2. Use `$spec-driven` when a feature or UI still has material ambiguity.
 3. Use `$architect` before adding files, modules, or structural boundaries.
 4. Use the domain skill that fits the changed area:
+   - Cleanup primary (dead code, duplication, legacy removal, simplification): `$code-cleanup`.
    - Markdown docs: `$readme-writer` (monorepo: `docs/monorepo.md` in that skill).
    - HTTP API reference: `$api-docs-writer` (flows and UI guides stay out of `API.md`).
    - UI code: `$frontend` and `$frontend-quality`.
    - Other: `$log-writer`, `$playwright`, or another relevant skill.
-5. Apply `$code-style` to touched code files.
+5. Apply `$code-style` to touched code files. Skip its light Area Cleanup when step 4 was `$code-cleanup` (that skill already owns the full cleanup pass).
 6. Finish with `$integrity-review`, then `$git-assistant` closeout only after explicit approval.
 
 ## Compatibility

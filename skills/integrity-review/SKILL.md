@@ -1,10 +1,12 @@
 ---
 name: integrity-review
 description: >-
-  Use when finalizing an implementation, reviewing completed work, or explicitly
-  checking for logic issues, inconsistencies, obsolete code, legacy paths,
-  fallbacks, residues, or unnecessary boilerplate. Require evidence before a
-  successful verdict, then hand off to git-assistant closeout when validated.
+  Use when finalizing an implementation or reviewing completed work for logic
+  issues, inconsistencies, obsolete code, legacy paths, fallbacks, residues, or
+  unnecessary boilerplate. This skill owns the verdict and validation receipt;
+  when cleanup is the primary task, run `$code-cleanup` first. Require evidence
+  before a successful verdict, then hand off to git-assistant closeout when
+  validated.
 ---
 
 # Integrity Review
@@ -13,7 +15,7 @@ Review completed work for real issues in the affected feature area. A clean revi
 
 ## Canonical closeout
 
-This skill is the single source of truth for end-of-implementation review and commit handoff. The Nexus contract and `code-style` route here; they do not repeat the full checklist.
+This skill is the single source of truth for end-of-implementation review and commit handoff. The Nexus contract, `code-style`, and `code-cleanup` route here; they do not repeat the full checklist.
 
 After every code implementation closeout, this skill is mandatory. On Validated or Corrected, continue to closeout (commit, worktree unify when applicable, push offer). On Uncertain or Blocked, stop without closeout.
 

@@ -159,11 +159,13 @@ Also enforce:
 ### Final pass order (code changes)
 
 1. Implement the task.
-2. Area cleanup (obvious removals; escalate doubt) — see Area Cleanup below.
+2. Area cleanup (obvious removals; escalate doubt) — see Area Cleanup below. Skip this step when `$code-cleanup` already ran in this session for the same area.
 3. Apply naming / order / format rules from this skill to every touched file.
 4. Run `integrity-review` (canonical closeout: area review, verdict, commit handoff).
 
 ## Area Cleanup (final pass)
+
+Light pass on every code change. When cleanup, deduplication, legacy removal, or simplification is the **primary** task, use `$code-cleanup` instead; it owns the full workflow and ends with this skill plus `$integrity-review`.
 
 Apply this pass to the **affected feature area**, not the whole repository and not only the diff hunks.
 

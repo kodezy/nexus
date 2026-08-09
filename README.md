@@ -199,7 +199,7 @@ Hermes `MEMORY.md` / `USER.md` are for tone and environment only. Nexus preferen
 2. **Preferences** — read `~/.nexus/user/` and `.nexus/user/` when choosing a workspace or closing out.
 3. **Workspace** — `$git-assistant` workspace choice (or `/workspace` on Cursor).
 4. **Specify** — `$spec-driven` when a feature or UI needs flow and acceptance criteria.
-5. **Act** — smallest change; `$architect` when creating structure.
+5. **Implement** — smallest change; `$architect` when creating structure; `$code-cleanup` when dead code, duplication, legacy removal, or simplification is the primary goal.
 6. **Style** — `$code-style` on touched files; React UI also uses `$frontend-quality`.
 7. **Review** — `$integrity-review`.
 8. **Closeout** — `$git-assistant` closeout (or `/closeout` on Cursor).
@@ -233,6 +233,7 @@ Prefer existing tests. When a new test is the relevant missing validation sensor
 | --- | --- |
 | `skills/using-nexus/` | On-demand router for code and repository changes |
 | `skills/spec-driven/` | Lightweight feature and UI specification workflow |
+| `skills/code-cleanup/` | Dead code, duplication, legacy removal; simplify over abstract |
 | `skills/frontend-quality/` | Responsive, accessible, concise React UI review |
 | `rules/nexus-contract.mdc` | Always-on policy (Cursor); same contract for all harnesses |
 | `skills/` | Workflows (+ `agents/openai.yaml` for Codex UI) |

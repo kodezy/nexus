@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Cleanup"
+  short_description: "Remove dead code, duplication, and legacy; simplify over abstract."
+  default_prompt: "Use $code-cleanup to remove dead code, legacy paths, and duplication in the scoped area, simplify instead of adding abstraction, then code-style and integrity-review."
