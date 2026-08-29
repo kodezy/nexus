@@ -61,7 +61,7 @@ Top to bottom:
 3. **`use`** — `std`, then other crates, then `crate::`, then `super::`, then `self::`; blank line between groups.
 4. **Scalar constants** — `const` / `type` aliases (see **Constants** below).
 5. **Infrastructure `static`** — one-shot or lazy shared setup (`static CLIENT: LazyLock<...>`, `OnceLock` holders). Rust rarely uses a module-level `logger` variable; prefer `tracing` macros (`log-writer` for message/level rules).
-6. **Mutable module `static`** — runtime globals with interior mutability (`Mutex`, `RwLock`, `RefCell` inside `LazyLock`/`OnceLock`) when module state is unavoidable.
+6. **Mutable module `static`** — runtime globals with interior mutability (`Mutex`, `RwLock`, `RefCell` inside `LazyLock`/`OnceLock`) when module state is unavoidable. Group by domain like **Constants** (see **Variables** below).
 7. **`struct` / `enum` / `union`**
 8. **`trait`**
 9. **`impl`** — after the `struct`/`enum`/`trait` each block implements (inherent `impl` right after its type; `impl Trait for` after that `trait`).
@@ -70,7 +70,7 @@ Top to bottom:
 
 Mnemonic: **imports → scalar constants → infra statics → module state statics → types → impl → functions → main**.
 
-**Blank lines at module level:** **one** blank line between `use` groups, constant domains, infra `static`, state `static`, and type/`impl` blocks. **One** blank line before top-level `fn` items (rustfmt default). Do not double-space every phase.
+**Blank lines at module level:** **one** blank line between `use` groups, constant domains, variable domains in module state, infra `static`, state `static`, and type/`impl` blocks. **One** blank line before top-level `fn` items (rustfmt default). Do not double-space every phase.
 
 **Dependency order wins.** A `const` whose type is a local `struct` must come **after** that `struct` (and often belongs in `impl` as an associated `const`). Do not reorder if it changes initialization order.
 
@@ -88,6 +88,8 @@ static REDIS_CLIENT: LazyLock<Client> = LazyLock::new(|| Client::open("redis://1
 
 static CACHE_INSTANCES: LazyLock<Mutex<HashMap<String, CacheEntry>>> =
     LazyLock::new(|| Mutex::new(HashMap::new()));
+
+static CONNECTION_LOGGED: LazyLock<Mutex<bool>> = LazyLock::new(|| Mutex::new(false));
 
 struct RedisCache {
     // ...
@@ -142,6 +144,23 @@ impl RetryPolicy {
 }
 ```
 
+### Variables
+
+Same grouping model as **Constants**—one per line, grouped by domain with one blank line between groups.
+
+- **Mutable module `static` (step 6):** follow local crate naming for `static` items (often `SCREAMING_SNAKE_CASE`); use `snake_case` for locals and function parameters. Group related `static` items by domain.
+- **Locals inside functions:** group by domain **within** a coarse phase; one blank line between domains. Coarse phase blank lines still separate validation, preparation, main effect, and return.
+- **Parameters:** `snake_case`; prefer `&str` over `String` for read-only inputs.
+
+Module state (grouped by domain):
+
+```rust
+static CACHE_INSTANCES: LazyLock<Mutex<HashMap<String, CacheEntry>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
+
+static CONNECTION_LOGGED: LazyLock<Mutex<bool>> = LazyLock::new(|| Mutex::new(false));
+```
+
 ### Documentation and comments
 
 **Default: no new doc comments or line comments.** Add `///`, `//!`, or `//` only when necessary, for example: public API surface, safety or correctness notes the types do not express, or non-obvious algorithm/invariant. Prefer self-explanatory code and names.
@@ -170,7 +189,7 @@ impl RetryPolicy {
 
 ## Visual Block Separation
 
-Core rule: when a function body has **two or more distinct steps**, one blank line separates those **coarse** phases; never two blank lines. A short single-step body needs no extra blank lines. Typical phases when present: validation, preparation, main effect, cleanup, return. There is no canonical prepare-vs-validate order — follow the function’s flow. Do not micro-split related statements (assignment and the `if` that uses it stay together); do not use comments to label or separate blocks. Prefer readable phase layout over minimizing line count.
+Core rule: when a function body has **two or more distinct steps**, one blank line separates those **coarse** phases; never two blank lines. A short single-step body needs no extra blank lines. **Within** a phase, group locals by domain with one blank line between domains (same rule as **Variables**). Typical phases when present: validation, preparation, main effect, cleanup, return. There is no canonical prepare-vs-validate order — follow the function’s flow. Do not micro-split assignments in the same domain group; do not use comments to label or separate blocks. Prefer readable phase layout over minimizing line count.
 
 ### Between Functions and Structs
 

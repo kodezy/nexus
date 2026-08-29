@@ -99,11 +99,23 @@ Apply these rules whenever declaring module-level or shared immutable values:
 
 Language-specific placement and examples: `docs/typescript.md`, `docs/python.md`, `docs/rust.md`.
 
+## Variables
+
+Apply these rules to module-level mutable state and to locals inside functions (same grouping model as **Constants**):
+
+1. **One variable per line.** Do not declare multiple unrelated variables on the same line.
+2. **Group by domain.** Separate related variable groups with one blank line—the same rule as **Constants**. At module level, apply in the **module state** layer. Inside functions, apply **within** a coarse phase when locals fall into distinct domains; coarse phase separation still applies between phases.
+3. **Readability over brevity.** Prefer clear layout and stable Git diffs over minimizing line count.
+4. **Naming:** use language conventions (`snake_case` / `camelCase`); do not use `UPPER_SNAKE_CASE` for mutable variables. Module-private globals follow each language doc (e.g. `_` prefix in Python). Parameters keep contract names with no `_` prefix.
+
+Language-specific placement and examples: `docs/typescript.md`, `docs/python.md`, `docs/rust.md`.
+
 ## Organization Rules
 
 - Package and folder layout: concept-first modules by domain or subsystem (`architect`). Avoid generic catch-all folders (`utils`, `helpers`, `common`, `misc`); colocate with the owning concept or use a named module for a real shared abstraction.
 - Keep imports/includes at the top of the file, grouped and consistently ordered. Prefer top-level imports/`use`; use a local import only for lazy loading or to break a real circular dependency (see language docs).
 - **Constants:** after typing in Python; after imports (with `type` aliases) in Rust; **after types** in TypeScript and `.tsx` (see table above). **Logger/infrastructure** and **module state** follow constants in that order when present. Follow the **Constants** section above for layout and grouping.
+- **Variables (module state and locals):** follow the **Variables** section above—one per line, grouped by domain with one blank line between groups.
 - When a signature or call has many parameters that already form clear groups, prefer a typed options/config object or a small helper over a long flat argument list. Do not invent wrappers for short, clear signatures (same exception to Canonical Rule 11 as structured constants).
 - Keep failure-handling scopes small: wrap only the statement(s) that can fail (Python `try`/`except`/`finally`, TypeScript `try`/`catch`/`finally`, Rust `?` or a narrow `match`). Do not extract a helper solely to shrink a `try` block.
 - Keep public APIs before private helpers at module level and inside classes/`impl`.
@@ -130,7 +142,7 @@ Language-specific placement and examples: `docs/typescript.md`, `docs/python.md`
 
 ### Module-level blank lines
 
-- **One** blank line between import groups, between module-order layers (typing → constants → logger/infra → state), and between constant domains in the same layer.
+- **One** blank line between import groups, between module-order layers (typing → constants → logger/infra → state), and between constant or variable domains in the same layer.
 - **Never** use two blank lines between those layers — order already signals structure; double-spacing adds noise.
 - **Python:** **two** blank lines only before a top-level `class` or `def` (PEP 8).
 - **TypeScript / Rust:** one blank line between top-level declarations; follow Prettier or rustfmt when present.
@@ -146,7 +158,7 @@ Separate function bodies into a few coarse phases with **exactly one** blank lin
 - **Cleanup** — release / restore when present
 - **Return** — terminal result
 
-There is **no canonical prepare-vs-validate order**. Follow the function’s natural flow; skip phases that do not apply. Do **not** micro-split: related assignments and the `if` that uses them stay together. Prefer readable phase layout over minimizing line count. A short body with a single step needs **no** extra blank lines.
+There is **no canonical prepare-vs-validate order**. Follow the function’s natural flow; skip phases that do not apply. Do **not** micro-split: related assignments in the **same domain** and the `if` that uses them stay together. **Within** a phase, group locals by domain with one blank line between domains (same rule as **Variables**). Prefer readable phase layout over minimizing line count. A short body with a single step needs **no** extra blank lines.
 
 Language docs under Visual Block Separation show the same pattern. Python applies this when the body has two or more distinct steps (below).
 
@@ -164,8 +176,8 @@ Typical phases (use only those that apply; order follows the function, not this 
 
 Also enforce:
 
-- One blank line before `if`/`for`/`try` only when it **starts a new coarse phase**. Do not insert a blank line between an assignment and a guard that belongs to the same step.
-- Do not insert extra blank lines inside a single phase.
+- One blank line before `if`/`for`/`try` only when it **starts a new coarse phase**. Do not insert a blank line between assignments in the same domain group, or between an assignment and a guard that belongs to the same step.
+- Within a phase, group locals by domain with one blank line between domains (same rule as **Variables**).
 - Avoid stacked `if` blocks with no separation when they represent different phases (e.g., validations vs main effect).
 - Keep `try`/`except`/`finally` bodies as small as practical (only the failing call and its direct handlers).
 
@@ -221,7 +233,7 @@ When escalating: leave the code in place, report it in `blockers` / `next_step`,
 - Naming is clear and coherent.
 - Production file names prefer single-word (two words max; Python/Rust `_`, new TS kebab-case unless local folder uses `_`, React component files `PascalCase`); tests exempt.
 - Related logic is not fragmented across unnecessary files.
-- Organization improves readability; constants follow the **Constants** section (one per line, grouped by domain); function bodies use coarse phase blank lines (no comment separators).
+- Organization improves readability; constants and variables follow **Constants** / **Variables** (one per line, grouped by domain); function bodies use coarse phase blank lines (no comment separators).
 - Diff stays focused and pragmatic.
 - Affected area has no obvious dead code, legacy fallback, or residue left by this change.
 - Ambiguous leftovers are reported in `blockers` / `next_step` (not silently kept as “done”).

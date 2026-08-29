@@ -39,7 +39,7 @@ Top to bottom:
 2. **`type` / `interface`** — shared shapes for this module.
 3. **Module-level constants** — `UPPER_SNAKE_CASE` and other file-level immutable values (see **Constants** below).
 4. **Logger / infrastructure** — module-scoped setup treated as configuration, not mutable runtime state (`const log = consola.withTag('billing')`, one-shot clients). Logger **setup** details: `log-writer`; this step is **file order** only.
-5. **Module-level state** — runtime mutable data at module scope (`const cache = new Map()`, module singletons, `let` refs holding live state). Prefer `const` binding + mutable contents over reassignable `let` when possible.
+5. **Module-level state** — runtime mutable data at module scope (`const cache = new Map()`, module singletons, `let` refs holding live state). Prefer `const` binding + mutable contents over reassignable `let` when possible. Group by domain like **Constants** (see **Variables** below).
 6. **`class` declarations** — before any module-level functions.
 7. **Module-level functions/components** — exported functions/components first, then non-exported helpers last. **If there is a default export, it is last among the publics** (still before private helpers).
 
@@ -64,6 +64,8 @@ const log = consola.withTag('cache');
 
 const cacheInstances = new Map<string, CacheEntry>();
 const redisClients = new Map<string, RedisClient>();
+
+let connectionLogged = false;
 
 class RedisCache {
   // ...
@@ -132,6 +134,23 @@ const retryPolicy = {
 type RetryPolicy = typeof retryPolicy;
 ```
 
+### Variables
+
+Same grouping model as **Constants**—one per line, grouped by domain with one blank line between groups.
+
+- **Module-level state (step 5):** use `camelCase`; do not use `UPPER_SNAKE_CASE` (that is for immutable scalar constants). Group related state by domain (e.g. cache maps, connection flags).
+- **Locals inside functions and React components:** group by domain **within** a coarse phase or hook block; one blank line between domains. Coarse phase blank lines still apply in non-component functions.
+- **Parameters / props:** contract names in `camelCase`; destructure in the parameter list for components.
+
+Module state (grouped by domain):
+
+```typescript
+const cacheInstances = new Map<string, CacheEntry>();
+const redisClients = new Map<string, RedisClient>();
+
+let connectionLogged = false;
+```
+
 ### Documentation and comments
 
 **Default: no new comments or JSDoc.** Add `//`, `/* */`, or `/** */` only when necessary: public API that must be spelled out, non-obvious invariant, or compliance with a required doc standard. Prefer clear names, types, and structure instead.
@@ -152,7 +171,7 @@ type RetryPolicy = typeof retryPolicy;
 
 ## Visual Block Separation
 
-Core rule: when a function body has **two or more distinct steps**, one blank line separates those **coarse** phases; never two blank lines. A short single-step body needs no extra blank lines. Typical phases when present: validation, preparation, main effect, cleanup, return. There is no canonical prepare-vs-validate order — follow the function’s flow. Do not micro-split related statements (assignment and the `if` that uses it stay together); do not use comments to label or separate blocks. Prefer readable phase layout over minimizing line count. Avoid multiple conditions on the same line when it hurts readability; prefer guard clauses and named intermediate booleans.
+Core rule: when a function body has **two or more distinct steps**, one blank line separates those **coarse** phases; never two blank lines. A short single-step body needs no extra blank lines. **Within** a phase, group locals by domain with one blank line between domains (same rule as **Variables**). Typical phases when present: validation, preparation, main effect, cleanup, return. There is no canonical prepare-vs-validate order — follow the function’s flow. Do not micro-split assignments in the same domain group; do not use comments to label or separate blocks. Prefer readable phase layout over minimizing line count. Avoid multiple conditions on the same line when it hurts readability; prefer guard clauses and named intermediate booleans.
 
 ### Between Functions and Classes
 

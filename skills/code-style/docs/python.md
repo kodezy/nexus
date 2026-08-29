@@ -39,14 +39,14 @@ Top to bottom:
 4. **Type-only imports and aliases** — `if TYPE_CHECKING:` block (type-only `from … import` for real circular imports), then `TypeVar` / `ParamSpec` / `type` aliases when needed. **Always before constants** — never place `TYPE_CHECKING` imports below the constants block.
 5. **Constants** — immutable module config: `UPPER_SNAKE_CASE` for module-public scalars, `_UPPER_SNAKE_CASE` for module-private scalars (see **Constants** below).
 6. **Logger / infrastructure** — module-scoped setup treated as configuration, not mutable runtime state (`logger = setup_logger(__name__)`, one-shot clients). Logger **setup** details: `log-writer`; this step is **file order** only.
-7. **Module-level state** — private mutable module globals (`_cache_*`, `_connected_logged`, dicts/maps holding runtime data). Prefix with `_` when module-private.
+7. **Module-level state** — private mutable module globals (`_cache_*`, `_connected_logged`, dicts/maps holding runtime data). Prefix with `_` when module-private. Group by domain like **Constants** (see **Variables** below).
 8. **Classes**
 9. **Module-level functions** — public free functions first, then private helpers (`_`).
 10. **`if __name__ == "__main__":`** — last in the file.
 
 Mnemonic: **imports → typing (`TYPE_CHECKING`, aliases) → constants → logger/infrastructure → module state → classes → functions → entry**.
 
-**Blank lines at module level:** use **one** blank line between groups in the same layer (typing names, constant domains, related `_cache_*` assignments). Use **two** blank lines only before a top-level `class` or `def` (PEP 8). Do not double-space every phase — that contradicts the skill’s “never two blank lines” rule inside functions and adds noise without clearer structure.
+**Blank lines at module level:** use **one** blank line between groups in the same layer (typing names, constant domains, variable domains in module state). Use **two** blank lines only before a top-level `class` or `def` (PEP 8). Do not double-space every phase — that contradicts the skill’s “never two blank lines” rule inside functions and adds noise without clearer structure.
 
 **Dependency order wins.** If moving a name changes import-time initialization or creates a forward-reference error, keep the order that preserves correct behavior. Do not reorder solely for style.
 
@@ -68,8 +68,10 @@ logger = setup_logger(__name__)
 _cache_instances: dict[str, Any] = {}
 _redis_clients: dict[str, Any] = {}
 _redis_retry_after: dict[str, float] = {}
+
 _redis_connected_logged: bool = False
 _redis_fallback_logged: bool = False
+
 _image_cache_keys: dict[int, tuple[weakref.ref, str]] = {}
 
 
@@ -165,6 +167,35 @@ class RetryPolicy:
     backoff_seconds: float = 0.25
 ```
 
+### Variables
+
+Same grouping model as **Constants**—one per line, grouped by domain with one blank line between groups.
+
+- **Module-level state (step 7):** mutable globals use `snake_case`; prefix with `_` when module-private. Do not use `UPPER_SNAKE_CASE` (that is for immutable constants). Group related state by domain (e.g. cache maps, connection flags).
+- **Locals inside functions:** group by domain **within** a coarse phase; one blank line between domains. Coarse phase blank lines still separate validation, preparation, main effect, and return.
+- **Parameters:** contract names with no `_` prefix (`order_id`, not `_order_id`). Leading `_` is for internal attributes and methods only.
+
+Module state (grouped by domain):
+
+```python
+_cache_instances: dict[str, Any] = {}
+_redis_clients: dict[str, Any] = {}
+
+_redis_connected_logged: bool = False
+```
+
+Locals within a phase (market inputs, then derived):
+
+```python
+def analyze_market(symbol: str) -> MarketAnalysis:
+    current_price = get_price(symbol)
+    historical_data = fetch_history(symbol, days=30)
+
+    trend = calculate_trend(historical_data)
+
+    return MarketAnalysis(price=current_price, trend=trend)
+```
+
 ### Documentation and comments
 
 **Default: no new docstrings or comments.** Add them only when necessary, for example: public API that must be spelled out, non-obvious behavior or invariant, or compliance with a required doc standard. Prefer clear names, types, and structure instead.
@@ -211,7 +242,7 @@ def verify_redis() -> None:
 
 ## Visual Block Separation
 
-Core rule: when a function body has **two or more distinct steps**, one blank line separates those **coarse** phases; never two blank lines. A short single-step body needs no extra blank lines. Typical phases when present: validation, preparation, main effect, cleanup, return. There is no canonical prepare-vs-validate order — follow the function’s flow. Do not micro-split related statements (assignment and the `if` that uses it stay together); do not use comments to label or separate blocks. Prefer readable phase layout over minimizing line count. Avoid multiple conditions on the same line or variable; prefer named intermediate booleans when they clarify a phase.
+Core rule: when a function body has **two or more distinct steps**, one blank line separates those **coarse** phases; never two blank lines. A short single-step body needs no extra blank lines. **Within** a phase, group locals by domain with one blank line between domains (same rule as **Variables**). Typical phases when present: validation, preparation, main effect, cleanup, return. There is no canonical prepare-vs-validate order — follow the function’s flow. Do not micro-split assignments in the same domain group (assignment and the `if` that uses them stay together); do not use comments to label or separate blocks. Prefer readable phase layout over minimizing line count. Avoid multiple conditions on the same line or variable; prefer named intermediate booleans when they clarify a phase.
 
 ### Between Functions and Classes
 
