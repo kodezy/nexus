@@ -43,6 +43,16 @@ If using unstaged changes because nothing is staged, mention that context briefl
 - Prefer imperative or descriptive subjects consistent with repository history.
 - Subject only unless the user asks for a body.
 
+## Default pattern (Nexus harness)
+
+When recent history does not show a strong local convention, prefer subjects like these (from this repository):
+
+- Expand code-style module layout rules and clarify architect ownership of file naming.
+- Add code-cleanup skill for dead code, duplication, and legacy simplification.
+- Refactor log-writer into a router with per-stack docs so agents load only the logging guidance they need.
+
+Pattern: one clear sentence; action verb when useful; effect or reason over implementation detail; no `feat:` / `fix:` / `chore:` prefixes.
+
 ## Output format
 
 ```text

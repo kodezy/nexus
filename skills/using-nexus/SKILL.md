@@ -37,6 +37,12 @@ Apply this order: system and managed policy; explicit user instructions; host-na
 
 ## Compatibility
 
-Optional plugins are task-specific. Nexus owns workspace choice, Git approval, closeout, and approval for a new automated test when it is the relevant missing validation sensor. Another plugin may guide planning, testing, or implementation only when it does not conflict with those gates.
+Optional plugins (Superpowers plans, subagent-driven development, finishing-a-development-branch, and similar) may guide planning, testing, or implementation. Nexus still owns workspace choice, Git write approval, closeout after `$integrity-review`, commit message style (`$git-assistant` → `commit-messages.md`), and approval for a new automated test when it is the relevant missing validation sensor.
+
+When an optional plugin includes commit steps or example messages, do not copy Conventional Commits examples (for example `feat:` prefixes). Draft subjects from the staged diff and `git log -n 5` instead.
+
+If Superpowers subagent-driven development allows implementer subagents to commit per task, those commits still follow Nexus message style and approval rules. Nexus subagents (Task tool, explore, and similar) must not commit; the primary agent owns final closeout.
+
+When `finishing-a-development-branch` and Nexus closeout both apply, run `$integrity-review` and `$git-assistant` closeout first for commit and push approval, then present merge or PR options from the plugin.
 
 Use existing tests for test-first work when available. If a new test file is the relevant missing sensor, propose its scope and ask the user before creating it. Without approval or another suitable check, report the implementation as Uncertain rather than validated.

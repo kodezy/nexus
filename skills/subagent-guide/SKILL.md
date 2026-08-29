@@ -37,6 +37,14 @@ dependent on shared state, or likely to change the same files.
 5. For uncertain or related failures, investigate the shared cause before
    splitting work.
 
+## Superpowers SDD
+
+Nexus subagents must not commit (rule 4). If the session uses Superpowers
+subagent-driven development, implementer subagents may commit per task only
+when the plan requires it; message style still follows `git-assistant` →
+`commit-messages.md`. The primary agent remains accountable for integration,
+`integrity-review`, and approved closeout.
+
 ## Task Prompt Template
 
 ```text
