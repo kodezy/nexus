@@ -37,7 +37,7 @@ If repository style conflicts with generic guidance, local project conventions w
 3. Prefer clarity over cleverness: use the simplest structure that remains easy to maintain.
 4. Keep local consistency: match dominant style from the target file and adjacent modules.
 5. Enforce readable naming: names should communicate intent with minimal ambiguity.
-6. Prefer simple file names: single-word when possible; at most two words when needed. Python/Rust use `_`; new TypeScript/React files prefer kebab-case unless the folder already uses `_` (see `architect` for placement). Tests are exempt from this pattern.
+6. Prefer simple file names: single-word when possible; at most two words when needed. Python/Rust use `_`; new TypeScript modules prefer kebab-case unless the folder already uses `_`. React **component** files use `PascalCase` (`OrderCard.tsx`). Tests are exempt. **`$architect` is the source of truth** for file/folder placement and names; this rule repeats a short summary for the finalization pass.
 7. Prefer fewer files with better cohesion: keep related logic together unless there is a clear boundary to split. Package and folder boundaries follow `architect` (concept-first modules; avoid `utils` / `helpers` / `common` / `misc` catch-alls).
 8. Keep formatting uniform: spacing, blank lines, and wrapping should be predictable and stable.
 9. Apply minimal viable changes: avoid broad rewrites when a focused style update solves the task.
@@ -59,10 +59,10 @@ If repository style conflicts with generic guidance, local project conventions w
 - Functions/methods: use verb-oriented names that describe behavior (`calculate_total`, `validate_token`).
 - Types/classes/components: use singular noun-based names (`User`, `PaymentService`, `OrderCard`).
 - Variables: prefer explicit names over abbreviations (`customer_id` over `cid`).
-- Booleans: use intent-revealing prefixes (`is_`, `has_`, `can_`, `should_`).
-- Files/modules: prefer single-word names (`parser.py`, `cache.rs`, `route.tsx`). If needed, at most two words — Python/Rust with `_` (`create_order.py`); new TypeScript/React with kebab-case (`price-scatter.ts`) unless the folder already uses underscores. Avoid longer compounds (`market.py` over `market_data_processing_service.py`).
+- Booleans: use intent-revealing prefixes (`is`, `has`, `can`, `should`) in the **case of the language** (`is_ready` in Python/Rust, `isReady` in TypeScript).
+- Files/modules: **`$architect` owns placement and file names**; defer to it for new files and folders. Summary for finalization: prefer single-word names (`parser.py`, `cache.rs`, `route.tsx`). If needed, at most two words — Python/Rust with `_` (`create_order.py`); new TypeScript with kebab-case (`price-scatter.ts`) unless the folder already uses underscores. Avoid longer compounds (`market.py` over `market_data_processing_service.py`).
 - Tests: naming pattern above does not apply; follow project test conventions.
-- React components: `PascalCase` filenames (`Card.tsx`) when the project already uses that pattern.
+- React components: `PascalCase` filenames matching the component (`OrderCard.tsx`) on greenfield and when that is already the local pattern. Two-word non-component `.ts` / `.tsx` modules and routes stay kebab-case.
 - Rename only when clarity gain is obvious (obscure abbreviation, mixed convention in the same file). Skip cosmetic renames. Update references in the touched file.
 - **TypeScript / React:** `camelCase` for functions and variables; `PascalCase` for types and components; hooks as `useSomething` (`camelCase`); module-level constants `UPPER_SNAKE_CASE`. Module layout and React component ordering: `docs/typescript.md`.
 
@@ -73,14 +73,20 @@ Top-to-bottom intent (full steps in each language doc):
 | Layer | Python | Rust | TypeScript |
 | --- | --- | --- | --- |
 | **Imports** | Top (`import` / `from`); optional `from __future__ import …` only when required (after docstring, before imports). | Top (`use`; see `docs/rust.md` for `mod` / inner attrs before `use`). | Top (`import`; include `import type` here). |
-| **Constants** | Immediately after imports. | Immediately after the import block (`const` / `static` / `type` aliases). | **After** `type` / `interface` (not immediately after imports). |
-| **Types** | Optional: hints on names; no top types block unless needed (e.g. `TYPE_CHECKING`). | Central: `struct` / `enum` / `trait`, then `impl`. | **First-class:** dedicated `type` / `interface` block high in the file. |
-| **Classes / ADTs** | `class` after constants (before module-level `def`). | `struct` / `enum` (and `trait`) before matching `impl`. | `class` before module-level functions. |
+| **Typing** | `TypeVar` / `ParamSpec` / `type` aliases after imports when needed. | `type` aliases with the constants block. | **First-class:** dedicated `type` / `interface` block after imports. |
+| **Constants** | Immutable `UPPER_SNAKE_CASE` (module-private: `_UPPER_SNAKE_CASE`) after typing. | Scalar `const` / `static` immediately after imports (see `docs/rust.md` for `static` split). | **After** `type` / `interface`. |
+| **Logger / infra** | Module `logger` and one-shot setup after constants (`log-writer` for setup). | `static` / `LazyLock` / `OnceLock` for shared clients after scalar constants. | Scoped logger instance after constants (`log-writer` for setup). |
+| **Module state** | Mutable `_`-prefixed globals after logger/infra. | Mutable `static` / interior-mutability globals after infra. | Module-level caches, maps, singleton refs after logger/infra. |
+| **Classes / ADTs** | `class` after module state (before module-level `def`). | `struct` / `enum` / `trait`, then `impl`. | `class` before module-level functions. |
 | **Implementation** | Methods **inside** the `class` body. | Methods and trait items in **`impl`**, separate from type definitions. | Methods **inside** the `class` body. |
 | **Module functions** | After classes: public free functions first, private (`_`) helpers last. | Free `fn` after the type/`impl` chain: public first, private last. | After classes: exported functions/components first (default export last among publics), non-exported helpers last. |
 | **Entry** | `if __name__ == "__main__":` last. | `fn main` last in the binary crate root. | No runtime `main`; wire entry explicitly (bundler/CLI/test bootstrap). |
 
-`.tsx` module order follows `docs/typescript.md` (same **types → constants** idea as `.ts`).
+**Dependency order wins** in every language: if reordering changes initialization or import-time behavior, keep the order that preserves correctness.
+
+**Module-level blank lines (all languages):** **one** blank line between groups in the same layer and between module-order layers (typing → constants → logger → state). **Never** double-space every phase. **Python only:** **two** blank lines before a top-level `class` or `def` (PEP 8). TypeScript and Rust: one blank line between top-level items (match Prettier/rustfmt).
+
+`.tsx` module order follows `docs/typescript.md` (same **types → constants → logger/infra → module state** idea as `.ts`).
 
 ## Constants
 
@@ -97,7 +103,7 @@ Language-specific placement and examples: `docs/typescript.md`, `docs/python.md`
 
 - Package and folder layout: concept-first modules by domain or subsystem (`architect`). Avoid generic catch-all folders (`utils`, `helpers`, `common`, `misc`); colocate with the owning concept or use a named module for a real shared abstraction.
 - Keep imports/includes at the top of the file, grouped and consistently ordered. Prefer top-level imports/`use`; use a local import only for lazy loading or to break a real circular dependency (see language docs).
-- **Constants:** after imports in Python and Rust; **after types** in TypeScript and `.tsx` (see table above). Follow the **Constants** section above for layout and grouping.
+- **Constants:** after typing in Python; after imports (with `type` aliases) in Rust; **after types** in TypeScript and `.tsx` (see table above). **Logger/infrastructure** and **module state** follow constants in that order when present. Follow the **Constants** section above for layout and grouping.
 - When a signature or call has many parameters that already form clear groups, prefer a typed options/config object or a small helper over a long flat argument list. Do not invent wrappers for short, clear signatures (same exception to Canonical Rule 11 as structured constants).
 - Keep failure-handling scopes small: wrap only the statement(s) that can fail (Python `try`/`except`/`finally`, TypeScript `try`/`catch`/`finally`, Rust `?` or a narrow `match`). Do not extract a helper solely to shrink a `try` block.
 - Keep public APIs before private helpers at module level and inside classes/`impl`.
@@ -114,6 +120,22 @@ Language-specific placement and examples: `docs/typescript.md`, `docs/python.md`
 - Keep indentation and spacing consistent. Use blank lines only at **coarse phase** boundaries inside functions; do not blank-line inside a single phase, and do not insert blank lines inside argument lists.
 - Do not use comments to label or separate phases, argument groups, or blocks — structure and blank lines are enough (Canonical Rule 10).
 
+### Line length and wrapping
+
+- Use the project's configured line limit (`pyproject.toml` / Ruff / Black `line-length`, Prettier `printWidth`, rustfmt `max_width`).
+- Keep statements, calls, and simple `raise` / `return` / `throw` expressions on **one line** when the full line (including indentation) fits within that limit.
+- Do **not** pre-break lines that fit — agents and formatters should not expand vertically when horizontal space remains.
+- Do **not** add a **trailing comma** inside `(...)`, `[...]`, or `{...}` when a single-line form fits; Black, Ruff, and Prettier treat it as a signal to expand to multiple lines.
+- Language specifics: `docs/python.md`, `docs/typescript.md`, `docs/rust.md`.
+
+### Module-level blank lines
+
+- **One** blank line between import groups, between module-order layers (typing → constants → logger/infra → state), and between constant domains in the same layer.
+- **Never** use two blank lines between those layers — order already signals structure; double-spacing adds noise.
+- **Python:** **two** blank lines only before a top-level `class` or `def` (PEP 8).
+- **TypeScript / Rust:** one blank line between top-level declarations; follow Prettier or rustfmt when present.
+- **Inside functions / methods / impl blocks:** exactly **one** blank line between coarse phases when the body has two or more steps (see below); never two. A single-step body needs no extra blank lines.
+
 ### Coarse phase separation (all languages)
 
 Separate function bodies into a few coarse phases with **exactly one** blank line between phases (never two). Use only the phases that apply; do not invent empty phases. Common phases:
@@ -124,25 +146,25 @@ Separate function bodies into a few coarse phases with **exactly one** blank lin
 - **Cleanup** — release / restore when present
 - **Return** — terminal result
 
-Order follows the function’s natural flow (often validate-then-prepare, or prepare-then-validate when guards need locals). Do **not** micro-split: related assignments and related `if`s in the same phase stay together. Prefer readable phase layout over minimizing line count.
+There is **no canonical prepare-vs-validate order**. Follow the function’s natural flow; skip phases that do not apply. Do **not** micro-split: related assignments and the `if` that uses them stay together. Prefer readable phase layout over minimizing line count. A short body with a single step needs **no** extra blank lines.
 
-Language docs under Visual Block Separation show the same pattern. Python enforces this mandatorily below.
+Language docs under Visual Block Separation show the same pattern. Python applies this when the body has two or more distinct steps (below).
 
-### Python: mandatory blank-line block separation
+### Python: blank-line block separation
 
-When touching Python code, enforce **exactly one** blank line between coarse phases. This is mandatory even if the surrounding file is inconsistent.
+When touching Python whose function/method body has **two or more distinct steps**, enforce **exactly one** blank line between those coarse phases — even if the surrounding file is inconsistent. Do not invent phases in a short, single-step body.
 
-Typical phase mapping (skip phases that do not apply):
+Typical phases (use only those that apply; order follows the function, not this list):
 
-- **Preparation** — variable collection / normalization (parsing, conversions, primary locals)
 - **Validation** — guard clauses (early `continue`/`return`/`raise`)
+- **Preparation** — variable collection / normalization (parsing, conversions, primary locals)
 - **Main effect** — core loop body, IO, mutations, writes
 - **Cleanup / post-processing** — sorting, dedupe, aggregation, resource release when present
 - **Return** — the real output / terminal return
 
 Also enforce:
 
-- Do not “stick” assignments directly to a control block. If an `if`/`for`/`try` begins a new logical phase, there must be **one blank line** before it.
+- One blank line before `if`/`for`/`try` only when it **starts a new coarse phase**. Do not insert a blank line between an assignment and a guard that belongs to the same step.
 - Do not insert extra blank lines inside a single phase.
 - Avoid stacked `if` blocks with no separation when they represent different phases (e.g., validations vs main effect).
 - Keep `try`/`except`/`finally` bodies as small as practical (only the failing call and its direct handlers).
@@ -197,7 +219,7 @@ When escalating: leave the code in place, report it in `blockers` / `next_step`,
 - Behavior is unchanged.
 - Formatting is consistent and clean.
 - Naming is clear and coherent.
-- Production file names prefer single-word (two words max; Python/Rust `_`, new TS/React kebab-case unless local folder uses `_`); tests exempt.
+- Production file names prefer single-word (two words max; Python/Rust `_`, new TS kebab-case unless local folder uses `_`, React component files `PascalCase`); tests exempt.
 - Related logic is not fragmented across unnecessary files.
 - Organization improves readability; constants follow the **Constants** section (one per line, grouped by domain); function bodies use coarse phase blank lines (no comment separators).
 - Diff stays focused and pragmatic.

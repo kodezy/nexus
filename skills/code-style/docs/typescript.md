@@ -17,10 +17,11 @@ Highest priority: simple, clear, pragmatic names.
 - **Module-level constants** (immutable config, shared literals): `UPPER_SNAKE_CASE` (`MAX_RETRIES`, `API_BASE_URL`).
 - Avoid unnecessary abbreviations: prefer `calculateTotal` over `calcTot`, `user` over `usr`.
 - Use names that describe purpose, not implementation.
-- **Booleans:** intent-revealing prefixes (`is`, `has`, `can`, `should`) in camelCase (`isReady`, `hasAccess`, `canSubmit`).
+- **Booleans:** intent-revealing prefixes (`is`, `has`, `can`, `should`) in camelCase (`isReady`, `hasAccess`, `canSubmit`, `shouldRetry`).
 - Prefer `type` for object shapes and unions unless you need interface merging.
 - Name functions and methods with verbs (`loadUser`, `formatDate`); name types with nouns (`User`, `ApiError`).
 - Keep prefix and convention consistency across the module.
+- **Component files:** `PascalCase` matching the component (`OrderCard.tsx`) on greenfield and when the folder already uses that pattern. Two-word non-component modules (hooks, clients, routes) use kebab-case unless the folder uses `_`.
 
 ## Structure and Organization
 
@@ -37,12 +38,45 @@ Top to bottom:
 1. **`import`** — third-party packages first, then path aliases, then relative imports (`./`, `../`). Blank line between those three groups. Include `import type` here.
 2. **`type` / `interface`** — shared shapes for this module.
 3. **Module-level constants** — `UPPER_SNAKE_CASE` and other file-level immutable values (see **Constants** below).
-4. **`class` declarations** — before any module-level functions.
-5. **Module-level functions/components** — exported functions/components first, then non-exported helpers last. **If there is a default export, it is last among the publics** (still before private helpers).
+4. **Logger / infrastructure** — module-scoped setup treated as configuration, not mutable runtime state (`const log = consola.withTag('billing')`, one-shot clients). Logger **setup** details: `log-writer`; this step is **file order** only.
+5. **Module-level state** — runtime mutable data at module scope (`const cache = new Map()`, module singletons, `let` refs holding live state). Prefer `const` binding + mutable contents over reassignable `let` when possible.
+6. **`class` declarations** — before any module-level functions.
+7. **Module-level functions/components** — exported functions/components first, then non-exported helpers last. **If there is a default export, it is last among the publics** (still before private helpers).
+
+Mnemonic: **imports → types → constants → logger/infrastructure → module state → classes → functions**.
+
+**Blank lines at module level:** **one** blank line between groups in the same layer and between layers (types → constants → logger → state). **One** blank line before `class` and exported function declarations (Prettier default). Do not double-space every phase.
+
+**Dependency order wins.** If moving a name changes import-time initialization or creates a forward-reference error, keep the order that preserves correct behavior. Do not reorder solely for style.
+
+Example:
+
+```typescript
+import { consola } from 'consola';
+
+import { createRedisClient } from '@/infra/redis';
+
+type CacheKey = string;
+
+const REDIS_RETRY_COOLDOWN_MS = 5_000;
+
+const log = consola.withTag('cache');
+
+const cacheInstances = new Map<string, CacheEntry>();
+const redisClients = new Map<string, RedisClient>();
+
+class RedisCache {
+  // ...
+}
+
+export function getCache(name: string): RedisCache {
+  // ...
+}
+```
 
 **Exports:** use `export` on each named declaration as you go. **If the file has a default export, place it last among exported declarations**, then keep non-exported helpers after all exports.
 
-**How this compares to other languages:** **`type` / `interface` before constants**—types are **first-class** in TypeScript (unlike Python, where hints are optional and usually inline). **Constants** are **after** types, not immediately after imports (unlike Python and Rust). **`class` methods** live **inside** the class body, like Python. **Module-level functions** come **after** classes. There is **no** `main`: execution is **explicit** (bundler entry, CLI, `node` script, or tests).
+**How this compares to other languages:** **`type` / `interface` before constants**—types are **first-class** in TypeScript (unlike Python, where hints are optional and usually inline). **Constants** are **after** types, not immediately after imports (unlike Python and Rust). **Logger and infrastructure** sit after constants but **before** mutable module state (same idea as Python). **`class` methods** live **inside** the class body, like Python. **Module-level functions** come **after** classes. There is **no** `main`: execution is **explicit** (bundler entry, CLI, `node` script, or tests).
 
 ### React component order (`.tsx` and React `.jsx`)
 
@@ -73,7 +107,7 @@ React-specific style rules:
 - **Naming:** scalar module-level literals use `UPPER_SNAKE_CASE`; structured `as const` config objects use idiomatic `camelCase`.
 - When several constants describe a single concept, prefer a typed config over more globals:
   - `as const` object + `type` alias for a fixed key set
-  - `enum` for a closed set of named variants
+  - string union (`'pending' | 'paid'`) or `as const` object for a closed set of variants; `enum` only when the project already uses enums or a numeric enum is required
   - dedicated module when the surface is large or reused across files
 - A `type` alias derived via `typeof` from an `as const` object may sit **immediately below** that object in the constants block (exception to the usual types-before-constants order).
 
@@ -104,6 +138,9 @@ type RetryPolicy = typeof retryPolicy;
 
 ### Formatting
 
+- Read `printWidth` from Prettier config (or ESLint `max-len` when Prettier is absent); default **80** when unset.
+- Keep statements, calls, and simple `throw` / `return` expressions on **one line** when the full line (including indentation) fits within that limit.
+- Do **not** pre-break lines that fit. Do **not** add a trailing comma inside `(...)`, `[...]`, or `{...}` when a single-line form fits — Prettier expands vertically when a trailing comma is present.
 - Keep one blank line between coarse phases where it aids scanning; do not blank-line inside a single phase or inside argument lists.
 - Do not change behavior while styling (return values, side effects, exports).
 
@@ -115,7 +152,7 @@ type RetryPolicy = typeof retryPolicy;
 
 ## Visual Block Separation
 
-Core rule: one blank line separates **coarse** phases inside a function; never two blank lines. Typical phases when present: validation, preparation, main effect, cleanup, return (order follows the function’s flow). Do not micro-split related statements; do not use comments to label or separate blocks. Prefer readable phase layout over minimizing line count. Avoid multiple conditions on the same line when it hurts readability; prefer guard clauses and named intermediate booleans.
+Core rule: when a function body has **two or more distinct steps**, one blank line separates those **coarse** phases; never two blank lines. A short single-step body needs no extra blank lines. Typical phases when present: validation, preparation, main effect, cleanup, return. There is no canonical prepare-vs-validate order — follow the function’s flow. Do not micro-split related statements (assignment and the `if` that uses it stay together); do not use comments to label or separate blocks. Prefer readable phase layout over minimizing line count. Avoid multiple conditions on the same line when it hurts readability; prefer guard clauses and named intermediate booleans.
 
 ### Between Functions and Classes
 
@@ -138,7 +175,6 @@ function processOrder(order: Order): Transaction | null {
   }
 
   const total = calculateTotal(order.items);
-
   if (total > order.balance) {
     throw new InsufficientFundsError();
   }

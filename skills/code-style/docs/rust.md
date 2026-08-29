@@ -11,12 +11,12 @@ Highest priority: simple, clear, pragmatic names.
 - Use direct, descriptive names: `calculate_total`, `user_name`, `process_order`.
 - Avoid unnecessary abbreviations: prefer `calculate` over `calc`, `user` over `usr`.
 - Use names that describe purpose, not implementation: `get_active_users` is better than `get_users_from_db`.
-- For booleans: `is_active`, `has_permission`, `can_trade`.
+- For booleans: `is_active`, `has_permission`, `can_trade`, `should_retry`.
 - For functions: verbs in infinitive form: `calculate`, `validate`, `process`.
 - For types: singular nouns: `User`, `Order`, `Strategy`.
 - For modules: plural or singular nouns as context dictates: `users`, `order`, `strategies`.
 - Be specific when needed: `calculate_profit_margin` is better than `calculate`.
-- Keep consistency: if you use `get_` for reads, always use `get_`.
+- **Accessors:** within the same module, do not mix `user()` and `get_user()` for the same kind of simple read. On greenfield / new API, prefer simple accessors without `get_` (`user()`, `len()`), aligned with [Rust API guidelines](https://rust-lang.github.io/api-guidelines/naming.html). Functions that perform IO, lookup, or fallible retrieval may use `get_*` when the module already uses that verb (e.g. `get_cache`).
 - Use `snake_case` for functions, variables, and modules.
 - Use `PascalCase` for types, traits, enums, and structs.
 - Use `SCREAMING_SNAKE_CASE` for constants.
@@ -59,14 +59,50 @@ Top to bottom:
 1. **Inner attributes** — `#! [...]` when needed.
 2. **`mod`** — child module declarations.
 3. **`use`** — `std`, then other crates, then `crate::`, then `super::`, then `self::`; blank line between groups.
-4. **`const` / `static` / `type`** — see **Constants** below.
-5. **`struct` / `enum` / `union`**
-6. **`trait`**
-7. **`impl`** — after the `struct`/`enum`/`trait` each block implements (inherent `impl` right after its type; `impl Trait for` after that `trait`).
-8. **Module-level functions** — free `fn` items.
-9. **`fn main`** — in the binary root only; last.
+4. **Scalar constants** — `const` / `type` aliases (see **Constants** below).
+5. **Infrastructure `static`** — one-shot or lazy shared setup (`static CLIENT: LazyLock<...>`, `OnceLock` holders). Rust rarely uses a module-level `logger` variable; prefer `tracing` macros (`log-writer` for message/level rules).
+6. **Mutable module `static`** — runtime globals with interior mutability (`Mutex`, `RwLock`, `RefCell` inside `LazyLock`/`OnceLock`) when module state is unavoidable.
+7. **`struct` / `enum` / `union`**
+8. **`trait`**
+9. **`impl`** — after the `struct`/`enum`/`trait` each block implements (inherent `impl` right after its type; `impl Trait for` after that `trait`).
+10. **Module-level functions** — free `fn` items.
+11. **`fn main`** — in the binary root only; last.
 
-**How this compares to other languages:** **`use`** is the import layer at the top (after inner `#!` and `mod` when present). **Constants** (`const` / `static` / `type` aliases) follow the import block. **Types are central:** `struct` / `enum` / `union` and `trait` define shape; **methods and trait items live only in `impl`**, not inside the `struct`/`enum` braces. **Free functions** sit **after** that type/`impl` chain. **Entry** for binaries is **`fn main`**, last. This differs from Python/TypeScript, where behavior is written inside the class body.
+Mnemonic: **imports → scalar constants → infra statics → module state statics → types → impl → functions → main**.
+
+**Blank lines at module level:** **one** blank line between `use` groups, constant domains, infra `static`, state `static`, and type/`impl` blocks. **One** blank line before top-level `fn` items (rustfmt default). Do not double-space every phase.
+
+**Dependency order wins.** A `const` whose type is a local `struct` must come **after** that `struct` (and often belongs in `impl` as an associated `const`). Do not reorder if it changes initialization order.
+
+Example:
+
+```rust
+use std::collections::HashMap;
+use std::sync::{LazyLock, Mutex};
+
+use redis::Client;
+
+const REDIS_RETRY_COOLDOWN_SECS: u64 = 5;
+
+static REDIS_CLIENT: LazyLock<Client> = LazyLock::new(|| Client::open("redis://127.0.0.1").unwrap());
+
+static CACHE_INSTANCES: LazyLock<Mutex<HashMap<String, CacheEntry>>> =
+    LazyLock::new(|| Mutex::new(HashMap::new()));
+
+struct RedisCache {
+    // ...
+}
+
+impl RedisCache {
+    // ...
+}
+
+pub fn get_cache(name: &str) -> RedisCache {
+    // ...
+}
+```
+
+**How this compares to other languages:** **`use`** is the import layer at the top (after inner `#!` and `mod` when present). **Constants** (`const` / `type` aliases) follow imports; split **infrastructure** and **mutable module `static`** when both exist (same intent as Python’s logger vs `_cache_*`). **Types are central:** `struct` / `enum` / `union` and `trait` define shape; **methods and trait items live only in `impl`**, not inside the `struct`/`enum` braces. **Free functions** sit **after** that type/`impl` chain. **Entry** for binaries is **`fn main`**, last. This differs from Python/TypeScript, where behavior is written inside the class body.
 
 ### Constants
 
@@ -77,7 +113,7 @@ Top to bottom:
   - `struct` + `impl` with associated `const` defaults (see below)
   - `enum` for a closed set of variants
   - dedicated submodule when the surface is large or shared across crates
-- **Placement:** keep scalar `SCREAMING_SNAKE_CASE` values in the constants block. Config `struct`/`enum` types belong in steps 5–7; a `const` whose type is a local `struct` must come **after** that `struct` (and typically lives in an `impl` associated `const`, not above the type definition).
+- **Placement:** keep scalar `SCREAMING_SNAKE_CASE` values in the scalar constants block (step 4). Config `struct`/`enum` types belong in steps 7–9; a `const` whose type is a local `struct` must come **after** that `struct` (and typically lives in an `impl` associated `const`, not above the type definition). Infrastructure and mutable `static` items belong in steps 5–6, not mixed with scalar `const`.
 
 Scalar constants:
 
@@ -111,7 +147,7 @@ impl RetryPolicy {
 **Default: no new doc comments or line comments.** Add `///`, `//!`, or `//` only when necessary, for example: public API surface, safety or correctness notes the types do not express, or non-obvious algorithm/invariant. Prefer self-explanatory code and names.
 
 - Use type annotations when they improve clarity, but avoid when obvious.
-- **Always use format strings** for interpolation: `format!("{}", x)`, `format!("{name}: {value}")`, etc. Prefer `format!` over string concatenation or manual building.
+- Prefer `format!` over `+` concatenation when building a `String`. Do not wrap a value in `format!` only to log it, or when `to_string()` / `Display` is enough.
 - Prefer `Result<T, E>` and `Option<T>` over exceptions or null values.
 - Use `match` for explicit pattern matching, `if let` when appropriate.
 - Do not overcomplicate: avoid unnecessary abstractions; refactor only to reduce repetition when it genuinely improves readability.
@@ -126,9 +162,15 @@ impl RetryPolicy {
 - Prefer `unwrap_or`, `unwrap_or_else`, `map`, `and_then` over `unwrap` or `expect` when possible.
 - Use the `?` operator for idiomatic error propagation.
 
+### Line length and wrapping
+
+- Read `max_width` from `rustfmt.toml` or `rustfmt` in `Cargo.toml` (default **100** when unset).
+- Keep statements, calls, and simple `return` / `?` chains on **one line** when the full line (including indentation) fits within that limit.
+- Do **not** pre-break lines that fit. Do **not** add a trailing comma inside `(...)` or `[...]` when a single-line form fits — rustfmt may expand vertically when a trailing comma is present.
+
 ## Visual Block Separation
 
-Core rule: one blank line separates **coarse** phases inside a function; never two blank lines. Typical phases when present: validation, preparation, main effect, cleanup, return (order follows the function’s flow). Do not micro-split related statements; do not use comments to label or separate blocks. Prefer readable phase layout over minimizing line count.
+Core rule: when a function body has **two or more distinct steps**, one blank line separates those **coarse** phases; never two blank lines. A short single-step body needs no extra blank lines. Typical phases when present: validation, preparation, main effect, cleanup, return. There is no canonical prepare-vs-validate order — follow the function’s flow. Do not micro-split related statements (assignment and the `if` that uses it stay together); do not use comments to label or separate blocks. Prefer readable phase layout over minimizing line count.
 
 ### Between Functions and Structs
 
@@ -151,7 +193,6 @@ fn process_order(order: &Order) -> Result<Transaction, OrderError> {
     }
 
     let total = calculate_total(&order.items);
-
     if total > order.balance {
         return Err(OrderError::InsufficientFunds);
     }
@@ -212,7 +253,7 @@ impl OrderManager {
         // ...
     }
 
-    pub fn get_order_status(&self, order_id: OrderId) -> Option<OrderStatus> {
+    pub fn order_status(&self, order_id: OrderId) -> Option<OrderStatus> {
         // ...
     }
 
@@ -233,7 +274,7 @@ impl OrderManager {
 - Use ownership (`T`) when the function must consume the value: `fn take_ownership(data: Data)`.
 - For returns, prefer owned types when it makes sense: `fn create() -> String`.
 - Use `clone()` only when necessary, not by default.
-- Prefer `Cow<'_, str>` when the value can be `&str` or `String` as needed.
+- Prefer `&str` / `String` at the boundary that matches ownership. Use `Cow<'_, str>` only when the same path must sometimes borrow and sometimes allocate, and that is a clear win.
 
 ## Error Handling
 

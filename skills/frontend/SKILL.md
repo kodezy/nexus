@@ -22,7 +22,7 @@ Clear, pragmatic React frontends. Use the smallest viable solution. Align with `
 Use these skills together on frontend work, each for a different job:
 
 - **`frontend` owns:** UI structure, component boundaries, state placement, data fetching shape, layout patterns, styling direction, and UI copy density.
-- **`architect` owns:** file/module placement and file/folder names (match the project; React components may use `PascalCase` files when that is the local pattern).
+- **`architect` owns:** file/module placement and file/folder names (match the project; React component modules use `PascalCase` files on greenfield and when that is the local pattern).
 - **`code-style` owns:** identifier naming, imports, module/component body order, comments/doc policy, spacing, and final formatting polish.
 - **`frontend-quality` owns:** final responsive, accessibility, visual-consistency, and concise-UX review.
 - Practical rule: `frontend` decides **how the UI should be built**; `architect` decides **where files live and how they are named**; `code-style` decides **how the code should read**.
