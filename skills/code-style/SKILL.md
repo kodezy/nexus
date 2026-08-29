@@ -73,7 +73,7 @@ Top-to-bottom intent (full steps in each language doc):
 | Layer | Python | Rust | TypeScript |
 | --- | --- | --- | --- |
 | **Imports** | Top (`import` / `from`); optional `from __future__ import …` only when required (after docstring, before imports). | Top (`use`; see `docs/rust.md` for `mod` / inner attrs before `use`). | Top (`import`; include `import type` here). |
-| **Typing** | `TypeVar` / `ParamSpec` / `type` aliases after imports when needed. | `type` aliases with the constants block. | **First-class:** dedicated `type` / `interface` block after imports. |
+| **Typing** | `if TYPE_CHECKING:` imports, then `TypeVar` / `ParamSpec` / `type` aliases after runtime imports — **before constants**. | `type` aliases with the constants block. | **First-class:** dedicated `type` / `interface` block after imports. |
 | **Constants** | Immutable `UPPER_SNAKE_CASE` (module-private: `_UPPER_SNAKE_CASE`) after typing. | Scalar `const` / `static` immediately after imports (see `docs/rust.md` for `static` split). | **After** `type` / `interface`. |
 | **Logger / infra** | Module `logger` and one-shot setup after constants (`log-writer` for setup). | `static` / `LazyLock` / `OnceLock` for shared clients after scalar constants. | Scoped logger instance after constants (`log-writer` for setup). |
 | **Module state** | Mutable `_`-prefixed globals after logger/infra. | Mutable `static` / interior-mutability globals after infra. | Module-level caches, maps, singleton refs after logger/infra. |

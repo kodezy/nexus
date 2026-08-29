@@ -35,8 +35,8 @@ Top to bottom:
 
 1. **Module docstring** — when present, first line of the file; skip entirely when the module does not need one.
 2. **`from __future__ import …`** — **only when required**; omit by default on 3.13+ (see **Type hints and modern idioms** below).
-3. **`import` / `from … import`** — standard library, blank line, third-party, blank line, local. One group per layer.
-4. **Type aliases / `TypeVar` / `ParamSpec`** — module-level typing definitions when needed (`P = ParamSpec("P")`, `R = TypeVar("R")`, `type Alias = ...`). Omit when hints are inline only.
+3. **`import` / `from … import`** — standard library, blank line, third-party, blank line, local. One group per layer. Import `TYPE_CHECKING` here when needed (`from typing import TYPE_CHECKING`).
+4. **Type-only imports and aliases** — `if TYPE_CHECKING:` block (type-only `from … import` for real circular imports), then `TypeVar` / `ParamSpec` / `type` aliases when needed. **Always before constants** — never place `TYPE_CHECKING` imports below the constants block.
 5. **Constants** — immutable module config: `UPPER_SNAKE_CASE` for module-public scalars, `_UPPER_SNAKE_CASE` for module-private scalars (see **Constants** below).
 6. **Logger / infrastructure** — module-scoped setup treated as configuration, not mutable runtime state (`logger = setup_logger(__name__)`, one-shot clients). Logger **setup** details: `log-writer`; this step is **file order** only.
 7. **Module-level state** — private mutable module globals (`_cache_*`, `_connected_logged`, dicts/maps holding runtime data). Prefix with `_` when module-private.
@@ -44,7 +44,7 @@ Top to bottom:
 9. **Module-level functions** — public free functions first, then private helpers (`_`).
 10. **`if __name__ == "__main__":`** — last in the file.
 
-Mnemonic: **imports → typing → constants → logger/infrastructure → module state → classes → functions → entry**.
+Mnemonic: **imports → typing (`TYPE_CHECKING`, aliases) → constants → logger/infrastructure → module state → classes → functions → entry**.
 
 **Blank lines at module level:** use **one** blank line between groups in the same layer (typing names, constant domains, related `_cache_*` assignments). Use **two** blank lines only before a top-level `class` or `def` (PEP 8). Do not double-space every phase — that contradicts the skill’s “never two blank lines” rule inside functions and adds noise without clearer structure.
 
@@ -77,7 +77,22 @@ class RedisCache:
     ...
 ```
 
-**How this compares to other languages:** imports and constants sit at the top; **types are optional and lightweight** (PEP 484 hints on parameters, attributes, and return values—no separate “types block” unless you need one, e.g. `TYPE_CHECKING` imports). **Logger and infrastructure** sit after constants but **before** mutable module state. **Behavior lives inside the `class`** (methods), not in a separate block like Rust’s `impl`. Module-level **functions come after** all classes: public free functions first, then private helpers. The **entry hook** is **`if __name__ == "__main__":`** at the bottom.
+`TYPE_CHECKING` (when needed) belongs in step 4, not below constants:
+
+```python
+from typing import TYPE_CHECKING
+
+from myapp.infra.logging import setup_logger
+
+if TYPE_CHECKING:
+    from myapp.models import Order
+
+_REDIS_RETRY_COOLDOWN_SECONDS: float = 5.0
+
+logger = setup_logger(__name__)
+```
+
+**How this compares to other languages:** imports and typing (`TYPE_CHECKING`, aliases) sit at the top, **before constants**; **types are optional and lightweight** (PEP 484 hints on parameters, attributes, and return values—no separate “types block” unless you need one). **Logger and infrastructure** sit after constants but **before** mutable module state. **Behavior lives inside the `class`** (methods), not in a separate block like Rust’s `impl`. Module-level **functions come after** all classes: public free functions first, then private helpers. The **entry hook** is **`if __name__ == "__main__":`** at the bottom.
 
 ### Type hints and modern idioms
 
@@ -101,7 +116,7 @@ class RedisCache:
 
 - Use `type Alias = ...` (3.12+) for module-level type aliases when it reads better than assignment.
 - Use `enum.StrEnum` (3.11+) for string enums instead of manual `str, Enum` mixes.
-- Use `TYPE_CHECKING` imports only to break **real** circular imports; do not wrap every cross-reference.
+- Use `TYPE_CHECKING` imports only to break **real** circular imports; do not wrap every cross-reference. Keep the `if TYPE_CHECKING:` block in the **typing** layer (step 4), immediately after runtime imports and **before** constants — not after logger, state, or classes.
 - Prefer fixing definition order or a quoted forward ref (`"MyClass"`) over blanket future imports.
 
 #### Other legacy residues to avoid on modern runtimes
