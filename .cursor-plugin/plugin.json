@@ -1,7 +1,7 @@
 {
   "name": "nexus",
   "displayName": "Nexus",
-  "description": "Production harness for coding agents: bootstrap, workspace choice, integrity review, git closeout",
+  "description": "Portable team workflow for Cursor, Claude Code, Codex, and Hermes — not a host replacement.",
   "version": "2.4.1",
   "author": {
     "name": "kodezy"

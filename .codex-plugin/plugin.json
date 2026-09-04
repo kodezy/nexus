@@ -1,7 +1,7 @@
 {
   "name": "nexus",
   "version": "2.4.1",
-  "description": "Production harness for coding agents: workspace choice, integrity review, and git closeout with explicit approvals.",
+  "description": "Portable team workflow for Cursor, Claude Code, Codex, and Hermes — not a host replacement.",
   "author": {
     "name": "kodezy",
     "url": "https://github.com/kodezy"
@@ -20,8 +20,8 @@
   "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "Nexus",
-    "shortDescription": "Production harness: workspace, integrity review, closeout",
-    "longDescription": "Use Nexus to choose main vs worktree, apply style and architecture skills, run integrity review, then close out with commit, unify, and push — each step with explicit approval and optional ~/.nexus plus repo .nexus preferences.",
+    "shortDescription": "Portable workflow across agent hosts — not a host replacement",
+    "longDescription": "Nexus complements Cursor, Claude Code, Codex, and Hermes with one shared workflow: choose main vs worktree, validate with evidence, run integrity review, then close out with commit, unify, and push — each step with explicit approval. Preferences live in ~/.nexus and per-repo .nexus/.",
     "developerName": "kodezy",
     "category": "Developer Tools",
     "capabilities": [
