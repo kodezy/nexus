@@ -11,15 +11,14 @@ Keep Python architecture simple, clear, and direct, in the same style as the pro
 
 ## Runtime
 
-- Prefer **current stable Python** (**3.13+** when available) for greenfield projects.
-- Pin via `requires-python` in `pyproject.toml` (and `.python-version` when the repo uses it).
-- Do not raise or lower the declared runtime unless the user asks; follow existing pins and CI.
+- Follow `requires-python` in `pyproject.toml`, `.python-version`, and CI — do not raise or lower the declared runtime unless the user asks.
+- When the project has no runtime pin yet, ask before choosing a Python version.
 
 ## Dependencies
 
 Choose the workflow from repository signals. Do not migrate tooling unless the user explicitly asks.
 
-**uv (preferred for greenfield and uv-managed repos)** — signals: `uv.lock`, or `pyproject.toml` managed with uv.
+**uv-managed repos** — signals: `uv.lock`, or `pyproject.toml` managed with uv.
 
 - **Add:** `uv add <package>` (dev: `uv add --dev <package>`)
 - **Remove:** `uv remove <package>`
@@ -96,8 +95,8 @@ Design modules around cohesive **concepts**, not around individual classes, func
 
 ## Summary
 
-- Runtime: current stable Python (**3.13+** for greenfield); honor existing `requires-python` / pins.
-- Dependencies and runs: **uv** for greenfield and uv-managed repos; Poetry/pip-only (or other established tools) follow local convention until migration is requested.
+- Runtime: honor existing `requires-python` / pins; ask when unset.
+- Dependencies and runs: match the lockfile and commands the repo already uses (uv, Poetry, pip, or other); do not migrate tooling unless the user asks.
 - Structure aligned with the project: module → submodule → files with short names.
 - File/module names: simple, pragmatic, descriptive, snake_case; avoid long compounds.
 - One clear purpose per module; concept-first layout; flat structure or only a few levels.

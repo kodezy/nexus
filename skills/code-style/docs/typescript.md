@@ -6,7 +6,7 @@ Clarity, simplicity, and pragmatism above all. Code that is easy to understand, 
 
 ## Scope
 
-Use for `.ts`, `.tsx`, and `.jsx` files, including React components and hooks.
+Use for `.ts`, `.tsx`, `.jsx`, and `.js` files. The React component-order section below applies only to React files.
 
 ## Naming
 

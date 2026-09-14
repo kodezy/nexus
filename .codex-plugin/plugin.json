@@ -1,6 +1,6 @@
 {
   "name": "nexus",
-  "version": "2.4.1",
+  "version": "2.5.0",
   "description": "Portable team workflow for Cursor, Claude Code, Codex, and Hermes — not a host replacement.",
   "author": {
     "name": "kodezy",

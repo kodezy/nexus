@@ -21,10 +21,10 @@ Remove obsolete code and simplify the affected area without changing intended be
 | --- | --- |
 | Cleanup scope, removal order, deduplication, simplification heuristics | Verdicts and validation receipts (`integrity-review`) |
 | When to remove vs escalate | Formatting, naming, module order (`code-style`) |
-| Merge/delete file decisions (with `architect`) | React UX/a11y review (`frontend-quality`) |
+| Merge/delete file decisions (with `architect`) | UX/a11y review (`$frontend` → **Quality review** section) |
 | Language-specific detection signals | Logging policy (`log-writer`) |
 
-For every code change (including small features), `code-style` still runs its light **Area Cleanup** pass. Use **this skill** when cleanup, deduplication, legacy removal, or simplification is the **primary** task or a substantial part of the session.
+Use **this skill** when cleanup, deduplication, legacy removal, or simplification is the **primary** task or a substantial part of the session.
 
 ## Language / area selection
 
@@ -41,7 +41,7 @@ If repository conventions conflict with generic guidance, **local conventions wi
 
 ## Workflow
 
-1. **Scope the area** (same boundary as `code-style` Area Cleanup):
+1. **Scope the area** (same boundary as integrity-review affected area):
    - Start from the target module, package, or flow the user named.
    - Include direct callers, callees, re-exports, and tests/fixtures for that flow.
    - Stop at the feature boundary; do not sweep unrelated packages.

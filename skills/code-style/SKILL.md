@@ -1,32 +1,42 @@
 ---
 name: code-style
-description: Apply coding style standards for readability, consistency, and formatting without changing business behavior. Use when implementing code, adjusting style, standardizing patterns, formatting modules/files, or finalizing a change set with consistent code conventions.
+description: Apply coding style standards for readability, consistency, and formatting without changing business behavior. Use when touched code needs style alignment beyond what local conventions already show—not on every change.
 ---
 
 # Code Style Standards
 
 ## Objective
 
-Apply a clear, pragmatic, and consistent coding style to the codebase. This skill is not limited to refactoring requests: it defines formatting, naming, module boundaries, and organization conventions to be used as the default finalization step in code changes.
+Apply a clear, pragmatic, and consistent coding style when touched code needs alignment beyond what adjacent modules and project tooling already establish. Load this skill proportionally—skip it for trivial one-line fixes that already match local conventions.
 
-Boundary: this skill standardizes how code is written. It does **not** replace stack-specific implementation guidance such as React component architecture, state design, layout patterns, or data fetching shape (`frontend`), file/module placement or file names (`architect`), or logging levels, messages, and logger setup (`log-writer`). For React work (Vite SPA or Next.js): `frontend` (+ `architect` when placing or naming files) first, then apply `code-style`.
+Boundary: this skill standardizes how code is written. It does **not** replace UI structure, state, layout, or data-fetching shape (`frontend`), file/module placement or file names (`architect`), or logging levels, messages, and logger setup (`log-writer`). For UI work: `frontend` (+ `architect` when placing or naming files) first, then apply `code-style`.
+
+## Adaptive rule (read first)
+
+1. Read the target file and 1–2 adjacent modules in the same package.
+2. If the repository has a formatter/linter config, follow it.
+3. If local style conflicts with this skill, **local conventions win**.
+4. When no local pattern exists (greenfield), load the language doc **only if one exists for that file** (`docs/typescript.md`, `docs/python.md`, or `docs/rust.md`); otherwise follow formatter/linter defaults and defer file placement to `$architect`.
+5. Apply only rules needed for the touched lines — do not style-sweep untouched files.
+6. File and folder placement/naming: defer to `$architect` (this skill handles in-file formatting and order only).
 
 ## Language/Area Selection (Auto)
 
 Choose style rules based on project signals and target area, then apply only the relevant subset:
 
-1. TypeScript and React:
-   - Signals: `ts`, `tsx`, `jsx`, React components/hooks, shared frontend utilities, API client modules.
-   - Use: `docs/typescript.md` for `.ts`, `.tsx`, and `.jsx` rules (including React component structure and ordering).
-2. Python backend/scripts/data areas:
-   - Signals: `py`, `pyproject.toml`, `uv.lock`, `requirements.txt`, Python package/module layout.
-   - Use: `docs/python.md` for style (prefer current stable Python 3.13+ for greenfield; honor repo pins). Dependency installs and runs belong to `architect` (`docs/python.md`), not this skill.
-3. Rust backend/systems/CLI areas:
-   - Signals: `rs`, `Cargo.toml`, modules under `src/` in Rust projects.
-   - Use: `docs/rust.md` (stable toolchain; edition 2024 greenfield when available, else 2021+).
-4. Mixed repositories:
-   - Apply language-specific docs per file/module.
-   - Apply Canonical Rules from this `SKILL.md` as shared baseline.
+1. TypeScript / JavaScript:
+   - Signals: `ts`, `tsx`, `jsx`, `js`, `mjs`, shared frontend utilities, API client modules.
+   - Use: `docs/typescript.md` when those files are in the change. Skip React-specific ordering in that doc when the file is not React.
+2. Python:
+   - Signals: `py`, `pyproject.toml`, `uv.lock`, `requirements.txt`.
+   - Use: `docs/python.md` when those files are in the change. Honor repo pins. Dependency installs belong to `architect`, not this skill.
+3. Rust:
+   - Signals: `rs`, `Cargo.toml`.
+   - Use: `docs/rust.md` when those files are in the change.
+4. Other languages:
+   - Apply Canonical Rules from this `SKILL.md` and local formatter/linter output. Do not force a Nexus language doc.
+5. Mixed repositories:
+   - Apply language-specific docs per file only when a matching doc exists.
 
 If repository style conflicts with generic guidance, local project conventions win.
 
@@ -37,8 +47,8 @@ If repository style conflicts with generic guidance, local project conventions w
 3. Prefer clarity over cleverness: use the simplest structure that remains easy to maintain.
 4. Keep local consistency: match dominant style from the target file and adjacent modules.
 5. Enforce readable naming: names should communicate intent with minimal ambiguity.
-6. Prefer simple file names: single-word when possible; at most two words when needed. Python/Rust use `_`; new TypeScript modules prefer kebab-case unless the folder already uses `_`. React **component** files use `PascalCase` (`OrderCard.tsx`). Tests are exempt. **`$architect` is the source of truth** for file/folder placement and names; this rule repeats a short summary for the finalization pass.
-7. Prefer fewer files with better cohesion: keep related logic together unless there is a clear boundary to split. Package and folder boundaries follow `architect` (concept-first modules; avoid `utils` / `helpers` / `common` / `misc` catch-alls).
+6. **File and module names:** defer to `$architect` and local project patterns (this skill does not own placement).
+7. **Module cohesion:** prefer fewer files with clear boundaries; package layout follows `$architect`.
 8. Keep formatting uniform: spacing, blank lines, and wrapping should be predictable and stable.
 9. Apply minimal viable changes: avoid broad rewrites when a focused style update solves the task.
 10. **Docs and comments:** default is none. Add docstrings, `///`/`//!`, or line comments only when necessary (e.g. public API, non-obvious logic, safety notes); prefer self-explanatory code. Language specifics: `docs/typescript.md`, `docs/python.md`, `docs/rust.md`.
@@ -56,17 +66,14 @@ If repository style conflicts with generic guidance, local project conventions w
 
 ## Naming Conventions
 
-- Functions/methods: use verb-oriented names that describe behavior (`calculate_total`, `validate_token`).
-- Types/classes/components: use singular noun-based names (`User`, `PaymentService`, `OrderCard`).
-- Variables: prefer explicit names over abbreviations (`customer_id` over `cid`).
-- Booleans: use intent-revealing prefixes (`is`, `has`, `can`, `should`) in the **case of the language** (`is_ready` in Python/Rust, `isReady` in TypeScript).
-- Files/modules: **`$architect` owns placement and file names**; defer to it for new files and folders. Summary for finalization: prefer single-word names (`parser.py`, `cache.rs`, `route.tsx`). If needed, at most two words — Python/Rust with `_` (`create_order.py`); new TypeScript with kebab-case (`price-scatter.ts`) unless the folder already uses underscores. Avoid longer compounds (`market.py` over `market_data_processing_service.py`).
-- Tests: naming pattern above does not apply; follow project test conventions.
-- React components: `PascalCase` filenames matching the component (`OrderCard.tsx`) on greenfield and when that is already the local pattern. Two-word non-component `.ts` / `.tsx` modules and routes stay kebab-case.
-- Rename only when clarity gain is obvious (obscure abbreviation, mixed convention in the same file). Skip cosmetic renames. Update references in the touched file.
-- **TypeScript / React:** `camelCase` for functions and variables; `PascalCase` for types and components; hooks as `useSomething` (`camelCase`); module-level constants `UPPER_SNAKE_CASE`. Module layout and React component ordering: `docs/typescript.md`.
+- File and module names: follow `$architect` and local project patterns.
+- Identifiers inside files: verb-oriented functions, noun types/components, explicit variables, boolean prefixes (`is`/`has`/`can`) in the language's case.
+- UI component filenames: match the local pattern (do not invent PascalCase or kebab-case).
+- Rename only when clarity gain is obvious; skip cosmetic renames.
 
 ## Module order (by language)
+
+Apply only when touching a file whose order is already inconsistent with nearby modules. Do not reorder greenfield-correct files for ceremony.
 
 Top-to-bottom intent (full steps in each language doc):
 
@@ -112,7 +119,6 @@ Language-specific placement and examples: `docs/typescript.md`, `docs/python.md`
 
 ## Organization Rules
 
-- Package and folder layout: concept-first modules by domain or subsystem (`architect`). Avoid generic catch-all folders (`utils`, `helpers`, `common`, `misc`); colocate with the owning concept or use a named module for a real shared abstraction.
 - Keep imports/includes at the top of the file, grouped and consistently ordered. Prefer top-level imports/`use`; use a local import only for lazy loading or to break a real circular dependency (see language docs).
 - **Constants:** after typing in Python; after imports (with `type` aliases) in Rust; **after types** in TypeScript and `.tsx` (see table above). **Logger/infrastructure** and **module state** follow constants in that order when present. Follow the **Constants** section above for layout and grouping.
 - **Variables (module state and locals):** follow the **Variables** section above—one per line, grouped by domain with one blank line between groups.
@@ -123,9 +129,6 @@ Language-specific placement and examples: `docs/typescript.md`, `docs/python.md`
 - Group related methods only within the same visibility band (among publics, or among privates); never interleave private above remaining public for “logical” grouping.
 - When touching a file, normalize that file's order and fix obviously unclear names; do not style-sweep untouched files.
 - Avoid deep nesting when a guard clause or early return improves readability.
-- Prefer keeping related code in existing modules when cohesion remains clear. Do not split solely to reduce file size or line count.
-- Split into a new file only with a clear boundary (multiple independent responsibilities, hard to navigate, multiple reasons to change, independent lifecycle, stable reuse by 2+ modules, or readability loss from mixed concerns).
-
 ## Formatting
 
 - Follow the project’s formatter and linter (e.g. Black, Ruff, Prettier, rustfmt) when present; otherwise match the style of the file and adjacent modules.
@@ -184,7 +187,7 @@ Also enforce:
 ## Workflow
 
 1. Inspect target file and nearby files to learn existing style conventions.
-2. Detect language/area and load the matching internal doc(s) (for React UI, `docs/typescript.md`).
+2. Detect language/area and load the matching internal doc only when that language is in the change.
 3. Apply code-style rules with minimal, behavior-safe changes.
 4. Normalize naming, formatting, and organization where there is clear value.
 5. Run project formatter/linter if available and aligned with the repository.
@@ -193,54 +196,22 @@ Also enforce:
 ### Final pass order (code changes)
 
 1. Implement the task.
-2. Area cleanup (obvious removals; escalate doubt) — see Area Cleanup below. Skip this step when `$code-cleanup` already ran in this session for the same area.
-3. Apply naming / order / format rules from this skill to every touched file.
-4. Run `integrity-review` (canonical closeout: area review, verdict, commit handoff).
+2. Apply naming, order, and format rules from this skill to every touched file (mirror local conventions or the language doc in greenfield).
+3. Hand off to `$integrity-review` for verdict and closeout.
 
-## Area Cleanup (final pass)
-
-Light pass on every code change. When cleanup, deduplication, legacy removal, or simplification is the **primary** task, use `$code-cleanup` instead; it owns the full workflow and ends with this skill plus `$integrity-review`.
-
-Apply this pass to the **affected feature area**, not the whole repository and not only the diff hunks.
-
-### Delimit the area
-
-- Start from touched files.
-- Include modules in the same flow: direct callers/callees, re-exports, and tests/fixtures for that flow.
-- Stop at the feature boundary; do not sweep unrelated neighbor packages.
-
-### Remove when obvious
-
-- Function / type / constant with no remaining references in the area after the change
-- Dead branch / `if` / `match` left by a migration
-- Old fallback path when the new path is the only one used
-- Debug prints, dead flags, migration TODOs/comments already completed
-- Session scratch / temp left behind
-
-### Escalate (do not remove without evidence)
-
-- Public API / external contract
-- Compat still required for a supported client or version
-- Feature flag without confirmation it is off / removed
-- Code that looks unused but may have dynamic callers or callers outside the area
-
-When escalating: leave the code in place, report it in `blockers` / `next_step`, and do not conclude the task as clean.
+When cleanup, deduplication, legacy removal, or simplification is the primary goal, use `$code-cleanup` instead of expanding this pass.
 
 ## Checklist Before Finishing
 
 - Behavior is unchanged.
 - Formatting is consistent and clean.
 - Naming is clear and coherent.
-- Production file names prefer single-word (two words max; Python/Rust `_`, new TS kebab-case unless local folder uses `_`, React component files `PascalCase`); tests exempt.
-- Related logic is not fragmented across unnecessary files.
 - Organization improves readability; constants and variables follow **Constants** / **Variables** (one per line, grouped by domain); function bodies use coarse phase blank lines (no comment separators).
 - Diff stays focused and pragmatic.
-- Affected area has no obvious dead code, legacy fallback, or residue left by this change.
-- Ambiguous leftovers are reported in `blockers` / `next_step` (not silently kept as “done”).
 
 ## Internal Skill Docs
 
-Use this skill as the source of truth for code style decisions. For a compact operational reference, see:
+Optional language references — load only when those files are in the change:
 
 - `docs/typescript.md`
 - `docs/python.md`

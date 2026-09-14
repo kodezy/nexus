@@ -11,8 +11,9 @@ Keep Rust architecture simple, clear, and direct, in the same style as the proje
 
 ## Toolchain and Cargo
 
-- Prefer the **stable** Rust toolchain for greenfield and day-to-day work (`rustup` stable, or `rust-toolchain.toml` with `channel = "stable"`).
-- Prefer **edition 2024** for new crates when stable supports it; otherwise **2021+**. Do not change `edition` / `rust-version` in existing crates unless the user asks.
+- Honor `rust-toolchain.toml`, `channel`, `edition`, and `rust-version` already set in `Cargo.toml` and CI.
+- When starting a crate with no toolchain metadata yet, ask before choosing edition or channel.
+- Do not change `edition` / `rust-version` in existing crates unless the user asks.
 - Treat `Cargo.toml` (and the lockfile when present) as the source of truth for dependencies.
 - **Add:** `cargo add <crate>` (dev: `cargo add --dev <crate>`)
 - **Remove:** `cargo remove <crate>`
@@ -84,7 +85,7 @@ Design modules around cohesive **concepts**, not around individual classes, func
 
 ## Summary
 
-- Toolchain: **stable**; new crates prefer edition **2024** (else **2021+**); honor existing `Cargo.toml` pins.
+- Toolchain: honor existing `Cargo.toml` / `rust-toolchain.toml` pins; ask when unset.
 - Structure aligned with the project: module -> submodule -> files with short names.
 - File/module names: simple, pragmatic, descriptive, snake_case; avoid long compounds.
 - One clear purpose per module; concept-first layout; flat structure or only a few levels.

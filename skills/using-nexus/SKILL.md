@@ -23,17 +23,62 @@ Apply this order: system and managed policy; explicit user instructions; host-na
 
 ## Route the change
 
+### Always (code or repository changes)
+
 1. Before the first edit, use `$git-assistant` → `workspace-choice`. Read preferences when choosing a workspace, closing out, or resuming long work; repo preferences override global preferences.
-2. Use `$spec-driven` when a feature or UI still has material ambiguity.
-3. Use `$architect` before adding files, modules, or structural boundaries.
-4. Use the domain skill that fits the changed area:
-   - Cleanup primary (dead code, duplication, legacy removal, simplification): `$code-cleanup`.
-   - Markdown docs: `$readme-writer` (monorepo: `docs/monorepo.md` in that skill).
-   - HTTP API reference: `$api-docs-writer` (flows and UI guides stay out of `API.md`).
-   - UI code: `$frontend` and `$frontend-quality`.
-   - Other: `$log-writer`, `$playwright`, or another relevant skill.
-5. Apply `$code-style` to touched code files. Skip its light Area Cleanup when step 4 was `$code-cleanup` (that skill already owns the full cleanup pass).
-6. Finish with `$integrity-review`, then `$git-assistant` closeout only after explicit approval.
+2. Implement using **local project conventions first** (project `AGENTS.md` / `CLAUDE.md`, adjacent modules, formatter and linter output). Do not impose global Nexus style when the repository already has a clear pattern.
+3. Finish with `$integrity-review`, then `$git-assistant` closeout only after explicit approval.
+
+**Greenfield:** When the repo has no established pattern (empty, scaffold-only, or first files in a new area), detect stack from manifests and tool configs (`package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, `*.config.*`, and similar). Apply the relevant domain skill (`$architect`, `$frontend`, `$log-writer`, …). Load a stack doc under `skills/<skill>/docs/` **only** when it matches that stack. If the stack is unnamed, ask before choosing a framework or language. Establish simple precedents; do not impose a Nexus-preferred stack. Save conventions to `.nexus/project/` only when the user asks via `$memory`.
+
+### When the change needs it (proportional)
+
+| Trigger | Skill or plugin |
+| --- | --- |
+| Feature or UI scope still ambiguous | Optional plugin (Spec Kit, Superpowers brainstorming) **or** `$spec-driven` when the user asks for a Nexus spec artifact |
+| New files, modules, packages, or structural boundaries | `$architect` |
+| Cleanup, deduplication, legacy removal, or simplification is the **primary** goal | `$code-cleanup` |
+| User-facing UI (pages, screens, components, layouts, state, data flow) | `$frontend` |
+| Logging statements or logger setup | `$log-writer` |
+| Project Markdown (`README.md`, `docs/**/*.md`) | `$readme-writer` |
+| HTTP API reference (`docs/API.md`, endpoint docs) | `$api-docs-writer` |
+| Touched code needs style alignment beyond what local files already show | `$code-style` on those files only — skip loading the full skill for trivial one-line fixes |
+
+Do not load domain skills when the diff does not touch that area.
+
+### Subagent delegation
+
+Use subagents only when they reduce elapsed time without weakening ownership:
+
+- Delegate: three or more independent failure domains, parallel read-only reviews with clear boundaries, or independent implementation tasks with no shared mutable files.
+- Keep one agent: small tasks, shared state, exploratory work, or edits likely to touch the same files.
+
+Delegation rules:
+
+1. One clear responsibility per subagent; state goal, scope, constraints, and expected evidence.
+2. Do not assign overlapping files or mutable shared resources to parallel subagents.
+3. Never delegate workspace choice, commits, pushes, merges, worktree lifecycle, closeout, or final integration.
+4. Nexus subagents (Task tool, explore, and similar) must not commit; the primary agent owns integration, `$integrity-review`, and approved closeout.
+5. If Superpowers subagent-driven development allows implementer commits per task, message style still follows `$git-assistant` → `commit-messages.md`.
+
+After subagents return: inspect changed files, resolve conflicts, run validation on the combined diff, then continue the **Always** path above. Do not treat subagent summaries as completion evidence.
+
+Task prompt template:
+
+```text
+Goal: <one bounded outcome>
+Scope: <files or subsystem>
+Constraints: <what must not change>
+Validation: <commands or evidence to collect>
+
+Return exactly:
+task:
+actions_taken:
+files_changed:
+results:
+blockers:
+next_step:
+```
 
 ## Compatibility
 

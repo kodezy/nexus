@@ -1,6 +1,6 @@
 # Logging (Rust)
 
-## Default
+## When the crate uses `log`
 
 At call sites, use the **`log`** crate macros:
 
@@ -12,20 +12,15 @@ log::error!("failed to persist order {order_id}: {err}");
 
 Pass format args to the macro; avoid building strings with `+` or `format!` solely to log them.
 
-Configure output once at binary startup with **fern** (or a project wrapper around it):
-
-```rust
-fern::Dispatch::new()
-    .level(log::LevelFilter::Info)
-    .chain(std::io::stdout())
-    .apply()?;
-```
-
-Level, timestamps, and targets belong in that single dispatch — not scattered per module.
+If the binary configures output with **fern** (or a project wrapper), keep that in one startup path — level, timestamps, and targets belong in a single dispatch, not scattered per module.
 
 ## When the crate already uses `tracing`
 
 Match the existing stack (`tracing::info!`, spans, subscribers). Do not introduce a parallel `log` + fern path in the same binary without an explicit migration.
+
+## When no logger is established
+
+Ask before choosing `log`, `tracing`, or another stack.
 
 ## Levels
 
@@ -37,10 +32,10 @@ Keep messages short; put variable data in format args or structured fields the p
 
 If the codebase uses `tracing` spans for request scope, attach context there instead of repeating IDs in every line.
 
-## Setup (greenfield)
+## Setup
 
-- One `fern::Dispatch` (or shared `init_logging()` helper) in the binary crate.
-- Library crates log via `log` macros only — they do not configure sinks.
+- One shared `init_logging()` helper or subscriber in the binary crate when the project uses that pattern.
+- Library crates log via the project's macros only — they do not configure sinks.
 - Respect `RUST_LOG` or the project's env convention when filtering modules.
 
 ## Do not log

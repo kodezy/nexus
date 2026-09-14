@@ -69,7 +69,7 @@ Git workflow preferences are read on demand by `git-assistant` (`workspace-choic
 
 **Repo** — before the first write when `.nexus/` does not exist:
 
-1. Create `.nexus/user/` and `.nexus/project/`.
+1. Create `.nexus/user/` and `.nexus/project/` only — no `README.md`, index files, or other scaffolding under `.nexus/`.
 2. If `.nexus/` is not listed in `.gitignore`, ask the user once before adding `.nexus/` to `.gitignore`.
 
 **Global** — before the first write when `~/.nexus/` (or `$NEXUS_HOME`) does not exist:
@@ -111,6 +111,7 @@ Do not commit `.nexus/` or `~/.nexus/` contents.
 4. **Local only:** Repo `.nexus/` is gitignored; global `~/.nexus/` stays on the machine. Tell the user if they want team-shared notes (use repo docs instead).
 5. **Focused files:** Prefer updating an existing topic file over creating duplicates.
 6. **No plugin pollution:** Never write global memories into the Nexus source/plugin checkout.
+7. **No memory READMEs:** Never create `README.md`, `INDEX.md`, or similar index/scaffold files under `.nexus/` or `~/.nexus/`. Memory lives in `user/`, `project/`, and `notes/` topic files only.
 
 ## Internal Docs
 

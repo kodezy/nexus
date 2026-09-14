@@ -16,15 +16,15 @@ Highest priority: simple, clear, pragmatic names.
 - For types: singular nouns: `User`, `Order`, `Strategy`.
 - For modules: plural or singular nouns as context dictates: `users`, `order`, `strategies`.
 - Be specific when needed: `calculate_profit_margin` is better than `calculate`.
-- **Accessors:** within the same module, do not mix `user()` and `get_user()` for the same kind of simple read. On greenfield / new API, prefer simple accessors without `get_` (`user()`, `len()`), aligned with [Rust API guidelines](https://rust-lang.github.io/api-guidelines/naming.html). Functions that perform IO, lookup, or fallible retrieval may use `get_*` when the module already uses that verb (e.g. `get_cache`).
+- **Accessors:** within the same module, do not mix `user()` and `get_user()` for the same kind of simple read. Match the module's existing accessor style. Functions that perform IO, lookup, or fallible retrieval may use `get_*` when the module already uses that verb (e.g. `get_cache`).
 - Use `snake_case` for functions, variables, and modules.
 - Use `PascalCase` for types, traits, enums, and structs.
 - Use `SCREAMING_SNAKE_CASE` for constants.
 
 ## Structure and Organization
 
-- Prefer the **stable** Rust toolchain (`rustup default stable` / `rust-toolchain.toml` channel `stable`) unless the project pins another channel.
-- Prefer **edition 2024** for greenfield crates when the stable toolchain supports it; otherwise edition **2021+**. Match `edition` / `rust-version` already set in `Cargo.toml`.
+- Match `rust-toolchain.toml`, `edition`, and `rust-version` already set in `Cargo.toml` and CI.
+- When the crate has no toolchain metadata yet, ask before choosing edition or channel.
 - Use modern language features supported by that edition and toolchain.
 - Avoid pre-edition-2018 residues in new code (`extern crate` at crate root, `try!` instead of `?`) unless matching existing crate style.
 

@@ -5,6 +5,8 @@ description: Use when defining a feature, user flow, UI, or behavior whose scope
 
 # Spec Driven
 
+**Optional:** Prefer Spec Kit or Superpowers when installed. Use this skill when the user asks for a Nexus-native spec artifact or no planning plugin is available.
+
 Turn intent into a small, testable product specification. Keep the artifact proportional: a small feature needs a short decision record, not ceremony.
 
 ## Workflow
@@ -19,7 +21,7 @@ Use the approved specification as the input to planning and implementation. An o
 
 ## Frontend Requirements
 
-For a React UI, specify:
+For user-facing UI, specify:
 
 - target user and primary task;
 - screen or route, primary action, and states;

@@ -7,21 +7,23 @@ description: Define and apply simple, clear, direct architecture. Use when creat
 
 ## Objective
 
-Keep architecture simple, clear, and direct. Every new module, package, or feature must follow the same style and patterns as the current project. Prefer fewer files with well-defined modules, and use simple, pragmatic names for files and modules. **This skill owns file/module placement and file names**; `code-style` repeats a short summary during finalization.
+Keep architecture simple, clear, and direct. Every new module, package, or feature must follow the same style and patterns as the current project. Prefer fewer files with well-defined modules, and use simple, pragmatic names for files and modules. **This skill owns file/module placement and file names**; `$code-style` handles in-file formatting and order only.
 
 ## Language / Area Selection
 
-- **Python:** Use `docs/python.md` for backend, services, scripts, package layout, runtime (current stable / 3.13+ greenfield), and dependency/run workflow (uv preferred; Poetry/pip when local).
-- **Rust:** Use `docs/rust.md` for crates, binaries, modules, package layout, and toolchain/Cargo (stable; edition 2024 greenfield when available).
-- **TypeScript / React:** Use the File naming rules below (including the React/TS casing note). UI architecture and runtime (Vite vs Next) belong to `frontend`.
-- Other languages: add docs when needed; prefer current stable toolchains when starting greenfield work.
+Match the repository first. Optional language docs apply **only** when those files are in the change:
+
+- **Python:** `docs/python.md` — package layout, runtime, dependency/run workflow.
+- **Rust:** `docs/rust.md` — crates, modules, toolchain/Cargo.
+- **TypeScript / JavaScript:** File naming below plus adjacent modules. UI runtime belongs to `frontend`.
+- **Any other language:** follow adjacent modules, formatter/linter, and project instructions. Do not invent a Nexus stack.
 
 ## Canonical Rules
 
 1. **English:** All code, identifiers, comments, docstrings, and file/module names in English (per Nexus contract).
 2. **Match existing structure:** Place code in the same hierarchy the project already uses, organized by module/submodule (e.g. `src/api`, `src/services`, `src/ui/components`).
-3. **Simple file names:** Prefer **single-word** names when possible (`parser`, `client`, `cache`, `route`). If one word is not enough, use **at most two words**. Default separator for Python/Rust is `_` (`create_order`, `sync_users`). For TypeScript, see File naming below (kebab-case for new two-word non-component files; `PascalCase` for React component modules). Avoid longer compounds (e.g. `billing_webhook_processing_service`, `market_offer_creator`).
-4. **Tests exempt:** Test files do not need this pattern; follow project test naming (`test_parser.py`, `orders_test.rs`, descriptive pytest names).
+3. **Simple file names:** Prefer **single-word** names when possible (`parser`, `client`, `cache`, `route`). If one word is not enough, use **at most two words**. Use the separator the surrounding folder already uses. Avoid longer compounds (e.g. `billing_webhook_processing_service`, `market_offer_creator`).
+4. **Tests exempt:** Test files do not need this pattern; follow project test naming.
 5. **Concept-first modules:** Design around cohesive concepts, not individual classes, functions, or file types. Prefer one module per concept, not one module per class. See **Module organization** below.
 6. **Fewer files first:** Prefer extending an existing module when responsibility is the same and cohesion stays clear. Do not split solely to reduce file size or line count.
 7. **Split only with clear boundary:** Create a new file/package only when at least one condition is true: multiple independent responsibilities, the module becomes difficult to navigate, multiple reasons to change, independent lifecycle, stable reuse by 2+ modules, or readability loss from mixed concerns.
@@ -61,9 +63,8 @@ Design modules around cohesive **concepts**, not around individual classes, func
 ## Checklist
 
 - New code lives under the right module and follows existing hierarchy.
-- File names prefer single-word; two words max with the language-appropriate separator (Python/Rust `_`, new TS kebab-case unless the folder already uses `_`, React component files `PascalCase`); tests exempt.
-- Python dependencies/runs follow `docs/python.md` (uv for greenfield/uv-managed; Poetry/pip-only when that is local; current stable Python 3.13+ for greenfield).
-- Rust toolchain/Cargo follow `docs/rust.md` (stable; edition 2024 for greenfield when available).
+- File names prefer single-word; two words max with the separator already used in that folder; tests exempt.
+- Language-specific layout and toolchain notes apply only when those files are in the change (`docs/python.md`, `docs/rust.md`).
 - Modules are organized by concept, not by class or file type.
 - Existing module was preferred when responsibility matched.
 - New files were created only when split criteria were explicitly met.
@@ -85,18 +86,14 @@ Use this repository structure as baseline for placement and naming:
 
 | Priority | Pattern | Examples |
 | --- | --- | --- |
-| 1 | Single word | `parser.py`, `cache.rs`, `route.tsx`, `notifier.py` |
-| 2 | Two words, language separator | Python/Rust: `create_order.py`; new TS non-component: `price-scatter.ts`; React component: `OrderCard.tsx` |
-| Avoid | Three+ terms or long compounds | `billing_webhook_processing_service.py` |
+| 1 | Single word | `parser`, `cache`, `route`, `notifier` (keep the repo's extension) |
+| 2 | Two words, local separator | Match the folder (`create_order`, `price-scatter`, `OrderCard` only if that folder already uses it) |
+| Avoid | Three+ terms or long compounds | `billing_webhook_processing_service` |
 
 - **Tests:** exempt — use project test conventions (longer or descriptive names are fine).
-- **Python / Rust:** `snake_case`; two words with one `_`.
-- **TypeScript / React:**
-  - Prefer **single-word lowercase** filenames (`route.tsx`, `model.ts`, `client.ts`, `layout.tsx`).
-  - If two words are needed for **new** non-component `.ts` / `.tsx` files, prefer **kebab-case** (`price-scatter.ts`, `date-range.ts`) over `snake_case`, unless the surrounding folder already standardizes on underscores.
-  - Hook modules may keep a `use_` / `use-` prefix (`use_table_sort.ts` or `use-table-sort.ts`); match the folder's existing separator.
-  - React/UI **component** modules use `PascalCase` files matching the component (`OrderCard.tsx`) on greenfield and when the project already does.
-  - Avoid three+ term compounds (`item-detail-model.ts` → prefer `detail.ts` colocated, or a two-word max name).
+- **Separator and case:** copy adjacent files in the same folder. Do not introduce kebab-case, snake_case, or PascalCase into an area that uses something else.
+- **Greenfield folder:** use the language community default for that stack. If the stack is unnamed, ask.
+- Avoid three+ term compounds (`item-detail-model` → prefer `detail` colocated, or a two-word max name).
 
 ## Naming Clarification
 
@@ -107,5 +104,7 @@ Use this repository structure as baseline for placement and naming:
 
 ## Internal Docs
 
-- `docs/python.md` — Python package layout, naming, structure, and dependency workflow (aligned with a `src/`-style project).
-- `docs/rust.md` — Rust crate layout, naming, and structure (aligned with a `src/`-style crate).
+Optional — load only when those languages are in the change:
+
+- `docs/python.md` — Python package layout, naming, structure, and dependency workflow.
+- `docs/rust.md` — Rust crate layout, naming, and structure.

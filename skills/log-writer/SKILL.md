@@ -20,21 +20,21 @@ Apply this skill **before** or **together** with `$code-style` when the change i
 3. **One event per line:** multiline only for intentional stack traces or multiline payloads.
 4. **Structured context:** prefer fields (`request_id`, `user_id`, `order_id`) over long prose.
 5. **No secrets:** never log passwords, tokens, private keys, or personal data unless explicitly required and redacted.
-6. **Local conventions win:** match the logger, format, and context shape already used in the module or package. Stack-doc defaults apply to greenfield work only.
+6. **Local conventions win:** match the logger, format, and context shape already used in the module or package. If the repo has no logging pattern yet, ask before introducing a library or global setup.
 
 ## Stack Selection
 
-Pick the doc for the file you are editing. Do not mix rules across languages.
+Pick the doc for the file you are editing when the repository already uses that stack. Do not mix rules across languages.
 
-1. **Python** (`.py`, services, scripts): `docs/python.md` — prefer **loguru**; match stdlib `logging` when the file or service already uses it.
-2. **Rust** (`.rs`, `Cargo.toml`): `docs/rust.md` — prefer **`log`** at call sites and **fern** at startup; match **`tracing`** when the crate already standardizes on it.
-3. **TypeScript / JavaScript** (`.ts`, `.tsx`, `.js`, `.mjs`): `docs/typescript.md` — prefer **consola**; match **pino**, **winston**, or another logger when the package already uses it.
+1. **Python** (`.py`, services, scripts): `docs/python.md` when the project uses that logger family (for example loguru or stdlib `logging`).
+2. **Rust** (`.rs`, `Cargo.toml`): `docs/rust.md` when the project uses `log`, `tracing`, or an established wrapper.
+3. **TypeScript / JavaScript** (`.ts`, `.tsx`, `.js`, `.mjs`): `docs/typescript.md` when the package already uses that logger (for example consola, pino, winston).
 4. **Other languages:** follow [Principles](#principles) and the logging style already used in the codebase.
 
 ## Workflow
 
 1. Read the logging pattern in the same module or adjacent files.
-2. Open the stack doc above when you need setup or examples.
+2. Open the stack doc above only when it matches the project's logger.
 3. Choose the level by operational impact.
 4. Keep message text short; attach context as structured fields.
 5. Confirm no sensitive data is emitted.

@@ -22,10 +22,8 @@ After every code implementation closeout, this skill is mandatory. On Validated 
 Before the verdict, confirm:
 
 - requirements are addressed in scope;
-- naming and placement match the contract and local project patterns;
-- touched files follow public-before-private member/module order and clear identifiers (`code-style`);
-- `architect` was used when structure or architecture changed;
-- the final diff has no unintended edits or temporary debug residue;
+- naming and placement match local project patterns (`$architect` when structure changed);
+- the final diff has no unintended edits, temporary debug residue, or obvious dead code introduced by this change (escalate uncertain removals in the verdict; do not sweep the area);
 - when project documentation changed (see **Documentation changes** below), that checklist is satisfied.
 
 ## Documentation changes

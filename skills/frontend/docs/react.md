@@ -1,8 +1,8 @@
 # React
 
-Use this doc when the `frontend` skill is active. Build with TypeScript and clear separation of concerns. Keep solutions small, pragmatic, and easy to evolve.
+Optional. Load this doc **only** when the repository is already React or the user chose React. Keep solutions small, pragmatic, and easy to evolve.
 
-This doc owns React-specific implementation decisions: runtime detection (and greenfield preference), feature layout, component boundaries, state strategy, data flow, UI copy density, and styling direction.
+This doc owns React-specific implementation decisions: runtime detection, feature layout, component boundaries, state strategy, data flow, and styling direction. It does not define a Nexus-wide frontend default.
 
 **Not owned here (do not duplicate):**
 
@@ -21,12 +21,8 @@ Match the repository. Do not change runtime unless the user asks.
 
 ### New projects
 
-When the user asks for a **new** React app and does not specify a stack:
+When the user asks for a **new** React app and does not specify a bundler, router, or styling system, **ask** before choosing. Do not default to Vite, Next.js, or Tailwind as a Nexus preference.
 
-- Prefer **Vite + React + TypeScript** for dashboards, internal tools, and SPA UIs.
-- Prefer **Next.js App Router** only when SSR, SEO, or server-first routing is a stated need.
-- Prefer current stable React (19.x line when available) and current stable Vite for greenfield work.
-- Use Tailwind for styling unless the user explicitly requests another system.
 - Keep dependency upgrades in their own change; do not mix large upgrades with feature work.
 
 ### Do not force
@@ -36,8 +32,7 @@ When the user asks for a **new** React app and does not specify a stack:
 
 ## Project setup
 
-- Use TypeScript.
-- Match the repository package manager (`npm`, `pnpm`, or `yarn`).
+- Match the repository language and package manager. If unspecified, ask.
 - Keep one stack per task.
 
 ## Project structure (`src/`)
@@ -143,13 +138,12 @@ export function OrderCard({ order, onCancel }: OrderCardProps) {
 
 ## Styling
 
-- Prefer Tailwind utility classes for layout and spacing.
-- Keep design tokens in CSS variables (`app/globals.css`, `styles/`, or `shared/styles/`).
+- Match the project's existing styling system. Do not introduce Tailwind or another CSS library without an explicit ask.
+- Keep design tokens where the project already keeps them.
 - Avoid inline layout styles unless values are truly dynamic.
 - Keep visual primitives consistent: spacing scale, radius, typography, colors.
-- Dark mode: use `prefers-color-scheme` or an explicit theme toggle with variables.
-- Match the project's Tailwind major (v3 config vs v4 CSS-first); do not upgrade Tailwind inside unrelated feature work.
-- Use existing primitives first. Add shadcn/ui or Radix only when an accessible primitive is needed and the dependency fits the project.
+- Dark mode: follow the project's existing theme approach.
+- Use existing primitives first. Do not add a component library for polish alone.
 
 ## Hooks and modern React
 
@@ -172,4 +166,4 @@ export function OrderCard({ order, onCancel }: OrderCardProps) {
 
 ---
 
-After implementing, run **code-style** using [typescript.md](../../code-style/docs/typescript.md).
+After implementing, run **code-style** on touched files (`docs/typescript.md` when they are TypeScript).

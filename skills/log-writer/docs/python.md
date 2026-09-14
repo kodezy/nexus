@@ -1,8 +1,6 @@
 # Logging (Python)
 
-## Default
-
-Prefer **loguru** for new code:
+## When the repo uses loguru
 
 ```python
 from loguru import logger
@@ -10,7 +8,13 @@ from loguru import logger
 logger.info(f"Worker {worker_id} connected on port {port}")
 ```
 
-Do not add stdlib `logging` in new modules unless the service or repo already standardizes on it — then match local setup (handlers, formatters, `LoggerAdapter`, etc.).
+## When the repo uses stdlib `logging`
+
+Match local setup (handlers, formatters, `LoggerAdapter`, etc.). Do not introduce a second global logging path.
+
+## When no logger is established
+
+Ask before choosing loguru, stdlib `logging`, or another library.
 
 ## Messages
 
@@ -46,11 +50,11 @@ log.info(f"Order {order_id} created")
 
 Prefer fields over embedding IDs only in free text when downstream tools may filter on them.
 
-## Setup (greenfield)
+## Setup
 
-Configure loguru once at process entry (CLI `main`, app factory, worker bootstrap) — not per module. Typical knobs: level from env, stderr/stdout sink, serialize JSON when the deployment expects it.
+Configure the chosen logger once at process entry (CLI `main`, app factory, worker bootstrap) — not per module. Typical knobs: level from env, stderr/stdout sink, serialize JSON when the deployment expects it.
 
-Match existing project helpers if present; do not invent a second global logging path.
+Match existing project helpers; do not invent a second global logging path.
 
 ## Do not log
 

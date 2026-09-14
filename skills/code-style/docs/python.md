@@ -19,8 +19,8 @@ Highest priority: simple, clear, pragmatic names.
 
 ## Structure and Organization
 
-- Prefer **current stable Python** (3.13+ when available) for greenfield work and new modules when the repo does not pin an older runtime.
-- When the project already declares a runtime (`requires-python`, `.python-version`, CI matrix), use that version and only the features it supports.
+- Use the runtime the project declares (`requires-python`, `.python-version`, CI matrix) and only the features it supports.
+- When no runtime is declared, ask before choosing a version or modernizing idioms.
 - Dependency installs and run workflow: `architect` → `docs/python.md` (not this style guide).
 
 ### Module organization
@@ -34,7 +34,7 @@ Highest priority: simple, clear, pragmatic names.
 Top to bottom:
 
 1. **Module docstring** — when present, first line of the file; skip entirely when the module does not need one.
-2. **`from __future__ import …`** — **only when required**; omit by default on 3.13+ (see **Type hints and modern idioms** below).
+2. **`from __future__ import …`** — **only when required** for the pinned runtime (see **Type hints and modern idioms** below).
 3. **`import` / `from … import`** — standard library, blank line, third-party, blank line, local. One group per layer. Import `TYPE_CHECKING` here when needed (`from typing import TYPE_CHECKING`).
 4. **Type-only imports and aliases** — `if TYPE_CHECKING:` block (type-only `from … import` for real circular imports), then `TypeVar` / `ParamSpec` / `type` aliases when needed. **Always before constants** — never place `TYPE_CHECKING` imports below the constants block.
 5. **Constants** — immutable module config: `UPPER_SNAKE_CASE` for module-public scalars, `_UPPER_SNAKE_CASE` for module-private scalars (see **Constants** below).
@@ -98,7 +98,7 @@ logger = setup_logger(__name__)
 
 ### Type hints and modern idioms
 
-**Baseline:** use features allowed by the repo's declared runtime (`requires-python`, `.python-version`, CI). On **3.13+** greenfield, write modern idioms by default. Do not copy legacy patterns from older codebases unless the repo still supports that older runtime.
+**Baseline:** use features allowed by the repo's declared runtime (`requires-python`, `.python-version`, CI). Do not copy legacy patterns from older codebases unless the repo still supports that older runtime.
 
 #### `from __future__ import annotations`
 
@@ -108,7 +108,7 @@ logger = setup_logger(__name__)
 
 #### Type hints (prefer modern builtins)
 
-| Avoid (legacy) | Prefer (3.10+ / 3.13+ greenfield) |
+| Avoid (legacy) | Prefer on the pinned runtime |
 | --- | --- |
 | `Optional[X]` | `X \| None` |
 | `Union[A, B]` | `A \| B` |

@@ -2,15 +2,17 @@
 
 ![Nexus harness illustration](assets/nexus.png)
 
-Portable workflow for coding agents. Cursor, Claude Code, Codex, and Hermes ship their own runtimes — Nexus does not replace them. It adds one shared procedure: workspace choice, evidence-based validation, integrity review, and git closeout with explicit approval.
+Portable reins for coding agents. Cursor, Claude Code, Codex, and Hermes ship their own runtimes — Nexus does not replace them. It adds one shared procedure to keep agents disciplined: workspace choice, evidence before “done”, integrity review, and git closeout with explicit approval.
 
 | Nexus is | Nexus is not |
 | --- | --- |
-| Same workflow across hosts | A replacement for host rules or app `AGENTS.md` |
-| Git ritual with approval gates | A test runner or CI |
-| On-demand skills (`$architect`, `$code-style`, …) | A mandatory framework |
+| Portable git and closeout discipline across hosts | A replacement for host rules or app `AGENTS.md` |
+| Approval gates (no surprise commit/push) | A test runner, CI, or app framework |
+| Optional domain skills when the diff needs them | A stack picker (React, uv, loguru, …) |
 
-**Use it** if you switch hosts or want consistent git discipline without copying the same `AGENTS.md` everywhere. **Skip it** if one host and one repo already cover your process.
+**Use it** if you switch hosts or want the agent held to the same git ritual everywhere. **Skip it** if one host and one repo already enforce your process without a harness.
+
+**The app repo decides** stack, style, and validation (`AGENTS.md`, linters, tests). Nexus decides how the agent behaves around git and task completion.
 
 ## Requirements
 
@@ -56,7 +58,7 @@ Starter templates: [examples/preferences.md](examples/preferences.md).
 
 ## Coexistence
 
-Nexus sits below project `AGENTS.md` and host controls, above optional plugins like [Superpowers](https://github.com/obra/superpowers). It owns workspace choice, git approval gates, and closeout — not planning or TDD rituals.
+Nexus sits below project `AGENTS.md` and host controls, above optional plugins like [Superpowers](https://github.com/obra/superpowers). It owns workspace choice, git approval gates, validation receipts, and closeout — not stack choice, planning, or TDD rituals.
 
 <details>
 <summary>Instruction precedence</summary>

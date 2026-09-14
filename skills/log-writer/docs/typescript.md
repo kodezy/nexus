@@ -1,8 +1,6 @@
 # Logging (TypeScript / JavaScript)
 
-## Default
-
-Prefer **consola** for new code:
+## When the package uses consola
 
 ```typescript
 import { consola } from 'consola';
@@ -16,6 +14,10 @@ Use `consola.withTag('billing')` or a scoped logger when it improves traceabilit
 
 Match local choice (`pino`, `winston`, `debug`, framework logger) until a deliberate migration. Same principles apply: level, short English message, structured fields the logger supports.
 
+## When no logger is established
+
+Ask before introducing consola, pino, winston, or another library.
+
 ## Messages
 
 - Prefer template literals for interpolated values.
@@ -24,7 +26,9 @@ Match local choice (`pino`, `winston`, `debug`, framework logger) until a delibe
 
 ## Levels
 
-| API (consola) | Use for |
+Use the levels your logger exposes. Typical mapping:
+
+| Intent | Use for |
 | --- | --- |
 | `debug` | Verbose diagnostics |
 | `info` | Normal lifecycle |
@@ -35,17 +39,17 @@ Log errors once at the boundary that owns handling (route handler, job runner, C
 
 ## Structured context
 
-Pass a context object when the logger supports it (consola, pino, winston):
+Pass a context object when the logger supports it:
 
 ```typescript
-consola.info({ requestId, orderId }, `Order created`);
+logger.info({ requestId, orderId }, `Order created`);
 ```
 
 Reuse field names already present in the package (`requestId` vs `request_id` — pick what the codebase uses).
 
 ## Browser vs server
 
-- **Server / Node:** default to consola or the project's server logger; respect env log level.
+- **Server / Node:** match the project's server logger; respect env log level.
 - **Browser:** avoid noisy `debug` in hot paths; never log secrets from `localStorage`, cookies, or auth headers.
 
 ## Do not log

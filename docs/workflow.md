@@ -5,10 +5,10 @@
 1. **Scope** — compact core policy every session; load `$using-nexus` only before code or repo changes.
 2. **Preferences** — read `~/.nexus/user/` and `.nexus/user/` when choosing workspace or closing out.
 3. **Workspace** — `$git-assistant` workspace choice (or `/workspace` on Cursor).
-4. **Specify** — `$spec-driven` when a feature or UI needs flow and acceptance criteria.
-5. **Implement** — smallest change; `$architect` for structure; `$code-cleanup` when cleanup is the primary goal.
-6. **Style** — `$code-style` on touched files; React UI also uses `$frontend-quality`.
-7. **Review** — `$integrity-review`.
+4. **Specify (optional)** — Spec Kit, Superpowers, or `$spec-driven` when scope is still ambiguous.
+5. **Implement** — smallest change; `$architect` when adding structure; domain skills when the diff requires them; greenfield stack detection when no local pattern exists.
+6. **Style (when needed)** — `$code-style` on touched code files; mirror local conventions.
+7. **Review** — **Quality review** in `$frontend` when the diff touches user-facing UI; then `$integrity-review`.
 8. **Closeout** — `$git-assistant` closeout (or `/closeout` on Cursor).
 
 ## Validation in app repos

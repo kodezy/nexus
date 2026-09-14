@@ -1,6 +1,6 @@
 # Code cleanup — TypeScript / JavaScript
 
-Use with `../SKILL.md`. Applies to `.ts`, `.tsx`, `.jsx`, and shared frontend utilities. React UI structure stays in `frontend`; this doc covers dead code, duplication, and simplification signals.
+Use with `../SKILL.md`. Applies to `.ts`, `.tsx`, `.jsx`, and shared frontend utilities. UI structure stays in `frontend`; this doc covers dead code, duplication, and simplification signals.
 
 ## Scope signals
 
@@ -24,13 +24,13 @@ Treat `// @ts-ignore`, `eslint-disable-next-line`, and unused generic parameters
 - Dead branch after discriminated union or feature switch migration.
 - Duplicate fetch/error-handling blocks in the same feature—merge at the data owner.
 - Legacy `require()` / `module.exports` in a file already on ESM elsewhere in the package.
-- Unused React state/effect left after UI simplification (verify with `frontend-quality` if user-facing).
+- Unused UI state or effects left after simplification (verify with **Quality review** in $frontend when user-facing).
 
 ## Duplication patterns
 
 - **Repeated API client calls** — one function in the owning module or existing client file; no new `api-helpers.ts` unless `architect` criteria met.
 - **Copy-pasted loading/error UI** — extract only when 2+ stable call sites in scope; otherwise inline the simpler version.
-- **Parallel `useEffect` fetches** — consolidate to one effect or the project's data layer (`frontend` / `react.md`); delete redundant requests.
+- **Parallel client fetches** — consolidate to one effect or the project's data layer (`frontend`); delete redundant requests.
 - **Identical Zod/Yup schemas** — single schema at the validation owner.
 
 ## Simplification over abstraction
@@ -43,10 +43,10 @@ Treat `// @ts-ignore`, `eslint-disable-next-line`, and unused generic parameters
 ## Escalate
 
 - Exported types/functions from package public entry (`package.json` `exports`).
-- Dynamic `import()`, `React.lazy`, route config tables, or registry maps keyed by string.
+- Dynamic `import()`, lazy-loaded routes or components, route config tables, or registry maps keyed by string.
 - `namespace` blocks still required by ambient types or legacy consumers.
 - Code referenced from config files, Storybook, or tests outside the scoped folder.
 
 ## After cleanup
 
-Run `$code-style` (`docs/typescript.md` in that skill). For touched React UI, run `$frontend-quality`, then `$integrity-review`.
+Run `$code-style` (`docs/typescript.md` in that skill). For touched UI, run **Quality review** in $frontend, then `$integrity-review`.
