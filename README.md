@@ -2,7 +2,7 @@
 
 ![Nexus harness illustration](assets/nexus.png)
 
-Portable reins for coding agents. Cursor, Claude Code, Codex, and Hermes ship their own runtimes — Nexus does not replace them. It adds one shared procedure to keep agents disciplined: workspace choice, evidence before “done”, integrity review, and git closeout with explicit approval.
+Portable reins for coding agents. Cursor, Claude Code, and Codex ship their own runtimes — Nexus does not replace them. It adds one shared procedure to keep agents disciplined: workspace choice, evidence before “done”, integrity review, and git closeout with explicit approval.
 
 | Nexus is | Nexus is not |
 | --- | --- |
@@ -17,7 +17,7 @@ Portable reins for coding agents. Cursor, Claude Code, Codex, and Hermes ship th
 ## Requirements
 
 - **Git** and **Bash** (for `scripts/install.sh`)
-- One or more hosts: **Cursor**, **Claude Code**, **Codex**, and/or **Hermes** ([install](https://github.com/nousresearch/hermes-agent))
+- One or more hosts: **Cursor**, **Claude Code**, and/or **Codex**
 
 ## Install
 
@@ -25,7 +25,7 @@ Portable reins for coding agents. Cursor, Claude Code, Codex, and Hermes ship th
 git clone https://github.com/kodezy/nexus.git
 cd nexus
 ./scripts/install.sh          # all detected targets
-./scripts/install.sh cursor   # or codex, claude, hermes
+./scripts/install.sh cursor   # or codex, claude
 ```
 
 | Harness | After install |
@@ -33,7 +33,6 @@ cd nexus
 | **Cursor** | Enable **Nexus** in Settings → Plugins, reload window |
 | **Codex** | Enable in `/plugins`, trust hook in `/hooks` |
 | **Claude Code** | New session (skills symlink; optional plugin for hooks) |
-| **Hermes** | `hermes -p nexus chat` |
 
 Open a **new session in an app repo** and try: `Implement a small change with Nexus closeout`.
 

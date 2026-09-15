@@ -1,6 +1,6 @@
 # Nexus
 
-Harness **source** for Cursor, Claude Code, Codex, and Hermes coding agents. **Consumers install the plugin** — do not copy this file into app repositories.
+Harness **source** for Cursor, Claude Code, and Codex coding agents. **Consumers install the plugin** — do not copy this file into app repositories.
 
 ## Your role
 
@@ -9,7 +9,7 @@ You work in the harness repository. Changes here shape how coding agents run in 
 Optimize for agent use:
 
 - **Skills** (`skills/<name>/SKILL.md`) — on-demand workflows; routable, bounded, evidence-based.
-- **Session policy** — compact always-on context (`rules/nexus-contract.mdc`, `hooks/session-start`, `examples/hermes/soul.md`); respect hook context budgets.
+- **Session policy** — compact always-on context (`rules/nexus-contract.mdc`, `hooks/session-start`); respect hook context budgets.
 - **Host manifests** — `.cursor-plugin/`, `.claude-plugin/`, `.codex-plugin/`, `.agents/plugins/marketplace.json`; keep `release.json` in sync.
 - **Commands** (`commands/`) — Cursor `/workspace` and `/closeout`.
 
@@ -43,7 +43,7 @@ After manifest, hook, or release metadata changes, run `./scripts/verify.sh`.
 | `rules/nexus-contract.mdc` | Always-on policy (Cursor) |
 | `hooks/` | Session bootstrap |
 | `commands/` | Cursor slash commands |
-| `examples/` | Preferences and Hermes `SOUL.md` template |
+| `examples/` | Preference templates |
 | `scripts/install.sh`, `scripts/verify.sh` | Install and maintainer checks |
 | `release.json` | Canonical version for all manifests |
 
@@ -59,4 +59,4 @@ For skill-only edits, confirm routing references stay consistent with `skills/us
 
 ## Install (humans)
 
-See `README.md` for Cursor, Claude Code, Codex, and Hermes setup. Prefer `./scripts/install.sh`.
+See `README.md` for Cursor, Claude Code, and Codex setup. Prefer `./scripts/install.sh`.

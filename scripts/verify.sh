@@ -94,13 +94,10 @@ def verify_context_docs() -> None:
         "scripts/install.sh": ("hooks + bootstrap using-nexus",),
         "README.md": (
             "hooks + bootstrap",
-            "SOUL.md` bootstrap",
-            "Hermes has no session hook",
         ),
         "skills/integrity-review/SKILL.md": ("Clean or Corrected", "**Clean:**"),
         "commands/closeout.md": ("Clean or Corrected",),
         "rules/nexus-contract.mdc": ("No new automated test files unless asked",),
-        "examples/hermes/soul.md": ("No new automated test files unless asked",),
     }
     for relative_path, phrases in stale_phrases.items():
         content = (ROOT / relative_path).read_text()
@@ -112,10 +109,6 @@ def verify_context_docs() -> None:
     for phrase in ("## Validation receipt", "**Validated:**", "**Blocked:**"):
         if phrase not in integrity_review:
             fail(f"skills/integrity-review/SKILL.md is missing validation policy: {phrase}")
-
-    hermes_soul = (ROOT / "examples/hermes/soul.md").read_text()
-    if "Read or write the Nexus paths directly with file tools" not in hermes_soul:
-        fail("examples/hermes/soul.md must document the Hermes memory adapter")
 
 
 try:

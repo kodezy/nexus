@@ -43,5 +43,4 @@ Prefer existing tests. When a new test is the missing sensor, the agent proposes
 | `commands/` | `/workspace`, `/closeout` (Cursor) |
 | `hooks/` | Session bootstrap |
 | `examples/preferences.md` | Starter preferences |
-| `examples/hermes/soul.md` | Hermes profile `SOUL.md` template |
 | `AGENTS.md` / `CLAUDE.md` | Pointers for agents working **in this repo** only |
