@@ -2,7 +2,8 @@
 name: memory
 description: >-
   Store and retrieve local memories in ~/.nexus/ (global) and .nexus/ (repo).
-  Use when the user asks to remember, save, note, or recall preferences or learnings.
+  Use when the user asks to remember, save, note, or recall preferences or learnings
+  (remember, save, note, gravar, lembre, lembre-se, anota, guarda).
 ---
 
 # Memory
@@ -13,11 +14,15 @@ Store and retrieve local memories as markdown files. Global memories live under 
 
 Apply this skill for any of:
 
-- **Write** — explicit user request to remember, save, note, or record something (`remember`, `save`, `note`, `learned`, `gravar`, etc.)
+- **Write** — explicit user request to remember, save, note, or record something (`remember`, `save`, `note`, `learned`, `gravar`, `lembre`, `lembre-se`, `anota`, `guarda`, etc.)
 - **Read** — user asks what was saved, or a task clearly benefits from prior local notes
 - **Delete** — explicit user request to remove a saved memory
 
 Do not write memories without an explicit user request. Do not delete without an explicit user request.
+
+**Write vs context:** Informational context alone (for example a prod URL or file path with no save verb) stays in the session — do not write it. A save verb in the same message is enough; write immediately without asking whether to persist.
+
+**No double-ask:** When the write trigger is present, run the Write Workflow now. Do not ask "should I save this to `.nexus/`?" — the user already asked. The only follow-up question allowed on first repo init is whether to add `.nexus/` to `.gitignore` (see Initialization).
 
 ## Scope Routing
 

@@ -24,4 +24,4 @@ Nexus is a default layer for coding work. Precedence is: system and managed poli
 ## Memory
 
 - Preferences and project learnings are read on demand through `$using-nexus` or `$memory`; they are not session-injected.
-- Write memory only through `$memory` on explicit request. No secrets. Never store global memory in the Nexus plugin checkout.
+- Write memory only through `$memory` on explicit request; save immediately — no second confirmation. No secrets. Never store global memory in the Nexus plugin checkout.
