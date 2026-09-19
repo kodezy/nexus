@@ -25,6 +25,22 @@ MANIFESTS = {
 }
 MARKETPLACE = ROOT / ".agents/plugins/marketplace.json"
 MARKDOWN_LINK = re.compile(r"!?(?:\[[^]]*]\(([^)]+)\))")
+ALLOWED_SKILLS = {"integrity-review", "project-context"}
+REMOVED_SKILLS = {
+    "using-nexus",
+    "memory",
+    "architect",
+    "frontend",
+    "code-style",
+    "code-cleanup",
+    "log-writer",
+    "readme-writer",
+    "api-docs-writer",
+    "spec-driven",
+    "git-assistant",
+    "structure",
+    "conventions",
+}
 
 
 def fail(message: str) -> None:
@@ -36,20 +52,25 @@ def is_external(target: str) -> bool:
     return target.startswith(("#", "http://", "https://", "mailto:"))
 
 
+def verify_skill_surface() -> None:
+    present = {path.name for path in (ROOT / "skills").iterdir() if path.is_dir()}
+    if present != ALLOWED_SKILLS:
+        fail(f"skills/ must contain exactly {sorted(ALLOWED_SKILLS)}; found {sorted(present)}")
+    for removed in REMOVED_SKILLS:
+        if (ROOT / "skills" / removed).exists():
+            fail(f"removed skill still present: skills/{removed}")
+
+
 def verify_session_hook() -> None:
     with tempfile.TemporaryDirectory() as temporary_directory:
         temporary_root = Path(temporary_directory)
-        nexus_home = temporary_root / "nexus-home"
         project_dir = temporary_root / "project"
-        (nexus_home / "user").mkdir(parents=True)
-        (project_dir / ".nexus" / "user").mkdir(parents=True)
-        (nexus_home / "user" / "preferences.md").write_text("NEXUS_PREFERENCE_SENTINEL")
-        (project_dir / ".nexus" / "user" / "preferences.md").write_text("NEXUS_PREFERENCE_SENTINEL")
+        project_dir.mkdir(parents=True)
+        (project_dir / "AGENTS.md").write_text("# App\n\n## Agent workflow\n\n- **Workspace:** main\n")
 
         environment = os.environ | {
             "CURSOR_PLUGIN_ROOT": str(ROOT),
             "CURSOR_PROJECT_DIR": str(project_dir),
-            "NEXUS_HOME": str(nexus_home),
         }
         result = subprocess.run(
             ["bash", str(ROOT / "hooks" / "session-start")],
@@ -69,35 +90,75 @@ def verify_session_hook() -> None:
         context = output.get("additional_context")
         if not isinstance(context, str):
             fail("session-start hook must return Cursor additional_context")
-        if "$using-nexus" not in context:
-            fail("session-start hook must route code changes to $using-nexus")
-        if "Prefer existing tests" not in context or "report Uncertain" not in context:
-            fail("session-start hook must include the test and validation gate")
-        if "NEXUS_PREFERENCE_SENTINEL" in context:
-            fail("session-start hook must not inject raw preference content")
-        if "Use when starting any conversation" in context:
-            fail("session-start hook must not inject the full using-nexus skill")
+        if "$integrity-review" not in context:
+            fail("session-start hook must reference $integrity-review")
+        if "$project-context" not in context:
+            fail("session-start hook must reference $project-context")
+        if "## Docs" not in context and "docs/" not in context:
+            fail("session-start hook must reference project docs/")
+        for removed in ("$using-nexus", "$git-assistant", "$structure", "$conventions"):
+            if removed in context:
+                fail(f"session-start hook must not reference removed {removed}")
+        if "git gates" in context.lower():
+            fail("session-start hook must not promote git gates as always-on policy")
         if len(context.encode()) > 1_200:
             fail("session-start hook context must stay within the 1200-byte budget")
 
 
 def verify_context_docs() -> None:
     stale_phrases = {
-        "skills/using-nexus/agents/openai.yaml": (
-            "Session bootstrap",
-            "injected preferences",
-        ),
-        "skills/git-assistant/agents/openai.yaml": ("injected preferences",),
-        "skills/git-assistant/docs/workspace-choice.md": (
-            "preferences from session context when injected",
-        ),
-        "scripts/install.sh": ("hooks + bootstrap using-nexus",),
         "README.md": (
-            "hooks + bootstrap",
+            "using-nexus",
+            "examples/preferences.md",
+            "~/.nexus",
+            "NEXUS_HOME",
+            "Optional domain skills",
+            "git gates",
+            "$git-assistant",
+            "$structure",
+            "$conventions",
+            "/closeout",
         ),
-        "skills/integrity-review/SKILL.md": ("Clean or Corrected", "**Clean:**"),
-        "commands/closeout.md": ("Clean or Corrected",),
-        "rules/nexus-contract.mdc": ("No new automated test files unless asked",),
+        "rules/nexus-contract.mdc": (
+            "$using-nexus",
+            "$memory",
+            "$git-assistant",
+            "$structure",
+            "$conventions",
+            "~/.nexus",
+            "NEXUS_HOME",
+            "## Hard gates",
+        ),
+        "docs/workflow.md": (
+            "$using-nexus",
+            "$spec-driven",
+            "$architect",
+            "$git-assistant",
+            "$structure",
+            "$conventions",
+            "/closeout",
+            "/workspace",
+            "~/.nexus",
+            "NEXUS_HOME",
+        ),
+        "skills/integrity-review/SKILL.md": (
+            "$code-cleanup",
+            "$architect",
+            "$readme-writer",
+            "$git-assistant",
+            "$structure",
+            "$conventions",
+        ),
+        "examples/AGENTS.md": (
+            "~/.nexus",
+            "NEXUS_HOME",
+            "$git-assistant",
+            "$structure",
+            "$conventions",
+            "app-agents",
+        ),
+        "AGENTS.md": ("$git-assistant", "$structure", "$conventions", "/closeout", "/workspace"),
+        "CLAUDE.md": ("$git-assistant", "$structure", "$conventions", "/closeout", "/workspace"),
     }
     for relative_path, phrases in stale_phrases.items():
         content = (ROOT / relative_path).read_text()
@@ -106,9 +167,50 @@ def verify_context_docs() -> None:
                 fail(f"{relative_path} contains stale policy wording: {phrase}")
 
     integrity_review = (ROOT / "skills/integrity-review/SKILL.md").read_text()
-    for phrase in ("## Validation receipt", "**Validated:**", "**Blocked:**"):
+    for phrase in ("## Validation receipt", "**Validated:**", "**Blocked:**", "Independent verification"):
         if phrase not in integrity_review:
             fail(f"skills/integrity-review/SKILL.md is missing validation policy: {phrase}")
+    if "docs/notes" not in integrity_review:
+        fail("skills/integrity-review/SKILL.md must reference docs/ linked from AGENTS.md")
+
+    if (ROOT / "examples/app-agents.md").exists():
+        fail("examples/app-agents.md was renamed to examples/AGENTS.md")
+
+    app_template = (ROOT / "examples/AGENTS.md").read_text()
+    for phrase in (
+        "## Agent ritual",
+        "## Docs",
+        "$integrity-review",
+        "$project-context",
+        "docs/git.md",
+    ):
+        if phrase not in app_template:
+            fail(f"examples/AGENTS.md is missing template content: {phrase}")
+
+    for example_doc in (
+        "examples/docs/architecture.md",
+        "examples/docs/domain.md",
+        "examples/docs/conventions.md",
+        "examples/docs/git.md",
+    ):
+        if not (ROOT / example_doc).is_file():
+            fail(f"missing example doc: {example_doc}")
+
+    git_example = (ROOT / "examples/docs/git.md").read_text()
+    if "## Closeout" not in git_example:
+        fail("examples/docs/git.md must document closeout steps")
+
+    project_context = (ROOT / "skills/project-context/SKILL.md").read_text()
+    curator = (ROOT / "skills/project-context/docs/curator.md").read_text()
+    for phrase in ("On demand only", "docs/curator.md", "docs/notes"):
+        if phrase not in project_context:
+            fail(f"skills/project-context/SKILL.md is missing curator policy: {phrase}")
+    for phrase in ("## Sweet spot", "## Capture", "formatter domain", "docs/git.md"):
+        if phrase not in curator:
+            fail(f"skills/project-context/docs/curator.md is missing curator workflow: {phrase}")
+
+    if (ROOT / "commands").exists() and any((ROOT / "commands").iterdir()):
+        fail("commands/ must be empty or removed — git closeout lives in docs/git.md")
 
 
 try:
@@ -146,10 +248,12 @@ for skill_path in sorted((ROOT / "skills").iterdir()):
         fail(f"skill {skill_path.name!r} has agents/ but no agents/openai.yaml")
 
 cursor_manifest = json.loads((ROOT / ".cursor-plugin/plugin.json").read_text())
-for field in ("logo", "skills", "rules", "commands", "hooks"):
+for field in ("logo", "skills", "rules", "hooks"):
     target = cursor_manifest.get(field)
     if isinstance(target, str) and not (ROOT / target).exists():
         fail(f".cursor-plugin/plugin.json references missing {field}: {target}")
+if "commands" in cursor_manifest:
+    fail(".cursor-plugin/plugin.json must not reference commands/")
 
 codex_manifest = json.loads((ROOT / ".codex-plugin/plugin.json").read_text())
 for field, target in {
@@ -221,6 +325,7 @@ for markdown_path in ROOT.rglob("*.md"):
         if relative_target and not (markdown_path.parent / relative_target).exists():
             fail(f"{markdown_path.relative_to(ROOT)} links to missing path: {target}")
 
+verify_skill_surface()
 verify_session_hook()
 verify_context_docs()
 

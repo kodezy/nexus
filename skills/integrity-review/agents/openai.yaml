@@ -1,4 +1,4 @@
 interface:
   display_name: "Integrity Review"
-  short_description: "Review completed work and require validation evidence."
-  default_prompt: "Use $integrity-review on the completed implementation. When consumer project docs changed (README, **/docs/**, operations guides), run the Documentation changes checklist. Include a validation receipt, then hand off to git-assistant closeout only when Validated or Corrected."
+  short_description: "Require evidence before done; verifier pass when available."
+  default_prompt: "Use $integrity-review on the completed work. Run project checks, include a validation receipt, and use a separate verifier pass when the host supports it. Do not commit unless the user explicitly asks."

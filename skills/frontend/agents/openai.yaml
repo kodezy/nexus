@@ -1,4 +1,0 @@
-interface:
-  display_name: "Frontend"
-  short_description: "Build clear, pragmatic UIs in the repository's existing stack."
-  default_prompt: "Use $frontend for UI structure, state, data flow, styling, and pre-closeout quality review. Keep the existing stack. Use architect for file placement/names and code-style for how the code reads."

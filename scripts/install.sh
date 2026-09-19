@@ -3,7 +3,27 @@ set -euo pipefail
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 claude_skills="${HOME}/.claude/skills"
+cursor_skills="${HOME}/.cursor/skills"
 skills_src="${repo_root}/skills"
+
+# Skills removed from Nexus — drop stale copies and broken symlinks on install.
+REMOVED_SKILLS=(
+    using-nexus
+    memory
+    architect
+    frontend
+    frontend-quality
+    code-style
+    code-cleanup
+    log-writer
+    readme-writer
+    api-docs-writer
+    spec-driven
+    subagent-guide
+    git-assistant
+    structure
+    conventions
+)
 
 usage() {
     cat <<'EOF'
@@ -14,10 +34,12 @@ Usage:
   ./scripts/install.sh cursor    # ~/.cursor/plugins/local/nexus → this repo
   ./scripts/install.sh codex     # add this checkout as a local Codex marketplace
   ./scripts/install.sh claude    # ~/.claude/skills/<skill> → this repo skills
+  ./scripts/install.sh cleanup   # remove legacy Nexus skill copies/symlinks only
   ./scripts/install.sh --help
 
-Cursor and Claude skill symlinks update live. Reopen the relevant host after
-changing a plugin manifest or hook.
+Cursor loads skills from the plugin checkout. Claude symlinks integrity-review
+and project-context. Re-run install after pulling this repo.
+Reload the Cursor window after hook or manifest changes.
 EOF
 }
 
@@ -31,6 +53,98 @@ links_to() {
     [[ "${target}" == "$(cd "${source}" && pwd -P)" ]]
 }
 
+is_removed_skill() {
+    local name="$1"
+    local skill
+
+    for skill in "${REMOVED_SKILLS[@]}"; do
+        if [[ "${skill}" == "${name}" ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+is_nexus_skill_path() {
+    local target="$1"
+    [[ "${target}" == "${skills_src}/"* ]] || [[ "${target}" == *"/nexus/skills/"* ]]
+}
+
+remove_skill_dest() {
+    local dest="$1"
+    local reason="$2"
+
+    if [[ ! -e "${dest}" && ! -L "${dest}" ]]; then
+        return 0
+    fi
+
+    if [[ -L "${dest}" ]]; then
+        rm -f "${dest}"
+    else
+        rm -rf "${dest}"
+    fi
+    echo "  ${reason}: ${dest}"
+}
+
+cleanup_skill_dest() {
+    local dest_root="$1"
+    local name="$2"
+    local dest="${dest_root}/${name}"
+
+    if [[ ! -e "${dest}" && ! -L "${dest}" ]]; then
+        return 0
+    fi
+
+    if is_removed_skill "${name}"; then
+        if [[ -L "${dest}" ]]; then
+            local target
+            target="$(readlink "${dest}")"
+            if [[ ! -e "${dest}" ]] || is_nexus_skill_path "${target}"; then
+                remove_skill_dest "${dest}" "Removed legacy Nexus skill"
+            fi
+        else
+            remove_skill_dest "${dest}" "Removed legacy Nexus skill copy"
+        fi
+        return 0
+    fi
+
+    if [[ "${name}" == "playwright" && -L "${dest}" && ! -e "${dest}" ]]; then
+        remove_skill_dest "${dest}" "Removed broken playwright symlink"
+        return 0
+    fi
+
+    if [[ "${name}" == "integrity-review" || "${name}" == "project-context" ]]; then
+        if [[ -L "${dest}" ]]; then
+            local target
+            target="$(readlink "${dest}")"
+            if links_to "${dest}" "${skills_src}/${name}"; then
+                return 0
+            fi
+            if [[ ! -e "${dest}" ]] || is_nexus_skill_path "${target}"; then
+                remove_skill_dest "${dest}" "Removed stale Nexus skill symlink"
+            fi
+        else
+            remove_skill_dest "${dest}" "Removed stale Nexus skill copy"
+        fi
+    fi
+}
+
+cleanup_legacy_skills() {
+    local dest_root="$1"
+    local label="$2"
+    local name
+
+    if [[ ! -d "${dest_root}" ]]; then
+        echo "  ${label}: ${dest_root} not found; skipped"
+        return 0
+    fi
+
+    echo "${label} legacy skill cleanup:"
+    for name in "${REMOVED_SKILLS[@]}" integrity-review project-context playwright; do
+        cleanup_skill_dest "${dest_root}" "${name}"
+    done
+}
+
 link_or_refuse() {
     local dest="$1"
     local source="$2"
@@ -41,7 +155,7 @@ link_or_refuse() {
             echo "  ${label}: already linked ${dest} -> ${source}"
             return 0
         fi
-        echo "error: ${dest} already exists and is not this Nexus source; remove or rename it manually first" >&2
+        echo "error: ${dest} already exists and is not this Nexus source; run ./scripts/install.sh cleanup first" >&2
         return 1
     fi
 
@@ -66,8 +180,9 @@ link_skill_tree() {
         [[ -f "${skill_dir}SKILL.md" ]] || continue
         name="$(basename "${skill_dir}")"
         dest="${dest_root}/${name}"
+        cleanup_skill_dest "${dest_root}" "${name}"
         if [[ -e "${dest}" || -L "${dest}" ]] && ! links_to "${dest}" "${skill_dir%/}"; then
-            echo "error: ${dest} already exists and is not this Nexus source; remove or rename it manually first" >&2
+            echo "error: ${dest} already exists and is not this Nexus source; run ./scripts/install.sh cleanup first" >&2
             return 1
         fi
     done
@@ -82,10 +197,12 @@ link_skill_tree() {
 }
 
 install_cursor() {
+    cleanup_legacy_skills "${cursor_skills}" "Cursor"
     local dest="${HOME}/.cursor/plugins/local/nexus"
     mkdir -p "$(dirname "${dest}")"
     link_or_refuse "${dest}" "${repo_root}" "Cursor"
     chmod +x "${repo_root}/hooks/session-start" 2>/dev/null || true
+    echo "  Cursor core skills load from the plugin checkout (not ~/.cursor/skills copies)."
     echo "  Live. Reload Window after hook/manifest changes."
 }
 
@@ -104,6 +221,7 @@ EOF
 }
 
 install_claude() {
+    cleanup_legacy_skills "${claude_skills}" "Claude"
     echo "Claude Code skills (symlink, live):"
     link_skill_tree "${claude_skills}" "Claude"
     cat <<EOF
@@ -117,6 +235,12 @@ install_claude() {
 EOF
 }
 
+install_cleanup() {
+    cleanup_legacy_skills "${cursor_skills}" "Cursor"
+    cleanup_legacy_skills "${claude_skills}" "Claude"
+    echo "Legacy Nexus skill cleanup complete."
+}
+
 target="${1:-all}"
 
 case "${target}" in
@@ -124,6 +248,7 @@ case "${target}" in
     cursor) install_cursor ;;
     codex) install_codex ;;
     claude) install_claude ;;
+    cleanup) install_cleanup ;;
     all)
         if [[ -d "${HOME}/.cursor" ]] || command -v cursor >/dev/null 2>&1; then
             install_cursor

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Context"
+  short_description: "Bootstrap, capture, and refresh docs/ — architecture, domain, conventions, git, and notes."
+  default_prompt: "Use $project-context to bootstrap or capture project docs under docs/. Update AGENTS.md ## Docs. Do not duplicate formatter/linter rules. Ask before commit."

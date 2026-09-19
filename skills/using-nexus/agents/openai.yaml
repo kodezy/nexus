@@ -1,4 +1,0 @@
-interface:
-  display_name: "Using Nexus"
-  short_description: "Route Nexus workflows for code and repository changes."
-  default_prompt: "Use $using-nexus before editing code or repository files. Route proportionally: local project conventions first, detect stack from the repo, ask before choosing an unnamed greenfield stack, domain skills only when the diff requires them, always finish with $integrity-review and approved closeout."
