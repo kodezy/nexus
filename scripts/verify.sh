@@ -209,7 +209,7 @@ def verify_context_docs() -> None:
     for phrase in ("On demand only", "docs/curator.md", "docs/<topic>"):
         if phrase not in project_context:
             fail(f"skills/project-context/SKILL.md is missing curator policy: {phrase}")
-    for phrase in ("## Sweet spot", "## Capture", "living index", "docs/<slug>", "## Merge"):
+    for phrase in ("## Sweet spot", "## Capture", "living index", "docs/<topic>", "## Merge"):
         if phrase not in curator:
             fail(f"skills/project-context/docs/curator.md is missing curator workflow: {phrase}")
 

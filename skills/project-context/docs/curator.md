@@ -10,7 +10,7 @@
 
 Do **not** duplicate CI rules. Link configs; do not paste them.
 
-`## Docs` is a **living index**. Create `docs/<slug>.md` when there is content. Add a row per file. Names like `git.md` or `architecture.md` are suggestions — any slug is fine. A `docs/notes/` subfolder is optional, not required.
+`## Docs` is a **living index**. Create `docs/<topic>.md` when there is content (kebab-case filename). Add a row per file. Names like `git.md` or `architecture.md` are suggestions — any topic slug is fine. A `docs/notes/` subfolder is optional, not required.
 
 ## Bootstrap
 
@@ -28,11 +28,11 @@ A small set of files per area (typically 3–5). Stop at the feature boundary.
 
 ### 3. Choose outputs
 
-Default: `docs/<slug>.md` (kebab-case topic).
+Default: `docs/<topic>.md` (kebab-case filename).
 
 | File | When |
 | --- | --- |
-| `docs/<slug>.md` | first capture or focused topic |
+| `docs/<topic>.md` | first capture or focused topic |
 | `docs/git.md` | commit/branch/push policy that repeats |
 | `docs/architecture.md` | module boundaries, data flow |
 | `docs/domain.md` | glossary that keeps coming up |
@@ -66,7 +66,7 @@ Add or refresh `## Docs` with a **row per file that exists**. Remove rows for fi
 When the user asks to save or remember something:
 
 1. Skip if it is already obvious from code or CI.
-2. Create or append `docs/<slug>.md` (or append to an existing linked doc).
+2. Create or append `docs/<topic>.md` (or append to an existing linked doc).
 3. Add a `## Docs` row for new files.
 4. Link related docs when they exist.
 5. Do not auto-merge unless the user asks.

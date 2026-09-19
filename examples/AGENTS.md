@@ -1,6 +1,6 @@
 # My App
 
-Copy into your app repository as `AGENTS.md` (or merge into `CLAUDE.md`). Optional shapes: [examples/docs/](docs/).
+Copy into your app repository as `AGENTS.md` (or merge into `CLAUDE.md`). Optional starting shapes: copy files from the Nexus plugin's `examples/docs/` into your `docs/` as needed.
 
 ## Agent ritual
 

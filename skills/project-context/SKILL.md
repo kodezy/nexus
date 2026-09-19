@@ -11,7 +11,7 @@ description: >-
 
 Grow committed `docs/` in the **app repo**, indexed from `AGENTS.md` → `## Docs`.
 
-Create `docs/<slug>.md` when there is content. Add a row per file. Docs may link to each other.
+Create `docs/<topic>.md` when there is content (kebab-case filename). Add a row per file. Docs may link to each other.
 
 ## When to use
 
