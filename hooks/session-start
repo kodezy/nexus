@@ -13,11 +13,7 @@ escape_for_json() {
 
 session_context=$(cat <<'EOF'
 <NEXUS>
-Nexus is available for code and repository work. Precedence is: system and managed policy; explicit user instructions; host-native safety and approval controls; project instructions; Nexus; optional plugins.
-
-For a code or repository change, invoke `$using-nexus` before editing. Do not load Nexus workflow skills for general conversation, research, or read-only questions.
-
-Never create a worktree, commit, merge, or push without explicit approval. Prefer existing tests; if a new test is the relevant missing sensor, propose its scope and ask approval. Without approval or another suitable check, report Uncertain. For long work, keep a concise task capsule with the goal, decisions, affected area, validation, and next step; do not persist it unless the user asks.
+Follow project AGENTS.md: read docs/ on demand via ## Docs; run $integrity-review before "done". Use $project-context only when the user asks to save or refresh docs.
 </NEXUS>
 EOF
 )

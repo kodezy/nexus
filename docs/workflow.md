@@ -1,46 +1,30 @@
-# Workflow and validation
+# Workflow
 
-## Agent workflow
+1. **Implement** — app `AGENTS.md` → matching `docs/` on demand; adjacent code; linter output.
+2. **Verify** — `$integrity-review` with project checks and a validation receipt.
+3. **Docs** — `$project-context` only when asked.
+4. **Git** — `docs/git.md` + `git log` when asked; host approval for writes.
 
-1. **Scope** — compact core policy every session; load `$using-nexus` only before code or repo changes.
-2. **Preferences** — read `~/.nexus/user/` and `.nexus/user/` when choosing workspace or closing out.
-3. **Workspace** — `$git-assistant` workspace choice (or `/workspace` on Cursor).
-4. **Specify (optional)** — Spec Kit, Superpowers, or `$spec-driven` when scope is still ambiguous.
-5. **Implement** — smallest change; `$architect` when adding structure; domain skills when the diff requires them; greenfield stack detection when no local pattern exists.
-6. **Style (when needed)** — `$code-style` on touched code files; mirror local conventions.
-7. **Review** — **Quality review** in `$frontend` when the diff touches user-facing UI; then `$integrity-review`.
-8. **Closeout** — `$git-assistant` closeout (or `/closeout` on Cursor).
+## App template
 
-## Validation in app repos
+[examples/AGENTS.md](../examples/AGENTS.md) — copy into the app repo. Doc shapes: [examples/docs/](../examples/docs/).
 
-Nexus supplies the workflow, not a universal test command. Each app repo should document trusted checks in its own `AGENTS.md`, `CLAUDE.md`, or host rules, for example:
+Precedence: session instruction → project `AGENTS.md` / `CLAUDE.md` → Nexus → host defaults.
 
-```md
-## Validation
-
-- Fast: `npm run lint && npm run typecheck`
-- Tests: `npm test`
-- Build: `npm run build`
-```
-
-During `$integrity-review`, the agent picks checks proportional to the change and returns a validation receipt: scope, criteria, commands run, result, and remaining uncertainty.
+## Verdicts
 
 | Verdict | When |
 | --- | --- |
-| **Validated** or **Corrected** | Verifiable evidence exists |
+| **Validated** / **Corrected** | Verifiable evidence exists |
 | **Uncertain** | A relevant check is missing |
-| **Blocked** | An external prerequisite prevents validation |
+| **Blocked** | External prerequisite blocks validation |
 
-Prefer existing tests. When a new test is the missing sensor, the agent proposes scope and asks before creating it.
-
-## Repository layout
+## Harness layout
 
 | Path | Role |
 | --- | --- |
-| `skills/using-nexus/` | On-demand router for code and repo changes |
-| `rules/nexus-contract.mdc` | Always-on policy (Cursor); same contract for all harnesses |
-| `skills/` | Workflows (+ `agents/openai.yaml` for Codex UI) |
-| `commands/` | `/workspace`, `/closeout` (Cursor) |
-| `hooks/` | Session bootstrap |
-| `examples/preferences.md` | Starter preferences |
-| `AGENTS.md` / `CLAUDE.md` | Pointers for agents working **in this repo** only |
+| `skills/integrity-review/` | Evidence before “done” |
+| `skills/project-context/` | Docs curator on request |
+| `rules/nexus-contract.mdc` | Always-on policy |
+| `examples/AGENTS.md` | App template |
+| `examples/docs/` | Example doc shapes |

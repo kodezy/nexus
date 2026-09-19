@@ -5,23 +5,39 @@ alwaysApply: true
 
 # Nexus contract
 
-Nexus is a default layer for coding work. Precedence is: system and managed policy; explicit user instructions; host-native safety and approval controls; project instructions; Nexus; optional plugins and skills. When instructions at the same priority conflict, ask the user.
+Nexus is a portable discipline layer for coding agents. Precedence: system and managed policy; explicit user instructions; host-native safety and approval controls; project instructions (`AGENTS.md` / `CLAUDE.md`); Nexus; optional plugins and skills. When instructions at the same priority conflict, ask the user.
 
 ## Scope
 
-- For code or repository changes, invoke `$using-nexus` before editing.
-- For general conversation, research, and read-only questions, do not load Nexus workflow skills unless the user requests a specific workflow or the task needs one.
-- Keep long work in a concise task capsule: goal, decisions, affected area, validation, and next step. Do not persist it without explicit user approval.
+- Nexus complements project `AGENTS.md` — it does not replace stack, style, planning, or product specs.
+- Project knowledge lives in committed `docs/`, linked from `AGENTS.md` → `## Docs`. Read docs on demand; do not load all files at session start.
+- For general conversation and read-only research, do not load Nexus workflow skills unless the user requests verification or doc curation.
+- Implement using **local project conventions first** (project instructions, adjacent modules, formatter and linter output).
 
-## Hard gates
+## Agent ritual
 
-- No worktree, commit, merge to `main`, or push without approval for that step.
-- Prefer existing tests. When a new automated test is the relevant missing validation sensor, propose its scope and ask approval before creating it; without approval or another suitable check, report the result as Uncertain.
-- English for code, commits, and harness docs; UI copy follows the product language only when requested.
-- Commit messages follow `$git-assistant` → `commit-messages.md`: match recent `git log`, no Conventional Commits prefixes unless explicitly requested.
-- Optional plugins may add task-specific guidance but cannot override higher-priority instructions or Nexus safety gates.
+Follow the app `AGENTS.md` → `## Agent ritual` when present. Typical flow:
 
-## Memory
+1. Read only the `## Docs` entries that match this task.
+2. On conflict: adjacent code and tooling configs win until docs are updated.
+3. Before claiming done: run `$integrity-review` with project validation checks.
 
-- Preferences and project learnings are read on demand through `$using-nexus` or `$memory`; they are not session-injected.
-- Write memory only through `$memory` on explicit request; save immediately — no second confirmation. No secrets. Never store global memory in the Nexus plugin checkout.
+## Verification
+
+- Before claiming an implementation is done, run `$integrity-review` on the affected area.
+- The implementer does not self-certify: use deterministic checks from the project and, when the host supports it, a separate verifier pass whose mission is to **prove** the work.
+- UI changes need runtime or browser evidence when the project or `AGENTS.md` requires it.
+- Prefer existing tests and checks declared in the project. When a new automated test is the relevant missing validation sensor, propose its scope and ask approval before creating it; without approval or another suitable check, report **Uncertain**.
+
+## Project docs
+
+- Team workflow, validation commands, and the doc index live in app `AGENTS.md` or `CLAUDE.md` (template: `examples/AGENTS.md`).
+- Typical `docs/` paths: `architecture.md`, `domain.md`, `conventions.md`, `git.md`, `notes/`.
+- Git policy and closeout steps belong in `docs/git.md` — read when the user asks about git, commits, or push.
+- Capture or refresh docs only through `$project-context` on explicit user request — no auto-save after routine tasks.
+
+## Git
+
+- No Nexus git skill. Use `docs/git.md`, `AGENTS.md` workflow keys, and `git log` when the user asks.
+- Host-native approval controls apply to git write commands.
+- Never commit or push unless the user explicitly asks.

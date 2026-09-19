@@ -1,4 +1,0 @@
-interface:
-  display_name: "Code Style"
-  short_description: "Apply consistent coding style by language/area without behavior changes."
-  default_prompt: "Use $code-style on touched files: mirror local conventions or the language doc in greenfield, preserve behavior, defer file placement to $architect."

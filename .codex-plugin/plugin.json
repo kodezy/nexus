@@ -1,7 +1,7 @@
 {
   "name": "nexus",
-  "version": "2.5.0",
-  "description": "Portable team workflow for Cursor, Claude Code, and Codex — not a host replacement.",
+  "version": "3.2.0",
+  "description": "Docs-first ritual: AGENTS.md router, integrity-review, project-context — not a host replacement.",
   "author": {
     "name": "kodezy",
     "url": "https://github.com/kodezy"
@@ -10,18 +10,16 @@
   "repository": "https://github.com/kodezy/nexus",
   "keywords": [
     "harness",
-    "skills",
     "integrity-review",
-    "git-assistant",
-    "workspace",
-    "closeout"
+    "project-context",
+    "docs"
   ],
   "skills": "./skills/",
   "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "Nexus",
-    "shortDescription": "Portable workflow across agent hosts — not a host replacement",
-    "longDescription": "Nexus complements Cursor, Claude Code, and Codex with one shared workflow: choose main vs worktree, validate with evidence, run integrity review, then close out with commit, unify, and push — each step with explicit approval. Preferences live in ~/.nexus and per-repo .nexus/.",
+    "shortDescription": "Docs-first agent ritual with integrity-review",
+    "longDescription": "Docs-first harness: app AGENTS.md + docs/, integrity-review before done, project-context on request. Template: examples/AGENTS.md.",
     "developerName": "kodezy",
     "category": "Developer Tools",
     "capabilities": [
@@ -30,8 +28,8 @@
       "Write"
     ],
     "defaultPrompt": [
-      "Implement this change with Nexus closeout.",
-      "Use integrity-review on the completed work."
+      "Implement this change using AGENTS.md and docs/ on demand, then run integrity-review.",
+      "Capture this learning in docs/notes/ with project-context when I ask."
     ],
     "websiteURL": "https://github.com/kodezy/nexus",
     "brandColor": "#1F6FEB",

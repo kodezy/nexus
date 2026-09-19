@@ -1,8 +1,6 @@
 .env
 .env.local
 .cursor/
-.nexus/
-docs/superpowers/
 **/.DS_Store
 
 .DS_Store

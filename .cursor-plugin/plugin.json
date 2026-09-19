@@ -1,22 +1,19 @@
 {
   "name": "nexus",
   "displayName": "Nexus",
-  "description": "Portable team workflow for Cursor, Claude Code, and Codex — not a host replacement.",
-  "version": "2.5.0",
+  "description": "Docs-first ritual: AGENTS.md router, integrity-review, project-context — not a host replacement.",
+  "version": "3.2.0",
   "author": {
     "name": "kodezy"
   },
   "keywords": [
     "harness",
-    "using-nexus",
     "integrity-review",
-    "git-assistant",
-    "workspace",
-    "closeout"
+    "project-context",
+    "docs"
   ],
   "logo": "assets/nexus.png",
   "skills": "./skills/",
   "rules": "./rules/",
-  "commands": "./commands/",
   "hooks": "./hooks/hooks-cursor.json"
 }

@@ -1,53 +1,27 @@
-# Installation details
-
-Quick path: clone, run `./scripts/install.sh`, enable the plugin in your host, open a new session in an **app repo** (not necessarily this checkout).
-
-## Per-host setup
-
-### Cursor
-
-After `./scripts/install.sh cursor`:
-
-1. **Cursor Settings → Plugins** — enable **Nexus**.
-2. **Reload Window** (Command Palette → "Developer: Reload Window").
-3. Start a new agent chat.
-
-Commands: `/workspace`, `/closeout`.
-
-Install path: `~/.cursor/plugins/local/nexus` → this repo (plugin + hooks + rules). Symlink updates live.
-
-### Claude Code
-
-**Recommended:** `./scripts/install.sh claude` — skills symlink to this checkout.
-
-**Optional** — full plugin with SessionStart hooks:
-
-```text
-/plugin marketplace add /path/to/nexus
-/plugin install nexus@nexus
-```
-
-Use the plugin path only when you need session hooks. Skills alone are enough for manual `$using-nexus` use.
-
-Install path: `~/.claude/skills/<skill>` → `skills/<skill>`. Symlink updates live.
-
-### Codex
+# Install
 
 ```bash
-./scripts/install.sh codex
-# or: codex plugin marketplace add /path/to/nexus
+git clone https://github.com/kodezy/nexus.git
+cd nexus
+./scripts/install.sh          # all detected hosts
+./scripts/install.sh cursor   # or codex, claude
+./scripts/install.sh cleanup  # remove legacy skill symlinks
 ```
 
-Enable Nexus in `/plugins` and trust its hook in `/hooks`. The marketplace entry is at `.agents/plugins/marketplace.json`.
+| Host | After install |
+| --- | --- |
+| **Cursor** | Enable Nexus in Settings → Plugins; reload window |
+| **Codex** | `/plugins` → install; `/hooks` → trust SessionStart |
+| **Claude** | New session (skills symlink; optional plugin for hooks) |
 
-Plugin installs are cached — refresh the plugin after manifest or hook changes. The local marketplace is private to your machine.
+## App repo
 
-## Install summary
+Copy [examples/AGENTS.md](../examples/AGENTS.md) into the app. Add `docs/` from [examples/docs/](../examples/docs/) when ready.
 
-| Harness | Bootstrap | Commands | Live updates |
-| --- | --- | --- | --- |
-| **Cursor** | Session-start hook | `/workspace`, `/closeout` | Yes (symlink) |
-| **Codex** | Hook after plugin + trust | No | No — refresh plugin |
-| **Claude Code** | Optional plugin hook; skills always | No | Yes (symlink) |
+Do not copy the harness root `AGENTS.md`.
 
-Claude and Cursor skill symlinks follow this checkout live. Codex needs a plugin refresh.
+## Update
+
+Re-run `./scripts/install.sh` after pulling. Reload Cursor or start a new session on other hosts.
+
+Legacy skills (`git-assistant`, `structure`, `conventions`, `using-nexus`, etc.) are removed on install/cleanup.

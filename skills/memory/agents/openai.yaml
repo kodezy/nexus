@@ -1,4 +1,0 @@
-interface:
-  display_name: "Memory"
-  short_description: "Store and retrieve local memories in ~/.nexus/ (global) and .nexus/ (repo)."
-  default_prompt: "Use $memory to save or recall global and repo learnings and preferences."
