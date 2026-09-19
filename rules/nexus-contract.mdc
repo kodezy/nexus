@@ -9,35 +9,27 @@ Nexus is a portable discipline layer for coding agents. Precedence: system and m
 
 ## Scope
 
-- Nexus complements project `AGENTS.md` — it does not replace stack, style, planning, or product specs.
-- Project knowledge lives in committed `docs/`, linked from `AGENTS.md` → `## Docs`. Read docs on demand; do not load all files at session start.
+- Nexus complements the app repo — it does not replace stack, style, planning, or product specs.
+- Project knowledge lives in `docs/`, indexed from `AGENTS.md` → `## Docs`. Read on demand; do not load all files at session start.
 - For general conversation and read-only research, do not load Nexus workflow skills unless the user requests verification or doc curation.
 - Implement using **local project conventions first** (project instructions, adjacent modules, formatter and linter output).
-
-## Agent ritual
-
-Follow the app `AGENTS.md` → `## Agent ritual` when present. Typical flow:
-
-1. Read only the `## Docs` entries that match this task.
-2. On conflict: adjacent code and tooling configs win until docs are updated.
-3. Before claiming done: run `$integrity-review` with project validation checks.
 
 ## Verification
 
 - Before claiming an implementation is done, run `$integrity-review` on the affected area.
 - The implementer does not self-certify: use deterministic checks from the project and, when the host supports it, a separate verifier pass whose mission is to **prove** the work.
-- UI changes need runtime or browser evidence when the project or `AGENTS.md` requires it.
+- UI changes need runtime or browser evidence when the project requires it.
 - Prefer existing tests and checks declared in the project. When a new automated test is the relevant missing validation sensor, propose its scope and ask approval before creating it; without approval or another suitable check, report **Uncertain**.
 
 ## Project docs
 
-- Team workflow, validation commands, and the doc index live in app `AGENTS.md` or `CLAUDE.md` (template: `examples/AGENTS.md`).
-- Typical `docs/` paths: `architecture.md`, `domain.md`, `conventions.md`, `git.md`, `notes/`.
+- App template: `examples/AGENTS.md`. Typical `docs/` paths: `architecture.md`, `domain.md`, `conventions.md`, `git.md`, `notes/`.
+- Docs may link to each other; follow links only when relevant to the task.
 - Git policy and closeout steps belong in `docs/git.md` — read when the user asks about git, commits, or push.
 - Capture or refresh docs only through `$project-context` on explicit user request — no auto-save after routine tasks.
 
 ## Git
 
-- No Nexus git skill. Use `docs/git.md`, `AGENTS.md` workflow keys, and `git log` when the user asks.
+- No Nexus git skill. Use `docs/git.md` and `git log` when the user asks.
 - Host-native approval controls apply to git write commands.
 - Never commit or push unless the user explicitly asks.

@@ -13,7 +13,7 @@ escape_for_json() {
 
 session_context=$(cat <<'EOF'
 <NEXUS>
-Follow project AGENTS.md: read docs/ on demand via ## Docs; run $integrity-review before "done". Use $project-context only when the user asks to save or refresh docs.
+Read docs/ on demand via ## Docs; run $integrity-review before "done". Use $project-context only when asked to save or refresh docs.
 </NEXUS>
 EOF
 )

@@ -7,6 +7,7 @@ Copy into your app repository as `AGENTS.md` (or merge sections into `CLAUDE.md`
 - Read only matching entries from **Docs** — not every file.
 - On conflict: adjacent code and linter configs win.
 - Before claiming done: `$integrity-review` with project validation checks.
+- Offer to capture durable decisions in `docs/notes/` — never auto-save.
 
 ## Agent workflow
 
