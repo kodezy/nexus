@@ -170,7 +170,7 @@ def verify_context_docs() -> None:
     for phrase in ("## Validation receipt", "**Validated:**", "**Blocked:**", "Independent verification"):
         if phrase not in integrity_review:
             fail(f"skills/integrity-review/SKILL.md is missing validation policy: {phrase}")
-    if "docs/notes" not in integrity_review:
+    if "## Docs" not in integrity_review and "docs/" not in integrity_review:
         fail("skills/integrity-review/SKILL.md must reference docs/ linked from AGENTS.md")
 
     if (ROOT / "examples/app-agents.md").exists():
@@ -182,16 +182,20 @@ def verify_context_docs() -> None:
         "## Docs",
         "$integrity-review",
         "$project-context",
-        "docs/git.md",
+        "Add a row",
+        "docs/<topic>",
     ):
         if phrase not in app_template:
             fail(f"examples/AGENTS.md is missing template content: {phrase}")
+    if "docs/architecture.md" in app_template or "docs/notes/" in app_template:
+        fail("examples/AGENTS.md must not require fixed doc paths in the template table")
 
     for example_doc in (
         "examples/docs/architecture.md",
         "examples/docs/domain.md",
         "examples/docs/conventions.md",
         "examples/docs/git.md",
+        "examples/docs/auth-callbacks.md",
     ):
         if not (ROOT / example_doc).is_file():
             fail(f"missing example doc: {example_doc}")
@@ -202,10 +206,10 @@ def verify_context_docs() -> None:
 
     project_context = (ROOT / "skills/project-context/SKILL.md").read_text()
     curator = (ROOT / "skills/project-context/docs/curator.md").read_text()
-    for phrase in ("On demand only", "docs/curator.md", "docs/notes"):
+    for phrase in ("On demand only", "docs/curator.md", "docs/<topic>"):
         if phrase not in project_context:
             fail(f"skills/project-context/SKILL.md is missing curator policy: {phrase}")
-    for phrase in ("## Sweet spot", "## Capture", "formatter domain", "docs/git.md"):
+    for phrase in ("## Sweet spot", "## Capture", "living index", "docs/<slug>", "## Merge"):
         if phrase not in curator:
             fail(f"skills/project-context/docs/curator.md is missing curator workflow: {phrase}")
 

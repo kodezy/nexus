@@ -17,7 +17,7 @@ Harness **source** — install the plugin; **do not copy this file** into app re
 | `rules/nexus-contract.mdc` | Always-on policy |
 | `hooks/` | Session bootstrap |
 | `examples/AGENTS.md` | App template |
-| `examples/docs/` | Example `docs/` shapes |
+| `examples/docs/` | Optional `docs/` shapes |
 | `scripts/install.sh`, `scripts/verify.sh` | Install and checks |
 | `release.json` | Version for all manifests |
 

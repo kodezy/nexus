@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Nexus",
     "shortDescription": "Docs-first agent ritual with integrity-review",
-    "longDescription": "Docs-first harness: app AGENTS.md + docs/, integrity-review before done, project-context on request. Template: examples/AGENTS.md.",
+    "longDescription": "Docs-first harness: living docs/ index from AGENTS.md, integrity-review before done, project-context on request. Template: examples/AGENTS.md.",
     "developerName": "kodezy",
     "category": "Developer Tools",
     "capabilities": [
@@ -29,7 +29,7 @@
     ],
     "defaultPrompt": [
       "Implement this change using AGENTS.md and docs/ on demand, then run integrity-review.",
-      "Capture this learning in docs/notes/ with project-context when I ask."
+      "Capture this learning in docs/<topic>.md with project-context when I ask."
     ],
     "websiteURL": "https://github.com/kodezy/nexus",
     "brandColor": "#1F6FEB",

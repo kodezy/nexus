@@ -1,13 +1,13 @@
 # My App
 
-Copy into your app repository as `AGENTS.md` (or merge sections into `CLAUDE.md`). Doc shapes: [examples/docs/](docs/).
+Copy into your app repository as `AGENTS.md` (or merge into `CLAUDE.md`). Optional shapes: [examples/docs/](docs/).
 
 ## Agent ritual
 
-- Read only matching entries from **Docs** — not every file.
+- Read only matching **Docs** entries and follow their links — not every file.
 - On conflict: adjacent code and linter configs win.
 - Before claiming done: `$integrity-review` with project validation checks.
-- Offer to capture durable decisions in `docs/notes/` — never auto-save.
+- Offer to capture durable decisions in `docs/<topic>.md` — never auto-save.
 
 ## Agent workflow
 
@@ -16,12 +16,9 @@ Copy into your app repository as `AGENTS.md` (or merge sections into `CLAUDE.md`
 
 ## Docs
 
+Add a row when a doc exists. Docs may link to each other.
+
 | Topic | Path |
 | --- | --- |
-| Architecture | [docs/architecture.md](docs/architecture.md) |
-| Domain | [docs/domain.md](docs/domain.md) |
-| Conventions | [docs/conventions.md](docs/conventions.md) |
-| Git | [docs/git.md](docs/git.md) |
-| Notes | [docs/notes/](docs/notes/) |
 
-Update docs when this change makes them wrong. `$project-context` only when asked.
+`$project-context` only when asked. Update this table when you add or remove a doc.

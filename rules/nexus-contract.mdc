@@ -23,13 +23,12 @@ Nexus is a portable discipline layer for coding agents. Precedence: system and m
 
 ## Project docs
 
-- App template: `examples/AGENTS.md`. Typical `docs/` paths: `architecture.md`, `domain.md`, `conventions.md`, `git.md`, `notes/`.
-- Docs may link to each other; follow links only when relevant to the task.
-- Git policy and closeout steps belong in `docs/git.md` — read when the user asks about git, commits, or push.
+- App template: `examples/AGENTS.md`. `## Docs` is a living index — add a row per `docs/<topic>.md` as files appear.
+- Docs may use any names and may link to each other; follow links only when relevant to the task.
 - Capture or refresh docs only through `$project-context` on explicit user request — no auto-save after routine tasks.
 
 ## Git
 
-- No Nexus git skill. Use `docs/git.md` and `git log` when the user asks.
+- No Nexus git skill. When the user asks about git, read `docs/git.md` if present, else `git log`.
 - Host-native approval controls apply to git write commands.
 - Never commit or push unless the user explicitly asks.

@@ -1,6 +1,6 @@
 # Git workflow (observed)
 
-_Last reviewed: YYYY-MM-DD. On conflict, `git log` on the current branch wins._
+_Optional shape. Last reviewed: YYYY-MM-DD. On conflict, `git log` on the current branch wins._
 
 ## Branches
 

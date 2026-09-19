@@ -25,10 +25,10 @@ Do not treat the implementer's summary as completion evidence.
 ## Before the verdict, confirm
 
 - requirements are addressed in scope;
-- naming and placement match local project patterns (adjacent modules first; project validation checks when declared; when present, `docs/` linked from `AGENTS.md` → `## Docs` for architecture, domain, conventions, and git policy — not for mechanical style linters already enforce);
+- naming and placement match local project patterns (adjacent modules first; project validation checks when declared; when present, `docs/` linked from `AGENTS.md` → `## Docs` — not mechanical style linters already enforce);
 - the final diff has no unintended edits, temporary debug residue, or obvious dead code introduced by this change (escalate uncertain removals in the verdict; do not sweep the area);
 - when project documentation changed (see **Documentation changes** below), that checklist is satisfied.
-- when the change alters boundaries, domain terms, or public API shape, check whether linked `docs/` (including `docs/notes/`) or `AGENTS.md` → `## Docs` are now stale; if so, note it in the validation receipt and offer a focused doc update or `$project-context` — do not block **Validated** when code and project checks pass.
+- when the change alters boundaries, domain terms, or public API shape, check whether linked `docs/` or `AGENTS.md` → `## Docs` are now stale; if so, note it in the validation receipt and offer a focused doc update or `$project-context` — do not block **Validated** when code and project checks pass.
 
 ## Documentation changes
 
@@ -88,7 +88,7 @@ Do not turn hypothetical concerns into changes. Prefer a precise validated verdi
 ## After the verdict
 
 1. **Uncertain or Blocked:** Report the blocker and stop.
-2. **Validated or Corrected:** Report the verdict and receipt. Stop unless the user explicitly asks to commit or push — then follow `docs/git.md` and `AGENTS.md` workflow keys.
+2. **Validated or Corrected:** Report the verdict and receipt. Stop unless the user explicitly asks to commit or push — then follow `docs/git.md` if present, else `git log`, plus `AGENTS.md` workflow keys.
 3. Never commit, merge, remove a worktree, or push without explicit user approval.
 
 Review-only requests with no code changes still return the verdict when asked.

@@ -4,97 +4,93 @@
 
 | Layer | Role |
 | --- | --- |
-| Formatter / linter / typecheck (CI) | Mechanical style — spacing, imports, unused code |
-| Adjacent modules | Local naming, file shape, patterns in the folder you are editing |
-| `docs/` from this skill | Boundaries, domain language, conventions, git policy, and learnings **not** encoded in tools |
+| Formatter / linter / typecheck (CI) | Mechanical style |
+| Adjacent modules | Local naming and file shape |
+| `docs/` | Learnings **not** encoded in tools |
 
-Do **not** duplicate what `AGENTS.md` → **Validation** already runs in CI. Link tooling configs; do not rewrite their rules in prose.
+Do **not** duplicate CI rules. Link configs; do not paste them.
+
+`## Docs` is a **living index**. Create `docs/<slug>.md` when there is content. Add a row per file. Names like `git.md` or `architecture.md` are suggestions — any slug is fine. A `docs/notes/` subfolder is optional, not required.
 
 ## Bootstrap
 
 Use when the user asks to bootstrap, document, or refresh project context.
 
-### 1. Discover scope
+### 1. Discover
 
-Read when present:
+Read when present: `AGENTS.md` / `CLAUDE.md` (`## Agent workflow`, `## Docs`), tooling configs, top-level layout.
 
-- `AGENTS.md` / `CLAUDE.md` — `## Agent workflow`, `## Docs`
-- formatter, linter, and typecheck configs
-- top-level layout (`src/`, `apps/`, `packages/`, `lib/`, and similar)
-- `git log -n 15 --oneline` when refreshing `docs/git.md`
+If `## Docs` already lists paths, refresh those files. Do not invent a full doc tree.
 
-If `## Docs` already lists paths, prefer **refreshing** those files over creating new names.
+### 2. Sample
 
-### 2. Sample the codebase
-
-Pick a small, representative set per area (typically 3–5 files each): API/routes, services/domain, data, UI, tests. Stop at the feature boundary.
+A small set of files per area (typically 3–5). Stop at the feature boundary.
 
 ### 3. Choose outputs
 
-| File | Use when |
-| --- | --- |
-| `docs/architecture.md` | module boundaries, data flow, or where new code belongs |
-| `docs/domain.md` | domain terms, synonyms to avoid, or glossary gaps |
-| `docs/conventions.md` | project rules linters do not enforce (optional — skip when CI already covers it) |
-| `docs/git.md` | branch naming, commit style, closeout push policy, worktree defaults |
+Default: `docs/<slug>.md` (kebab-case topic).
 
-Skip any file with nothing new to add.
+| File | When |
+| --- | --- |
+| `docs/<slug>.md` | first capture or focused topic |
+| `docs/git.md` | commit/branch/push policy that repeats |
+| `docs/architecture.md` | module boundaries, data flow |
+| `docs/domain.md` | glossary that keeps coming up |
+| `docs/conventions.md` | rules linters do **not** enforce |
+
+Skip any file with nothing new.
 
 ### 4. Do not document
 
-- spacing, indentation, quote style — formatter domain
-- import sort, unused imports, max line length — linter domain when configured
-- generic language style guides copied from outside the repo
+- spacing, quotes, import sort, line length — formatter/linter domain
+- generic language guides copied from outside the repo
 
 ### 5. Write observed content
-
-Each file:
 
 ```markdown
 # <Title> (observed)
 
-_Last reviewed: YYYY-MM-DD. On conflict, adjacent code and formatter/linter configs win._
+_Last reviewed: YYYY-MM-DD. On conflict, adjacent code and tooling configs win._
 ```
 
-For `docs/git.md`, add: _On conflict, `git log` on the current branch wins._
+For git docs, add: _On conflict, `git log` on the current branch wins._
 
-Bullet facts tied to real paths. Link configs under **Tooling** — do not paste their rules.
+Link related docs and configs. Do not paste their rules.
 
 ### 6. Update AGENTS.md
 
-Add or refresh `## Docs` linking files you created or updated. Template: `examples/AGENTS.md`.
+Add or refresh `## Docs` with a **row per file that exists**. Remove rows for files you delete. Template: `examples/AGENTS.md`.
 
 ## Capture
 
-Use when the user asks to save, remember, or capture a learning (for example: "save this", "remember for next time").
+When the user asks to save or remember something:
 
-1. Confirm the learning is not already obvious from adjacent code or CI.
-2. Choose a short topic slug (`auth-callbacks`, `deploy-order`, and similar).
-3. Create or append `docs/notes/<slug>.md`:
+1. Skip if it is already obvious from code or CI.
+2. Create or append `docs/<slug>.md` (or append to an existing linked doc).
+3. Add a `## Docs` row for new files.
+4. Link related docs when they exist.
+5. Do not auto-merge unless the user asks.
 
 ```markdown
 # <Topic> (captured)
 
-_Captured: YYYY-MM-DD. Promote to architecture/domain/conventions/git when durable._
+_Captured: YYYY-MM-DD._
 
 - <fact tied to paths or behavior>
 ```
 
-4. Do not auto-promote to durable docs unless the user asks.
-5. Ensure `docs/notes/` is linked from `## Docs` when you add the first note.
+## Merge
 
-## Promote
+When the user asks, or a small doc clearly belongs in a larger one:
 
-Use when the user asks to promote a note or a note clearly belongs in durable docs.
-
-1. Merge relevant bullets into `docs/architecture.md`, `docs/domain.md`, `docs/conventions.md`, or `docs/git.md`.
-2. Remove or shorten the source note.
-3. Update `## Docs` links if paths changed.
+1. Merge into the target file (create it if needed).
+2. Remove or shorten the source file.
+3. Update `## Docs` and cross-links.
 
 ## Prune
 
-Only when the user asks. Remove notes superseded by code, CI, or promoted content.
+Only when the user asks. Remove docs superseded by code or CI. Drop stale `## Docs` rows.
 
 ## Hand off
 
-Report files created, updated, promoted, or skipped (including "covered by linter/formatter"). Ask whether to commit. Run `$integrity-review` if the user wants validation before claiming done.
+Report created, updated, merged, skipped. Ask whether to commit. `$integrity-review` if the user wants validation before claiming done.

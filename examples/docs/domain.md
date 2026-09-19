@@ -1,6 +1,6 @@
 # Domain glossary (observed)
 
-_Last reviewed: YYYY-MM-DD. On conflict, types and schemas in code win._
+_Optional shape. Last reviewed: YYYY-MM-DD. On conflict, types and schemas in code win._
 
 | Term | Meaning | Primary references |
 | --- | --- | --- |

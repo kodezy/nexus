@@ -1,6 +1,6 @@
 # Conventions (observed)
 
-_Last reviewed: YYYY-MM-DD. On conflict, adjacent code and formatter/linter configs win._
+_Optional shape. Last reviewed: YYYY-MM-DD. On conflict, adjacent code and formatter/linter configs win._
 
 ## Tooling
 

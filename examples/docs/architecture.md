@@ -1,6 +1,6 @@
 # Architecture (observed)
 
-_Last reviewed: YYYY-MM-DD. On conflict, the codebase wins._
+_Optional shape. Last reviewed: YYYY-MM-DD. On conflict, the codebase wins._
 
 ## Overview
 
