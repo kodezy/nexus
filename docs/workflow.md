@@ -10,7 +10,7 @@ Read app `AGENTS.md`, matching `docs/` on demand (follow links only when relevan
 
 ## Implement
 
-Coding agent + local project conventions (formatter, linter, adjacent modules).
+Coding agent + local project conventions first — project instructions, adjacent modules, formatter and linter output (`rules/nexus-contract.mdc`, Scope).
 
 ## Verify
 

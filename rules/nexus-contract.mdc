@@ -10,7 +10,7 @@ Nexus is a lightweight, portable control layer for coding agents. Precedence: sy
 ## Scope
 
 - Nexus complements the app repo — it does not replace stack, style, planning, or product specs.
-- Project knowledge lives in `docs/`, indexed from `AGENTS.md` → `## Docs`. Read on demand; do not load all files at session start.
+- In **app repos**, project knowledge lives in `docs/`, indexed from `AGENTS.md` → `## Docs`. Read on demand; do not load all files at session start. The Nexus **plugin source** checkout is maintained separately — use its maintainer `AGENTS.md` and `README.md`, not app-style `## Docs`.
 - For general conversation and read-only research, do not load Nexus workflow skills unless the user requests verification or doc curation.
 - Implement using **local project conventions first** (project instructions, adjacent modules, formatter and linter output).
 
