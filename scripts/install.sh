@@ -31,15 +31,15 @@ Install Nexus into local agent harnesses.
 
 Usage:
   ./scripts/install.sh           # install all detected targets
-  ./scripts/install.sh cursor    # ~/.cursor/plugins/local/nexus → this repo
+  ./scripts/install.sh cursor    # copy this repo to ~/.cursor/plugins/local/nexus
   ./scripts/install.sh codex     # add this checkout as a local Codex marketplace
   ./scripts/install.sh claude    # ~/.claude/skills/<skill> → this repo skills
   ./scripts/install.sh cleanup   # remove legacy Nexus skill copies/symlinks only
   ./scripts/install.sh --help
 
-Cursor loads skills from the plugin checkout. Claude symlinks integrity-review
-and project-context. Re-run install after pulling this repo.
-Reload the Cursor window after hook or manifest changes.
+Cursor copies the plugin into ~/.cursor/plugins/local (external symlinks are
+ignored by Cursor). Claude symlinks integrity-review and project-context.
+Re-run install after pulling this repo. Reload the Cursor window after install.
 EOF
 }
 
@@ -196,14 +196,61 @@ link_skill_tree() {
     done
 }
 
+purge_cursor_managed_skills() {
+    local name
+
+    if [[ ! -d "${cursor_skills}" ]]; then
+        return 0
+    fi
+
+    for name in integrity-review project-context; do
+        remove_skill_dest "${cursor_skills}/${name}" "Removed Nexus skill from ~/.cursor/skills (plugin provides skills)"
+    done
+}
+
+sync_tree_excluding_git() {
+    local source="$1"
+    local dest="$2"
+    local label="$3"
+
+    mkdir -p "${dest}"
+
+    if command -v rsync >/dev/null 2>&1; then
+        rsync -a --delete --exclude '.git/' "${source}/" "${dest}/"
+    else
+        rm -rf "${dest}"
+        mkdir -p "${dest}"
+        tar -C "${source}" --exclude='.git' -cf - . | tar -C "${dest}" -xf -
+    fi
+
+    echo "  ${label}: synced ${dest} from ${source}"
+}
+
 install_cursor() {
+    purge_cursor_managed_skills
     cleanup_legacy_skills "${cursor_skills}" "Cursor"
     local dest="${HOME}/.cursor/plugins/local/nexus"
     mkdir -p "$(dirname "${dest}")"
-    link_or_refuse "${dest}" "${repo_root}" "Cursor"
-    chmod +x "${repo_root}/hooks/session-start" 2>/dev/null || true
-    echo "  Cursor core skills load from the plugin checkout (not ~/.cursor/skills copies)."
-    echo "  Live. Reload Window after hook/manifest changes."
+
+    if [[ -L "${dest}" ]]; then
+        if links_to "${dest}" "${repo_root}"; then
+            echo "  Cursor: replacing legacy symlink with copy (Cursor ignores external symlinks)"
+            rm -f "${dest}"
+        else
+            echo "error: ${dest} is a symlink to an unexpected target; remove it and re-run install" >&2
+            return 1
+        fi
+    elif [[ -e "${dest}" && ! -d "${dest}" ]]; then
+        echo "error: ${dest} exists and is not a directory; remove it and re-run install" >&2
+        return 1
+    fi
+
+    sync_tree_excluding_git "${repo_root}" "${dest}" "Cursor"
+    chmod +x "${dest}/hooks/session-start" 2>/dev/null || true
+    cat <<'EOF'
+  Enable Nexus in Customize (or Settings → Plugins), then Developer: Reload Window.
+  Re-run ./scripts/install.sh cursor after pulling this repo.
+EOF
 }
 
 install_codex() {
@@ -236,6 +283,7 @@ EOF
 }
 
 install_cleanup() {
+    purge_cursor_managed_skills
     cleanup_legacy_skills "${cursor_skills}" "Cursor"
     cleanup_legacy_skills "${claude_skills}" "Claude"
     echo "Legacy Nexus skill cleanup complete."

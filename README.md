@@ -12,7 +12,7 @@ cd nexus
 ./scripts/install.sh
 ```
 
-Enable the plugin (Cursor: Settings → Plugins → Nexus → reload). Details: [docs/install.md](docs/install.md).
+Enable the plugin (Cursor: Customize or Settings → Plugins → Nexus → reload). Re-run install after pulling. Details: [docs/install.md](docs/install.md).
 
 ## App setup
 
