@@ -16,7 +16,7 @@ cd nexus
 
 ## App repo
 
-Copy [examples/AGENTS.md](../examples/AGENTS.md) into the app. Add `docs/<topic>.md` as needed; copy shapes from [examples/docs/](../examples/docs/) only when useful.
+Copy [template/AGENTS.md](../template/AGENTS.md) into the app. Add `docs/<topic>.md` as needed and index each file in **Docs**.
 
 Do not copy the harness root `AGENTS.md`.
 

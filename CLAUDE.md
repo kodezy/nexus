@@ -1,12 +1,11 @@
 # Nexus
 
-Harness **source** — install the plugin; **do not copy this file** into app repositories. App template: [examples/AGENTS.md](examples/AGENTS.md).
+Harness **source** — install the plugin; **do not copy this file** into app repositories. App template: [template/AGENTS.md](template/AGENTS.md).
 
 ## Agent workflow
 
 - **Workspace:** `main`
 - **Validation:** `./scripts/verify.sh`
-- **Closeout push:** `never`
 
 ## Maintainer map
 
@@ -16,8 +15,7 @@ Harness **source** — install the plugin; **do not copy this file** into app re
 | `skills/project-context/` | Docs curator on request |
 | `rules/nexus-contract.mdc` | Always-on policy |
 | `hooks/` | Session bootstrap |
-| `examples/AGENTS.md` | App template |
-| `examples/docs/` | Optional `docs/` shapes |
+| `template/AGENTS.md` | App template |
 | `scripts/install.sh`, `scripts/verify.sh` | Install and checks |
 | `release.json` | Version for all manifests |
 

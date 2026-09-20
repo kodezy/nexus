@@ -16,8 +16,8 @@ Enable the plugin (Cursor: Settings → Plugins → Nexus → reload). Details: 
 
 ## App setup
 
-1. Copy [examples/AGENTS.md](examples/AGENTS.md) into your app repo (merge if needed).
-2. Grow `docs/` as needed — add files and index rows; optional shapes in [examples/docs/](examples/docs/).
+1. Copy [template/AGENTS.md](template/AGENTS.md) into your app repo (merge if needed).
+2. Grow `docs/<topic>.md` as needed — add a **Docs** row per file.
 
 ## Model
 
@@ -26,8 +26,6 @@ Enable the plugin (Cursor: Settings → Plugins → Nexus → reload). Details: 
 | App `AGENTS.md` | Ritual, validation, doc index |
 | App `docs/` | Living index from `## Docs`; flat `docs/<topic>.md` files with links |
 | Plugin | `integrity-review`, `project-context`, compact session policy |
-
-Git has no Nexus skill — `docs/git.md` if present, else `git log`. Host approval applies to git writes.
 
 Full workflow: [docs/workflow.md](docs/workflow.md).
 

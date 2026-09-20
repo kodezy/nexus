@@ -1,4 +1,4 @@
 interface:
   display_name: "Project Context"
-  short_description: "Grow flat docs/; update AGENTS.md ## Docs when asked."
-  default_prompt: "Use $project-context to capture or refresh docs/<topic>.md. Add a ## Docs row for each new file. Do not duplicate formatter/linter rules. Ask before commit."
+  short_description: "Reconcile docs/ with ## Docs; capture or refresh on ask."
+  default_prompt: "Use $project-context to reconcile docs/ with AGENTS.md ## Docs, then capture or refresh docs/<topic>.md. Do not duplicate formatter/linter rules. Offer integrity-review when docs changed; ask before commit."

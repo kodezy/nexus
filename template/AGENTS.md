@@ -1,6 +1,6 @@
 # My App
 
-Copy into your app repository as `AGENTS.md` (or merge into `CLAUDE.md`). Optional starting shapes: copy files from the Nexus plugin's `examples/docs/` into your `docs/` as needed.
+Copy into your app repository as `AGENTS.md` (or merge into `CLAUDE.md`). Grow `docs/<topic>.md` as you learn — add a row in **Docs** for each file.
 
 ## Agent ritual
 
@@ -12,7 +12,6 @@ Copy into your app repository as `AGENTS.md` (or merge into `CLAUDE.md`). Option
 ## Agent workflow
 
 - **Validation:** `npm run lint && npm test`
-- **Closeout push:** never
 
 ## Docs
 

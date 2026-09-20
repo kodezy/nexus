@@ -19,7 +19,7 @@
   "interface": {
     "displayName": "Nexus",
     "shortDescription": "Docs-first agent ritual with integrity-review",
-    "longDescription": "Docs-first harness: living docs/ index from AGENTS.md, integrity-review before done, project-context on request. Template: examples/AGENTS.md.",
+    "longDescription": "Docs-first harness: living docs/ index from AGENTS.md, integrity-review before done, project-context on request. Template: template/AGENTS.md.",
     "developerName": "kodezy",
     "category": "Developer Tools",
     "capabilities": [

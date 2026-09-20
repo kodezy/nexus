@@ -88,7 +88,7 @@ Do not turn hypothetical concerns into changes. Prefer a precise validated verdi
 ## After the verdict
 
 1. **Uncertain or Blocked:** Report the blocker and stop.
-2. **Validated or Corrected:** Report the verdict and receipt. Stop unless the user explicitly asks to commit or push — then follow `docs/git.md` if present, else `git log`, plus `AGENTS.md` workflow keys.
-3. Never commit, merge, remove a worktree, or push without explicit user approval.
+2. **Validated or Corrected:** Report the verdict and receipt. Stop unless the user explicitly asks for a write-side action — then follow `AGENTS.md` workflow keys and any matching **Docs** entries.
+3. Never commit, push, merge, or run other repo writes without explicit user approval.
 
 Review-only requests with no code changes still return the verdict when asked.

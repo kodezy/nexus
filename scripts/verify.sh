@@ -118,6 +118,8 @@ def verify_context_docs() -> None:
             "$structure",
             "$conventions",
             "/closeout",
+            "Git has no Nexus skill",
+            "docs/git.md",
         ),
         "rules/nexus-contract.mdc": (
             "$using-nexus",
@@ -128,6 +130,8 @@ def verify_context_docs() -> None:
             "~/.nexus",
             "NEXUS_HOME",
             "## Hard gates",
+            "## Git",
+            "docs/git.md",
         ),
         "docs/workflow.md": (
             "$using-nexus",
@@ -140,6 +144,8 @@ def verify_context_docs() -> None:
             "/workspace",
             "~/.nexus",
             "NEXUS_HOME",
+            "**Git**",
+            "docs/git.md",
         ),
         "skills/integrity-review/SKILL.md": (
             "$code-cleanup",
@@ -148,14 +154,16 @@ def verify_context_docs() -> None:
             "$git-assistant",
             "$structure",
             "$conventions",
+            "docs/git.md",
         ),
-        "examples/AGENTS.md": (
+        "template/AGENTS.md": (
             "~/.nexus",
             "NEXUS_HOME",
             "$git-assistant",
             "$structure",
             "$conventions",
             "app-agents",
+            "examples/docs/",
         ),
         "AGENTS.md": ("$git-assistant", "$structure", "$conventions", "/closeout", "/workspace"),
         "CLAUDE.md": ("$git-assistant", "$structure", "$conventions", "/closeout", "/workspace"),
@@ -173,10 +181,10 @@ def verify_context_docs() -> None:
     if "## Docs" not in integrity_review and "docs/" not in integrity_review:
         fail("skills/integrity-review/SKILL.md must reference docs/ linked from AGENTS.md")
 
-    if (ROOT / "examples/app-agents.md").exists():
-        fail("examples/app-agents.md was renamed to examples/AGENTS.md")
+    if (ROOT / "examples").exists():
+        fail("examples/ was renamed to template/ — remove the legacy directory")
 
-    app_template = (ROOT / "examples/AGENTS.md").read_text()
+    app_template = (ROOT / "template/AGENTS.md").read_text()
     for phrase in (
         "## Agent ritual",
         "## Docs",
@@ -186,35 +194,32 @@ def verify_context_docs() -> None:
         "docs/<topic>",
     ):
         if phrase not in app_template:
-            fail(f"examples/AGENTS.md is missing template content: {phrase}")
-    if "docs/architecture.md" in app_template or "docs/notes/" in app_template:
-        fail("examples/AGENTS.md must not require fixed doc paths in the template table")
-
-    for example_doc in (
-        "examples/docs/architecture.md",
-        "examples/docs/domain.md",
-        "examples/docs/conventions.md",
-        "examples/docs/git.md",
-        "examples/docs/auth-callbacks.md",
-    ):
-        if not (ROOT / example_doc).is_file():
-            fail(f"missing example doc: {example_doc}")
-
-    git_example = (ROOT / "examples/docs/git.md").read_text()
-    if "## Closeout" not in git_example:
-        fail("examples/docs/git.md must document closeout steps")
+            fail(f"template/AGENTS.md is missing template content: {phrase}")
+    fixed_doc_paths = (
+        "docs/architecture.md",
+        "docs/domain.md",
+        "docs/conventions.md",
+        "docs/git.md",
+        "docs/notes/",
+    )
+    for fixed_path in fixed_doc_paths:
+        if fixed_path in app_template:
+            fail(f"template/AGENTS.md must not require fixed doc paths: {fixed_path}")
 
     project_context = (ROOT / "skills/project-context/SKILL.md").read_text()
     curator = (ROOT / "skills/project-context/docs/curator.md").read_text()
     for phrase in ("On demand only", "docs/curator.md", "docs/<topic>"):
         if phrase not in project_context:
             fail(f"skills/project-context/SKILL.md is missing curator policy: {phrase}")
-    for phrase in ("## Sweet spot", "## Capture", "living index", "docs/<topic>", "## Merge"):
+    for phrase in ("## Sweet spot", "## Reconcile", "## Capture", "living index", "docs/<topic>", "## Merge", "No fixed schema"):
         if phrase not in curator:
             fail(f"skills/project-context/docs/curator.md is missing curator workflow: {phrase}")
+    for preset in ("docs/architecture.md", "docs/domain.md", "docs/conventions.md", "docs/git.md"):
+        if preset in curator:
+            fail(f"skills/project-context/docs/curator.md must not prescribe fixed doc paths: {preset}")
 
     if (ROOT / "commands").exists() and any((ROOT / "commands").iterdir()):
-        fail("commands/ must be empty or removed — git closeout lives in docs/git.md")
+        fail("commands/ must be empty or removed — use app docs/ for workflow topics when needed")
 
 
 try:
