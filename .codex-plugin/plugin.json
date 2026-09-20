@@ -1,7 +1,7 @@
 {
   "name": "nexus",
   "version": "3.2.0",
-  "description": "Docs-first ritual: AGENTS.md router, integrity-review, project-context — not a host replacement.",
+  "description": "A lightweight control layer that keeps coding agents scoped, consistent, and verifiable.",
   "author": {
     "name": "kodezy",
     "url": "https://github.com/kodezy"
@@ -9,7 +9,7 @@
   "homepage": "https://github.com/kodezy/nexus",
   "repository": "https://github.com/kodezy/nexus",
   "keywords": [
-    "harness",
+    "control-layer",
     "integrity-review",
     "project-context",
     "docs"
@@ -18,8 +18,8 @@
   "hooks": "./hooks/hooks.json",
   "interface": {
     "displayName": "Nexus",
-    "shortDescription": "Docs-first agent ritual with integrity-review",
-    "longDescription": "Docs-first harness: living docs/ index from AGENTS.md, integrity-review before done, project-context on request. Template: template/AGENTS.md.",
+    "shortDescription": "Lightweight control layer for coding agents",
+    "longDescription": "Scoped context, disciplined workflows, and evidence-based verification. AGENTS.md router, integrity-review before done, project-context on request. Template: template/AGENTS.md.",
     "developerName": "kodezy",
     "category": "Developer Tools",
     "capabilities": [

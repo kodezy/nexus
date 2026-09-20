@@ -19,7 +19,7 @@ Only when the user explicitly asks to capture, bootstrap, refresh, merge, or pru
 
 ## Workflow
 
-Follow `docs/curator.md` (reconcile index with existing `docs/` first). App index template: `template/AGENTS.md` in the Nexus harness checkout.
+Follow `docs/curator.md` (reconcile index with existing `docs/` first). App index template: `template/AGENTS.md` in the Nexus plugin checkout.
 
 ## After changes
 

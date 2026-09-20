@@ -1,8 +1,10 @@
 # Nexus
 
-Harness **source** — install the plugin; **do not copy this file** into app repositories. App template: [template/AGENTS.md](template/AGENTS.md).
+Plugin **source** — install into your agent host; **do not copy this file** into app repositories. App template: [template/AGENTS.md](template/AGENTS.md).
 
 ## Agent workflow
+
+Understand → Implement → Verify → Persist
 
 - **Workspace:** `main`
 - **Validation:** `./scripts/verify.sh`

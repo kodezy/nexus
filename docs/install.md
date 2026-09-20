@@ -18,7 +18,7 @@ cd nexus
 
 Copy [template/AGENTS.md](../template/AGENTS.md) into the app. Add `docs/<topic>.md` as needed and index each file in **Docs**.
 
-Do not copy the harness root `AGENTS.md`.
+Do not copy the plugin root `AGENTS.md`.
 
 ## Update
 

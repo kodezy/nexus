@@ -27,7 +27,7 @@ REMOVED_SKILLS=(
 
 usage() {
     cat <<'EOF'
-Install Nexus into local agent harnesses.
+Install the Nexus plugin into local agent hosts.
 
 Usage:
   ./scripts/install.sh           # install all detected targets
@@ -273,7 +273,7 @@ install_claude() {
     link_skill_tree "${claude_skills}" "Claude"
     cat <<EOF
 
-  Optional plugin install (hooks + compact core policy):
+  Optional plugin install (hooks + contract policy):
     /plugin marketplace add ${repo_root}
     /plugin install nexus@nexus
 

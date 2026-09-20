@@ -1,6 +1,6 @@
 {
   "name": "nexus",
-  "description": "Docs-first ritual: AGENTS.md router, integrity-review, project-context — not a host replacement.",
+  "description": "A lightweight control layer that keeps coding agents scoped, consistent, and verifiable.",
   "version": "3.2.0",
   "author": {
     "name": "kodezy"

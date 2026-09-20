@@ -1,11 +1,11 @@
 ---
-description: Nexus production harness — compact always-on policy
+description: Nexus control layer — compact always-on policy
 alwaysApply: true
 ---
 
 # Nexus contract
 
-Nexus is a portable discipline layer for coding agents. Precedence: system and managed policy; explicit user instructions; host-native safety and approval controls; project instructions (`AGENTS.md` / `CLAUDE.md`); Nexus; optional plugins and skills. When instructions at the same priority conflict, ask the user.
+Nexus is a lightweight, portable control layer for coding agents. Precedence: system and managed policy; explicit user instructions; host-native safety and approval controls; project instructions (`AGENTS.md` / `CLAUDE.md`); Nexus; optional plugins and skills. When instructions at the same priority conflict, ask the user.
 
 ## Scope
 
